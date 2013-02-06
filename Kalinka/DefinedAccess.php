@@ -2,20 +2,8 @@
 
 namespace Kalinka;
 
-class DefinedAccess
+class DefinedAccess extends BaseAccess
 {
-    // TODO Raise exception if user tries to create an action or objclass
-    // named "ANY" or a property named "DEFAULT".
-    private $actions = ["create", "read", "update", "destroy"];
-
-    protected function setupActions($actions)
-    {
-    }
-
-    protected function setupObjectTypes($objectTypes)
-    {
-    }
-
     private $permissions = [];
 
     // TODO Raise exception if invalid action, object class, or property
@@ -30,12 +18,8 @@ class DefinedAccess
         $this->allow("ANY", "ANY");
     }
 
-    // TODO Raise exception if invalid action, object class, or property
-    public function can($action, $object, $property = null)
+    protected function check($action, $obj_class, $object, $property)
     {
-        $obj_class = is_string($object) ? $object : get_class($object);
-        $property = is_null($property) ? "DEFAULT" : $property;
-
         $possible_paths = [
             [$action, $obj_class],
             ["ANY", $obj_class],
@@ -63,7 +47,7 @@ class DefinedAccess
                 continue;
             }
 
-            if (is_string($object)) {
+            if (is_null($object)) {
                 // We only got the name of an object class, so let's check
                 // if it's possible for any such objects to be permitted.
                 return count($funcs) > 0;
