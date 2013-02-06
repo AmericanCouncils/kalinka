@@ -50,7 +50,7 @@ class BaseAccessTest extends PHPUnit_Framework_TestCase
         ));
     }
 
-    public function testGuestCannotcreateDocument()
+    public function testGuestCannotCreateDocument()
     {
         $this->assertFalse($this->guestAccess->can(
             "create", "Fixtures\Document"
@@ -120,6 +120,46 @@ class BaseAccessTest extends PHPUnit_Framework_TestCase
             "create", "Document"
         ));
         $this->assertFalse($this->regularAccess->can(
+            "create", new Document("foo", "bar")
+        ));
+    }
+
+    /*******
+     * Super access level
+     *******/
+
+    public function testSuperCanReadSomeDocs()
+    {
+        $this->assertTrue($this->superAccess->can(
+            "read", "Fixtures\Document"
+        ));
+        $this->assertTrue($this->superAccess->can(
+            "read", "Fixtures\Document", "content"
+        ));
+    }
+
+    public function testSuperCanReadSpecificDocs()
+    {
+        $this->assertTrue($this->superAccess->can(
+            "read", $this->openDoc
+        ));
+        $this->assertTrue($this->superAccess->can(
+            "read", $this->openDoc, "content"
+        ));
+        $this->assertTrue($this->superAccess->can(
+            "read", $this->classifiedDoc
+        ));
+        $this->assertTrue($this->superAccess->can(
+            "read", $this->classifiedDoc, "content"
+        ));
+    }
+
+    public function testSuperCanCreateDocument()
+    {
+        $this->assertTrue($this->superAccess->can(
+            "create", "Fixtures\Document"
+        ));
+        $this->assertTrue($this->superAccess->can(
             "create", new Document("foo", "bar")
         ));
     }

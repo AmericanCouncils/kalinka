@@ -5,8 +5,12 @@ namespace Kalinka;
 class BaseAccess
 {
     // TODO Raise exception if user tries to create an action or objclass
-    // named "ANY".
+    // named "ANY" or a property named "DEFAULT".
     private $actions = ["create", "read", "update", "destroy"];
+
+    protected function setupActions($actions)
+    {
+    }
 
     protected function setupObjectTypes($objectTypes)
     {
