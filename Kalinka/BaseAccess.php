@@ -4,6 +4,11 @@ namespace Kalinka;
 
 abstract class BaseAccess
 {
+    private function isNameValid($name) {
+        $pat = "/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/";
+        return (is_string($name) && preg_match($pat, $name));
+    }
+
     private $actions;
 
     // TODO raise exception if invalid action
@@ -11,6 +16,11 @@ abstract class BaseAccess
     {
         $this->actions = [];
         foreach ($actions as $act) {
+            if (!$this->isNameValid($act)) {
+                throw new \InvalidArgumentException(
+                    "Given invalid action name " . var_export($act, true)
+                );
+            }
             $this->actions[$act] = true;
         }
     }
@@ -22,17 +32,42 @@ abstract class BaseAccess
     {
         $this->objectTypes = [];
         foreach ($objectTypes as $key => $value) {
+            $objType = null;
+            $props = [];
             if (is_int($key)) {
-                $this->objectTypes[$value] = [];
+                $objType = $value;
             } elseif (is_string($key)) {
-                $value_set = [];
-                foreach ($value as $v) {
-                    $value_set[$v] = true;
+                $objType = $key;
+                if (!is_array($value)) {
+                    throw new \InvalidArgumentException(
+                        "Given invalid property list " . var_export($value, true)
+                    );
                 }
-                $this->objectTypes[$key] = $value_set;
+                foreach ($value as $v) {
+                    $props[$v] = true;
+                }
             } else {
-                // TODO Freak out
+                throw new \InvalidArgumentException(
+                    "Given invalid object type " . var_export($key, true) .
+                    " => " . var_export($value, true)
+                );
             }
+
+            if (!$this->isNameValid($objType)) {
+                throw new \InvalidArgumentException(
+                    "Given invalid object type " . var_export($objType, true)
+                );
+            }
+
+            foreach ($props as $p => $val) {
+                if (!$this->isNameValid($p)) {
+                    throw new \InvalidArgumentException(
+                        "Given invalid property name " . var_export($p, true)
+                    );
+                }
+            }
+
+            $this->objectTypes[$objType] = $props;
         }
     }
 
@@ -40,7 +75,7 @@ abstract class BaseAccess
     {
         if (!array_key_exists($action, $this->actions)) {
             throw new \InvalidArgumentException(
-                "Given invalid action '" . $action . "'"
+                "Given unknown action " . var_export($action, true)
             );
         }
     }
@@ -49,7 +84,7 @@ abstract class BaseAccess
     {
         if (!array_key_exists($objectType, $this->objectTypes)) {
             throw new \InvalidArgumentException(
-                "Given invalid object type '" . $objectType . "'"
+                "Given unknown object type " . var_export($objectType, true)
             );
         }
     }
@@ -60,8 +95,8 @@ abstract class BaseAccess
         if ($property == "DEFAULT") { return; }
         if (!array_key_exists($property, $this->objectTypes[$objectType])) {
             throw new \InvalidArgumentException(
-                "Given undefined property '" . $property . "'" .
-                " for object type '" . $objectType . "'"
+                "Given unknown property " . var_export($property, true) .
+                " for object type '" . var_export($objectType, true)
             );
         }
     }
