@@ -6,7 +6,9 @@ class DefinedAccess extends BaseAccess
 {
     private $permissions = [];
 
-    // TODO Raise exception if invalid action, object class, or property
+    // TODO Assert validity of arguments
+    // TODO Raise exception if user tries to create an action or objclass
+    // named "ANY"
     protected function allow($action, $object, $property = null, $func = true)
     {
         $property = is_null($property) ? "DEFAULT" : $property;
@@ -48,8 +50,6 @@ class DefinedAccess extends BaseAccess
             }
 
             if (is_null($object)) {
-                // We only got the name of an object class, so let's check
-                // if it's possible for any such objects to be permitted.
                 return count($funcs) > 0;
             } else {
                 foreach ($funcs as $f) {

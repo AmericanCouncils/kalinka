@@ -117,7 +117,7 @@ class DefinedAccessTest extends PHPUnit_Framework_TestCase
     {
         // We have no create permissions whatsoever
         $this->assertFalse($this->regularAccess->can(
-            "create", "Document"
+            "create", "Fixtures\Document"
         ));
         $this->assertFalse($this->regularAccess->can(
             "create", new Document("foo", "bar")

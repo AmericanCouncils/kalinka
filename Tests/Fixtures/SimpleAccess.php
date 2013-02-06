@@ -8,17 +8,21 @@ class SimpleAccess extends DefinedAccess
 {
     public function __construct($level)
     {
+        parent::__construct();
+
         $this->setupObjectTypes([
-            "Document" => ["content"]
+            "Fixtures\Document" => ["content"]
         ]);
 
         if ($level == "super") {
             $this->allowEverything();
         } else if ($level == "regular") {
             $this->allow("read", "Fixtures\Document");
-            $this->allow("read", "Fixtures\Document", "content", function($a, Document $d) {
-                return !$d->isClassified();
-            });
+            $this->allow("read", "Fixtures\Document", "content",
+                function(SimpleAccess $a, Document $d) {
+                    return !$d->isClassified();
+                }
+            );
         } else if ($level == "guest") {
             // Don't allow anything
         } else {
