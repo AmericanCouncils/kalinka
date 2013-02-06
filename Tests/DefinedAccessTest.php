@@ -3,7 +3,7 @@
 use Fixtures\Document;
 use Fixtures\SimpleAccess;
 
-class BaseAccessTest extends PHPUnit_Framework_TestCase
+class DefinedAccessTest extends PHPUnit_Framework_TestCase
 {
     protected $openDoc;
     protected $classifiedDoc;

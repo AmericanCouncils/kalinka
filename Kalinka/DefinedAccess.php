@@ -2,7 +2,7 @@
 
 namespace Kalinka;
 
-class BaseAccess
+class DefinedAccess
 {
     // TODO Raise exception if user tries to create an action or objclass
     // named "ANY" or a property named "DEFAULT".
