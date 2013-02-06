@@ -28,7 +28,7 @@ class BaseAccessTest extends PHPUnit_Framework_TestCase
     {
         // At least some document properties can be read
         $this->assertTrue($this->regularAccess->can(
-            "read", "Document"
+            "read", "Fixtures\Document"
         ));
     }
 
@@ -36,7 +36,7 @@ class BaseAccessTest extends PHPUnit_Framework_TestCase
     {
         // At least some documents' contents can be read
         $this->assertTrue($this->regularAccess->can(
-            "read", "Document", "content"
+            "read", "Fixtures\Document", "content"
         ));
     }
 
@@ -70,6 +70,17 @@ class BaseAccessTest extends PHPUnit_Framework_TestCase
         // The content of the classified document is not accessible
         $this->assertFalse($this->regularAccess->can(
             "read", $this->classifiedDoc, "content"
+        ));
+    }
+
+    public function testRegularAccessCannotWriteDocument()
+    {
+        // We have no write permissions whatsoever
+        $this->assertFalse($this->regularAccess->can(
+            "write", "Document"
+        ));
+        $this->assertFalse($this->regularAccess->can(
+            "write", new Document("foo", "bar")
         ));
     }
 }

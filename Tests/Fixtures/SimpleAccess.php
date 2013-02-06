@@ -15,9 +15,9 @@ class SimpleAccess extends BaseAccess
         if ($level == "super") {
             $this->allowEverything();
         } else if ($level == "regular") {
-            $this->allow("read", "Document");
-            $this->allow("read", "Document", "content", function(Document $d) {
-                !$d->isClassified();
+            $this->allow("read", "Fixtures\Document");
+            $this->allow("read", "Fixtures\Document", "content", function($a, Document $d) {
+                return !$d->isClassified();
             });
         } else if ($level == "guest") {
             // Don't allow anything

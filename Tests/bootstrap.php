@@ -9,6 +9,5 @@ set_include_path(
 );
 spl_autoload_register(function($c) {
     $path = strtr($c, '\\_', '//').'.php'; 
-    print("PATH IS $path\n");
     require_once("Tests/" . $path);
 });
