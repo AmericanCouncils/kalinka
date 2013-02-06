@@ -21,10 +21,50 @@ class BaseAccessTest extends PHPUnit_Framework_TestCase
     }
 
     /*******
+     * Guest access level
+     *******/
+
+    public function testGuestCannotReadSomeDocs()
+    {
+        $this->assertFalse($this->guestAccess->can(
+            "read", "Fixtures\Document"
+        ));
+        $this->assertFalse($this->guestAccess->can(
+            "read", "Fixtures\Document", "content"
+        ));
+    }
+
+    public function testGuestCannotReadSpecificDocs()
+    {
+        $this->assertFalse($this->guestAccess->can(
+            "read", $this->openDoc
+        ));
+        $this->assertFalse($this->guestAccess->can(
+            "read", $this->openDoc, "content"
+        ));
+        $this->assertFalse($this->guestAccess->can(
+            "read", $this->classifiedDoc
+        ));
+        $this->assertFalse($this->guestAccess->can(
+            "read", $this->classifiedDoc, "content"
+        ));
+    }
+
+    public function testGuestCannotcreateDocument()
+    {
+        $this->assertFalse($this->guestAccess->can(
+            "create", "Fixtures\Document"
+        ));
+        $this->assertFalse($this->guestAccess->can(
+            "create", new Document("foo", "bar")
+        ));
+    }
+
+    /*******
      * Regular access level
      *******/
 
-    public function testRegularAccessCanReadDocs()
+    public function testRegularAccessCanReadSomeDocs()
     {
         // At least some document properties can be read
         $this->assertTrue($this->regularAccess->can(
@@ -32,7 +72,7 @@ class BaseAccessTest extends PHPUnit_Framework_TestCase
         ));
     }
 
-    public function testRegularAccessCanReadDocsContent()
+    public function testRegularAccessCanReadSomeDocsContent()
     {
         // At least some documents' contents can be read
         $this->assertTrue($this->regularAccess->can(
@@ -73,14 +113,14 @@ class BaseAccessTest extends PHPUnit_Framework_TestCase
         ));
     }
 
-    public function testRegularAccessCannotWriteDocument()
+    public function testRegularAccessCannotCreateDocument()
     {
-        // We have no write permissions whatsoever
+        // We have no create permissions whatsoever
         $this->assertFalse($this->regularAccess->can(
-            "write", "Document"
+            "create", "Document"
         ));
         $this->assertFalse($this->regularAccess->can(
-            "write", new Document("foo", "bar")
+            "create", new Document("foo", "bar")
         ));
     }
 }
