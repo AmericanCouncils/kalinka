@@ -1,0 +1,20 @@
+{
+    "name": "kalinka",
+    "version": "0.1.0",
+    "description": "Authorization like CanCan",
+    "keywords": ["authorization", "privilege", "cancan"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "David Simon",
+            "email": "david.mike.simon@gmail.com"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-0": { "Kalinka": "" }
+    },
+    "target-dir": "Kalinka"
+}
