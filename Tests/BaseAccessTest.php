@@ -10,7 +10,7 @@ class BaseAccessTest extends PHPUnit_Framework_TestCase
     protected $access;
 
     protected function setUp() {
-        $this->access = $a = new BaseAccessWaldo(
+        $this->access = new BaseAccessWaldo(
             ["go", "stop"],
             [
             "Bus",
@@ -67,5 +67,17 @@ class BaseAccessTest extends PHPUnit_Framework_TestCase
     public function testExceptionOnInvalidSetupObjectPropertyList() {
         $this->setExpectedException("InvalidArgumentException", "invalid property list");
         $foo = new BaseAccessWaldo(["foo", "bar"], ["Narf", "Bork" => true]);
+    }
+
+    public function testExceptionOnMissingActions() {
+        $foo = new BaseAccessWaldo(null, ["Narf", "Bork"]);
+        $this->setExpectedException("LogicException", "must call setupActions");
+        $foo->can("foo", "Narf");
+    }
+
+    public function testExceptionOnMissingObjectTypes() {
+        $foo = new BaseAccessWaldo(["foo", "bar"], null);
+        $this->setExpectedException("LogicException", "must call setupObjectTypes");
+        $foo->can("foo", "Narf");
     }
 }

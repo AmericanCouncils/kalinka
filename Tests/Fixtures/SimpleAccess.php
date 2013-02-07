@@ -8,7 +8,7 @@ class SimpleAccess extends DefinedAccess
 {
     public function __construct($level)
     {
-        parent::__construct();
+        $this->setupActions(["create", "read"]);
 
         $this->setupObjectTypes([
             "Fixtures\Document" => ["content"]

@@ -11,7 +11,6 @@ abstract class BaseAccess
 
     private $actions;
 
-    // TODO raise exception if invalid action
     protected function setupActions($actions)
     {
         $this->actions = [];
@@ -27,7 +26,6 @@ abstract class BaseAccess
 
     private $objectTypes;
 
-    // TODO raise exception if invalid objtype/property
     protected function setupObjectTypes($objectTypes)
     {
         $this->objectTypes = [];
@@ -71,29 +69,52 @@ abstract class BaseAccess
         }
     }
 
-    protected function assertValidAction($action)
+    protected function isValidAction($action)
     {
-        if (!array_key_exists($action, $this->actions)) {
+        if (!is_array($this->actions)) {
+            throw new \LogicException(
+                "You must call setupActions before checks"
+            );
+        }
+        return array_key_exists($action, $this->actions);
+    }
+
+    private function assertValidAction($action)
+    {
+        if (!$this->isValidAction($action)) {
             throw new \InvalidArgumentException(
                 "Given unknown action " . var_export($action, true)
             );
         }
     }
 
-    protected function assertValidObjectType($objectType)
+    protected function isValidObjectType($objectType)
     {
-        if (!array_key_exists($objectType, $this->objectTypes)) {
+        if (!is_array($this->objectTypes)) {
+            throw new \LogicException(
+                "You must call setupObjectTypes before checks"
+            );
+        }
+        return array_key_exists($objectType, $this->objectTypes);
+    }
+
+    protected function isValidProperty($objectType, $property)
+    {
+        if ($property == "DEFAULT") {
+            return true;
+        } else {
+            return array_key_exists($property, $this->objectTypes[$objectType]);
+        }
+    }
+
+    private function assertValidObjectTypeAndProperty($objectType, $property)
+    {
+        if (!$this->isValidObjectType($objectType)) {
             throw new \InvalidArgumentException(
                 "Given unknown object type " . var_export($objectType, true)
             );
         }
-    }
-
-    protected function assertValidObjectTypeAndProperty($objectType, $property)
-    {
-        $this->assertValidObjectType($objectType);
-        if ($property == "DEFAULT") { return; }
-        if (!array_key_exists($property, $this->objectTypes[$objectType])) {
+        if (!$this->isValidProperty($objectType, $property)) {
             throw new \InvalidArgumentException(
                 "Given unknown property " . var_export($property, true) .
                 " for object type '" . var_export($objectType, true)
@@ -121,9 +142,4 @@ abstract class BaseAccess
     }
 
     abstract protected function check($action, $obj_class, $object, $property);
-
-    protected function __construct()
-    {
-        $this->setupActions(["create", "read", "update", "destroy"]);
-    }
 }
