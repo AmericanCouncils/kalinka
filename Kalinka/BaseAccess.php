@@ -2,14 +2,39 @@
 
 namespace Kalinka;
 
+/**
+ * Base for all classes that do permissions checks.
+ *
+ * Privileges are checked based on three parameters:
+ *
+ * - action : What verb we are trying to perform, e.g. "read".
+ * - objectType : The type of object we're guarding, e.g. "BlogPost".
+ * - property : (Optional) Some sub-part of the object, e.g. "author".
+ *
+ * All three must be strings that are valid PHP identifiers, i.e. starting
+ * with a letter or underscore and consisting entirely of letters,
+ * numbers, and underscores.
+ *
+ * Children of this class must provide a method getPrivileges that
+ * returns privilege results. The results returned must be one of the following:
+ *
+ * - null : Soft Denial
+ * - true : Approval
+ * - false : Hard Denial
+ *
+ * When we have multiple results to compare (i.e. if getPriviliges returns
+ * an array of results), then false takes top priority, because it means
+ * that we are explicitly denying access. If none of the results are false,
+ * then any true results will take priority and access is granted. However,
+ * if all the results are null, or if no results are provided, then access
+ * is denied by default.
+ *
+ * When we are checking a specific property of an object, and we get back
+ * only soft denial, then the check is tried again without a property
+ * specified.
+ */
 abstract class BaseAccess
 {
-    protected final function isNameValid($name)
-    {
-        $pat = "/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/";
-        return (is_string($name) && preg_match($pat, $name));
-    }
-
     private function assertValidAction($action)
     {
         if (!$this->isValidAction($action)) {
@@ -107,4 +132,13 @@ abstract class BaseAccess
     abstract protected function isValidProperty($objectType, $property);
 
     abstract protected function getPrivileges($action, $objectType, $property);
+
+    /**
+     * Returns true if $name is OK to use as an objectType, action, or property.
+     */
+    protected final function isNameValid($name)
+    {
+        $pat = "/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/";
+        return (is_string($name) && preg_match($pat, $name));
+    }
 }

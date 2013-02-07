@@ -2,6 +2,21 @@
 
 namespace Kalinka;
 
+/**
+ * Parent for Access classes with permissions specified directly in PHP.
+ *
+ * This class allows you to write in the CanCan style, with all permissions
+ * specified upfront when the class is instantiated.
+ *
+ * You must derive this class to use it, since the methods used to set up
+ * everything (actions, objects, permissions, etc.) are protected. You must
+ * call setupActions and setupObjectTypes before doing any access
+ * checks.
+ *
+ * See BaseAccess for information on Kalinka's overall strategy for figuring
+ * out access rights, particularly when we have more than one possible permission
+ * that could apply.
+ */
 abstract class HardcodedAccess extends BaseAccess
 {
     private $permissions = [];
@@ -9,25 +24,42 @@ abstract class HardcodedAccess extends BaseAccess
     // TODO Assert validity of arguments
     // TODO Raise exception if user tries to create an action or objclass
     // named "ANY" or a property named "DEFAULT"
-    protected function allow($action, $object, $property = null, $func = true)
+    /**
+     * Specify a privilege for an action on a particular object type & property.
+     *
+     * You may specify "ANY" for $action and/or $objectType to have
+     * this permission apply to all actions and/or object types respectively.
+     */
+    protected function allow($action, $objectType, $property = null, $priv = true)
     {
         $property = is_null($property) ? "DEFAULT" : $property;
-        $this->permissions[$action][$object][$property][] = $func;
+        $this->permissions[$action][$objectType][$property][] = $priv;
     }
 
     // TODO Test me
-    protected function deny($action, $object, $property = null)
+    /**
+     * Convenience method to specify a hard denial privilege.
+     */
+    protected function deny($action, $objectType, $property = null)
     {
-        $this->allow($action, $object, $property, false);
+        $this->allow($action, $objectType, $property, false);
     }
 
-    protected function allowEverything()
+    /**
+     * Convenience method to specify a privilege that applies to everything.
+     */
+    protected function allowEverything($priv = true)
     {
-        $this->allow("ANY", "ANY");
+        $this->allow("ANY", "ANY", null, $priv);
     }
 
     private $actions;
 
+    /**
+     * Sets the list of recognized actions.
+     *
+     * @param $actions A list of strings, each of which is a valid action.
+     */
     protected function setupActions($actions)
     {
         $this->actions = [];
@@ -43,6 +75,14 @@ abstract class HardcodedAccess extends BaseAccess
 
     private $objectTypes;
 
+    /**
+     * Sets the list of recognized object types and their propertries.
+     *
+     * @param $objectTypes A list of strings, each of which is a recognized
+     *                     object type. If there is a string key for an item,
+     *                     then than key is taken as the object type name, and
+     *                     the value is a list of valid properties.
+     */
     protected function setupObjectTypes($objectTypes)
     {
         $this->objectTypes = [];

@@ -2,11 +2,28 @@
 
 namespace Kalinka;
 
+/**
+ * Access class that combines results from one or more other
+ * constituent access classes.
+ *
+ * Each permission check involves only those access classes that
+ * claim the given action, objectType, and property as valid.
+ * So if only one of the constituents has any information about
+ * Comment objects, then permissions results for checks on Comments
+ * will come only from that constituent.
+ */
 class DelegatedAccess extends BaseAccess
 {
     private $constituents;
 
     // TODO Assert that constituents all implement BaseAccess
+    /**
+     * Instantiate a new DelegatedAccess with the given constituents,
+     * which all must be instances of classes that are descendants of
+     * BaseClass.
+     *
+     * @param $constituents A list of access objects.
+     */
     public function __construct($constituents)
     {
         $this->constituents = $constituents;
