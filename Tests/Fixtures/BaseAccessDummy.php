@@ -15,10 +15,10 @@ class BaseAccessDummy extends BaseAccess
     }
 
     protected function isValidProperty($objectType, $property) {
-        return $property == "DEFAULT" || preg_match("/^ok/i", $property);
+        return preg_match("/^ok/i", $property);
     }
 
-    protected function check($action, $obj_class, $object, $property) {
+    protected function getPrivileges($action, $objectType, $property) {
         return true;
     }
 }

@@ -2,17 +2,23 @@
 
 namespace Kalinka;
 
-class HardcodedAccess extends BaseAccess
+abstract class HardcodedAccess extends BaseAccess
 {
     private $permissions = [];
 
     // TODO Assert validity of arguments
     // TODO Raise exception if user tries to create an action or objclass
-    // named "ANY"
+    // named "ANY" or a property named "DEFAULT"
     protected function allow($action, $object, $property = null, $func = true)
     {
         $property = is_null($property) ? "DEFAULT" : $property;
         $this->permissions[$action][$object][$property][] = $func;
+    }
+
+    // TODO Test me
+    protected function deny($action, $object, $property = null)
+    {
+        $this->allow($action, $object, $property, false);
     }
 
     protected function allowEverything()
@@ -102,65 +108,38 @@ class HardcodedAccess extends BaseAccess
 
     protected function isValidProperty($objectType, $property)
     {
-        if ($property == "DEFAULT") {
-            return true;
-        } else {
-            if (!is_array($this->objectTypes)) {
-                throw new \LogicException(
-                    "You must call setupObjectTypes on HardcodedAccess before checks"
-                );
-            }
-            return (
-                array_key_exists($objectType, $this->objectTypes) &&
-                array_key_exists($property, $this->objectTypes[$objectType])
+        if (!is_array($this->objectTypes)) {
+            throw new \LogicException(
+                "You must call setupObjectTypes on HardcodedAccess before checks"
             );
         }
+        return (
+            array_key_exists($objectType, $this->objectTypes) &&
+            array_key_exists($property, $this->objectTypes[$objectType])
+        );
     }
 
-    protected function check($action, $obj_class, $object, $property)
+    protected function getPrivileges($action, $objectType, $property)
     {
+        $property = is_null($property) ? "DEFAULT" : $property;
+
         $possible_paths = [
-            [$action, $obj_class],
-            ["ANY", $obj_class],
+            [$action, $objectType],
+            ["ANY", $objectType],
             [$action, "ANY"],
             ["ANY", "ANY"],
         ];
+
+        $privs = [];
         foreach ($possible_paths as $path) {
             if (
                 array_key_exists($path[0], $this->permissions) &&
-                array_key_exists($path[1], $this->permissions[$path[0]])
+                array_key_exists($path[1], $this->permissions[$path[0]]) &&
+                array_key_exists($property, $this->permissions[$path[0]][$path[1]])
             ) {
-                $src = $this->permissions[$path[0]][$path[1]];
-            } else {
-                continue;
-            }
-
-            $funcs = null;
-            if (array_key_exists($property, $src)) {
-                $funcs = $src[$property];
-            } elseif ($property != "DEFAULT" && array_key_exists("DEFAULT", $src)) {
-                // Only use the permissions for property DEFAULT if there aren't
-                // any permissions that are specifically for this property
-                $funcs = $src["DEFAULT"];
-            } else {
-                continue;
-            }
-
-            if (is_null($object)) {
-                return count($funcs) > 0;
-            } else {
-                foreach ($funcs as $f) {
-                    if ($f === true) {
-                        return true;
-                    } elseif ($f($this, $object) === true) {
-                        // TODO Complain if the function returns any non-bool
-                        // e.g. to catch if they forgot the return statement
-                        return true;
-                    }
-                }
+                $privs[] = $this->permissions[$path[0]][$path[1]][$property];
             }
         }
-
-        return false;
+        return $privs;
     }
 }

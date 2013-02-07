@@ -42,18 +42,18 @@ class DelegatedAccess extends BaseAccess
         return false;
     }
 
-    protected function check($action, $objectType, $object, $property)
+    protected function getPrivileges($action, $objectType, $property)
     {
+        $privs = [];
         foreach ($this->constituents as $c) {
             if (
                 $c->isValidAction($action) &&
                 $c->isValidObjectType($objectType) &&
-                $c->isValidProperty($objectType, $property) &&
-                $c->check($action, $objectType, $object, $property)
+                (is_null($property) || $c->isValidProperty($objectType, $property))
             ) {
-                return true;
+                $privs[] = $c->getPrivileges($action, $objectType, $property);
             }
         }
-        return false;
+        return $privs;
     }
 }

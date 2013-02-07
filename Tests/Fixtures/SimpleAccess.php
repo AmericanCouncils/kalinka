@@ -2,6 +2,8 @@
 
 namespace Fixtures;
 
+use \Closure;
+use Kalinka\BaseAccess;
 use Kalinka\HardcodedAccess;
 
 class SimpleAccess extends HardcodedAccess
@@ -19,9 +21,9 @@ class SimpleAccess extends HardcodedAccess
         } else if ($level == "regular") {
             $this->allow("read", "Fixtures\Document");
             $this->allow("read", "Fixtures\Document", "content",
-                function(SimpleAccess $a, Document $d) {
+                Closure::bind(function(Document $d) {
                     return !$d->isClassified();
-                }
+                }, $this)
             );
         } else if ($level == "guest") {
             // Don't allow anything
