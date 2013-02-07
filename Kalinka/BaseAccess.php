@@ -22,16 +22,20 @@ namespace Kalinka;
  * - true : Approval
  * - false : Hard Denial
  *
- * When we have multiple results to compare (i.e. if getPriviliges returns
- * an array of results), then false takes top priority, because it means
- * that we are explicitly denying access. If none of the results are false,
- * then any true results will take priority and access is granted. However,
- * if all the results are null, or if no results are provided, then access
- * is denied by default.
+ * (See the getPriviliges documentation for more detail on how it should
+ * return values.)
  *
  * When we are checking a specific property of an object, and we get back
  * only soft denial, then the check is tried again without a property
  * specified.
+ *
+ * When we have multiple results to compare (i.e. if getPriviliges returns
+ * an array of results), then false takes top priority, because it means
+ * that we are explicitly denying access. If none of the results are false,
+ * then any true results will take priority and access is granted.
+ *
+ * However,if all the results are null, or if no results are provided, then
+ * access is denied by default.
  */
 abstract class BaseAccess
 {
@@ -95,7 +99,18 @@ abstract class BaseAccess
         }
     }
 
-    // TODO Raise exception if invalid action, object class, or property
+    /**
+     * Returns true or false, indicating whether an action is permitted.
+     *
+     * See the class documentation for BaseAccess for more details.
+     *
+     * An InvalidArgumentException will be thrown if any of the arguments
+     * are reported as invalid by the corresponding isValid* method.
+     *
+     * @param action What verb we are trying to perform, e.g. "read".
+     * @param objectType The type of object we're guarding, e.g. "BlogPost".
+     * @param property (Optional) Some sub-part of the object, e.g. "author".
+     */
     final public function can($action, $object, $property = null)
     {
         $this->assertValidAction($action);
