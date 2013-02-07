@@ -2,8 +2,9 @@
 
 use Fixtures\Document;
 use Fixtures\SimpleAccess;
+use Fixtures\HardcodedAccessWaldo;
 
-class DefinedAccessTest extends PHPUnit_Framework_TestCase
+class HardcodedAccessTest extends PHPUnit_Framework_TestCase
 {
     protected $openDoc;
     protected $classifiedDoc;
@@ -162,5 +163,41 @@ class DefinedAccessTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->superAccess->can(
             "create", new Document("foo", "bar")
         ));
+    }
+
+    /*******
+     * HardcodedAccess setup
+     *******/
+
+    public function testExceptionOnInvalidSetupAction() {
+        $this->setExpectedException("InvalidArgumentException", "invalid action");
+        $foo = new HardcodedAccessWaldo(["foo", 3, "bar"], ["Narf", "Bork"]);
+    }
+
+    public function testExceptionOnInvalidSetupObjectType() {
+        $this->setExpectedException("InvalidArgumentException", "invalid object");
+        $foo = new HardcodedAccessWaldo(["foo", "bar"], [null, "Narf", "Bork"]);
+    }
+
+    public function testExceptionOnInvalidSetupObjectProperty() {
+        $this->setExpectedException("InvalidArgumentException", "invalid property name");
+        $foo = new HardcodedAccessWaldo(["foo", "bar"], ["Narf", "Bork" => ["abc", null]]);
+    }
+
+    public function testExceptionOnInvalidSetupObjectPropertyList() {
+        $this->setExpectedException("InvalidArgumentException", "invalid property list");
+        $foo = new HardcodedAccessWaldo(["foo", "bar"], ["Narf", "Bork" => true]);
+    }
+
+    public function testExceptionOnMissingActions() {
+        $foo = new HardcodedAccessWaldo(null, ["Narf", "Bork"]);
+        $this->setExpectedException("LogicException", "must call setupActions");
+        $foo->can("foo", "Narf");
+    }
+
+    public function testExceptionOnMissingObjectTypes() {
+        $foo = new HardcodedAccessWaldo(["foo", "bar"], null);
+        $this->setExpectedException("LogicException", "must call setupObjectTypes");
+        $foo->can("foo", "Narf");
     }
 }

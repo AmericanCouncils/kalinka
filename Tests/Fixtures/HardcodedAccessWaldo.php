@@ -2,9 +2,9 @@
 
 namespace Fixtures;
 
-use Kalinka\BaseAccess;
+use Kalinka\HardcodedAccess;
 
-class BaseAccessWaldo extends BaseAccess
+class HardcodedAccessWaldo extends HardcodedAccess
 {
     public function __construct($actions, $objtypes)
     {

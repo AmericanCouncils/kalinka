@@ -2,9 +2,9 @@
 
 namespace Fixtures;
 
-use Kalinka\DefinedAccess;
+use Kalinka\HardcodedAccess;
 
-class SpecialActionAccess extends DefinedAccess
+class SpecialActionAccess extends HardcodedAccess
 {
     public function __construct()
     {

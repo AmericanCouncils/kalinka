@@ -1,8 +1,8 @@
 <?php
 
-use Fixtures\BaseAccessWaldo;
+use Fixtures\BaseAccessDummy;
 
-class Bus { }
+class OkThing { }
 class Yak { }
 
 class BaseAccessTest extends PHPUnit_Framework_TestCase
@@ -10,74 +10,39 @@ class BaseAccessTest extends PHPUnit_Framework_TestCase
     protected $access;
 
     protected function setUp() {
-        $this->access = new BaseAccessWaldo(
-            ["go", "stop"],
-            [
-            "Bus",
-            "Car",
-            "TandemBicycle" => ["front", "back"]
-            ]
-        );
+        // BaseAccessDummy allows anything on actions/types/properties that
+        // start with the string "ok". Everything else it claims to not be
+        // set up for.
+        $this->access = new BaseAccessDummy();
     }
 
     public function testBaseAccessAllowsNormalBehavior() {
-        $this->assertTrue($this->access->can("stop", "Car"));
-        $this->assertTrue($this->access->can("go", "TandemBicycle", "front"));
+        $this->assertTrue($this->access->can("okAct", "OkThing"));
+        $this->assertTrue($this->access->can("okAct", "OkThing", "okProp"));
 
-        $bus = new Bus;
-        $this->assertTrue($this->access->can("go", $bus));
+        $thing = new OkThing;
+        $this->assertTrue($this->access->can("okAct", $thing));
+        $this->assertTrue($this->access->can("okAct", $thing, "okProp"));
     }
 
     public function testExceptionOnInvalidCheckedAction() {
         $this->setExpectedException("InvalidArgumentException", "unknown action");
-        $this->access->can("snarf", "Car");
+        $this->access->can("snarf", "OkThing");
     }
 
     public function testExceptionOnInvalidCheckedObjectType() {
         $this->setExpectedException("InvalidArgumentException", "unknown object");
-        $this->access->can("go", "Yak");
+        $this->access->can("okAct", "Yak");
     }
 
     public function testExceptionOnInvalidCheckedObject() {
         $yak = new Yak;
         $this->setExpectedException("InvalidArgumentException", "unknown object");
-        $this->access->can("go", $yak);
+        $this->access->can("okAct", $yak);
     }
 
     public function testExceptionOnInvalidCheckedProperty() {
         $this->setExpectedException("InvalidArgumentException", "unknown property");
-        $this->access->can("go", "TandemBicycle", "sidecar");
-    }
-
-    public function testExceptionOnInvalidSetupAction() {
-        $this->setExpectedException("InvalidArgumentException", "invalid action");
-        $foo = new BaseAccessWaldo(["foo", 3, "bar"], ["Narf", "Bork"]);
-    }
-
-    public function testExceptionOnInvalidSetupObjectType() {
-        $this->setExpectedException("InvalidArgumentException", "invalid object");
-        $foo = new BaseAccessWaldo(["foo", "bar"], [null, "Narf", "Bork"]);
-    }
-
-    public function testExceptionOnInvalidSetupObjectProperty() {
-        $this->setExpectedException("InvalidArgumentException", "invalid property name");
-        $foo = new BaseAccessWaldo(["foo", "bar"], ["Narf", "Bork" => ["abc", null]]);
-    }
-
-    public function testExceptionOnInvalidSetupObjectPropertyList() {
-        $this->setExpectedException("InvalidArgumentException", "invalid property list");
-        $foo = new BaseAccessWaldo(["foo", "bar"], ["Narf", "Bork" => true]);
-    }
-
-    public function testExceptionOnMissingActions() {
-        $foo = new BaseAccessWaldo(null, ["Narf", "Bork"]);
-        $this->setExpectedException("LogicException", "must call setupActions");
-        $foo->can("foo", "Narf");
-    }
-
-    public function testExceptionOnMissingObjectTypes() {
-        $foo = new BaseAccessWaldo(["foo", "bar"], null);
-        $this->setExpectedException("LogicException", "must call setupObjectTypes");
-        $foo->can("foo", "Narf");
+        $this->access->can("okAct", "okThing", "sprinkles");
     }
 }

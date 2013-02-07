@@ -6,13 +6,12 @@ class DelegatedAccess extends BaseAccess
 {
     private $constituents;
 
-    // TODO Assert that constituents all implement access interface
+    // TODO Assert that constituents all implement BaseAccess
     public function __construct($constituents)
     {
         $this->constituents = $constituents;
     }
 
-    // Overrides BaseAccess::isValidAction
     protected function isValidAction($action)
     {
         foreach ($this->constituents as $c) {
@@ -23,7 +22,6 @@ class DelegatedAccess extends BaseAccess
         return false;
     }
 
-    // Overrides BaseAccess::isValidObjectType
     protected function isValidObjectType($objectType)
     {
         foreach ($this->constituents as $c) {
@@ -34,7 +32,6 @@ class DelegatedAccess extends BaseAccess
         return false;
     }
 
-    // Overrides BaseAccess::isValidProperty
     protected function isValidProperty($objectType, $property)
     {
         foreach ($this->constituents as $c) {
