@@ -103,7 +103,15 @@ abstract class BaseAccess
         if ($property == "DEFAULT") {
             return true;
         } else {
-            return array_key_exists($property, $this->objectTypes[$objectType]);
+            if (!is_array($this->objectTypes)) {
+                throw new \LogicException(
+                    "You must call setupObjectTypes before checks"
+                );
+            }
+            return (
+                array_key_exists($objectType, $this->objectTypes) && 
+                array_key_exists($property, $this->objectTypes[$objectType])
+            );
         }
     }
 

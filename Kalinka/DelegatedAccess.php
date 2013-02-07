@@ -4,33 +4,59 @@ namespace Kalinka;
 
 class DelegatedAccess extends BaseAccess
 {
-    private $impls;
+    private $constituents;
 
-    public function __construct($impls)
+    // TODO Assert that constituents all implement access interface
+    public function __construct($constituents)
     {
-        $this->impls = $impls;
+        $this->constituents = $constituents;
     }
 
     // Overrides BaseAccess::isValidAction
     protected function isValidAction($action)
     {
-        return true;
+        foreach ($this->constituents as $c) {
+            if ($c->isValidAction($action)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Overrides BaseAccess::isValidObjectType
     protected function isValidObjectType($objectType)
     {
-        return true;
+        foreach ($this->constituents as $c) {
+            if ($c->isValidObjectType($objectType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Overrides BaseAccess::isValidProperty
     protected function isValidProperty($objectType, $property)
     {
-        return true;
+        foreach ($this->constituents as $c) {
+            if ($c->isValidProperty($objectType, $property)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    protected function check($action, $obj_class, $object, $property)
+    protected function check($action, $objectType, $object, $property)
     {
-        return $obj_class != "SheetMetal";
+        foreach ($this->constituents as $c) {
+            if (
+                $c->isValidAction($action) &&
+                $c->isValidObjectType($objectType) &&
+                $c->isValidProperty($objectType, $property) &&
+                $c->check($action, $objectType, $object, $property)
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 }
