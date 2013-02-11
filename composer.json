@@ -1,16 +1,10 @@
 {
     "name": "kalinka",
     "version": "0.1.0",
-    "description": "Authorization like CanCan",
+    "description": "Authorization with a quickness",
     "keywords": ["authorization", "privilege", "cancan"],
     "type": "library",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "David Simon",
-            "email": "david.mike.simon@gmail.com"
-        }
-    ],
     "require": {
     },
     "autoload": {
