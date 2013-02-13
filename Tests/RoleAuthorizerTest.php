@@ -2,7 +2,7 @@
 
 use AC\Kalinka\Authorizer\RoleAuthorizer;
 
-class RoleAuthorizerTest extends PHPUnit_Framework_TestCase
+class RoleAuthorizerTest extends KalinkaTestCase
 {
     protected function getAuth($roles) {
         $auth = new RoleAuthorizer($roles);
@@ -13,8 +13,8 @@ class RoleAuthorizerTest extends PHPUnit_Framework_TestCase
             "system" => "AC\Kalinka\Context\ObjectlessContext",
         ]);
         $auth->registerActions([
-            "comment" => ["read", "write"],
-            "post" => ["read", "write"],
+            "comment" => ["read",   "write"],
+            "post" => ["read",   "write"],
             "image" => ["upload"],
             "system" => ["reset"]
         ]);
@@ -80,98 +80,118 @@ class RoleAuthorizerTest extends PHPUnit_Framework_TestCase
 
     public function testGuestPolicies() {
         // Common policies only
-        $a = $this->getAuth("guest");
-        $this->assertTrue($a->can("read", "comment"));
-        $this->assertTrue($a->can("read", "post"));
-        $this->assertFalse($a->can("write", "comment"));
-        $this->assertFalse($a->can("write", "post"));
-        $this->assertFalse($a->can("upload", "image"));
-        $this->assertFalse($a->can("reset", "system"));
+        $auth = $this->getAuth("guest");
+        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
+            [true,  "read",   "comment"],
+            [true,  "read",   "post"],
+            [false, "write",  "comment"],
+            [false, "write",  "post"],
+            [false, "upload", "image"],
+            [false, "reset",  "system"],
+        ]);
     }
 
     public function testContributorPolicies() {
         // Adding to common policies
-        $a = $this->getAuth("contributor");
-        $this->assertTrue($a->can("read", "comment"));
-        $this->assertTrue($a->can("read", "post"));
-        $this->assertFalse($a->can("write", "comment"));
-        $this->assertTrue($a->can("write", "post"));
-        $this->assertTrue($a->can("upload", "image"));
-        $this->assertFalse($a->can("reset", "system"));
+        $auth = $this->getAuth("contributor");
+        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
+            [true,  "read",   "comment"],
+            [true,  "read",   "post"],
+            [false, "write",  "comment"],
+            [true,  "write",  "post"],
+            [true,  "upload", "image"],
+            [false, "reset",  "system"],
+        ]);
     }
 
     public function testEditorPolicies() {
         // Including another role and expanding on it
-        $a = $this->getAuth("editor");
-        $this->assertTrue($a->can("read", "comment"));
-        $this->assertTrue($a->can("read", "post"));
-        $this->assertTrue($a->can("write", "comment")); // ALL_ACTIONS
-        $this->assertTrue($a->can("write", "post")); // ALL_ACTIONS
-        $this->assertTrue($a->can("upload", "image"));
-        $this->assertFalse($a->can("reset", "system"));
+        $auth = $this->getAuth("editor");
+        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
+            [true,  "read",   "comment"],
+            [true,  "read",   "post"],
+            [true,  "write",  "comment"], // ALL_ACTIONS
+            [true,  "write",  "post"], // ALL_ACTIONS
+            [true,  "upload", "image"],
+            [false, "reset",  "system"],
+        ]);
     }
 
     public function testPostOnlyContributorPolicies() {
         // Including context definition of another role 
-        $a = $this->getAuth("contributor");
-        $this->assertTrue($a->can("read", "comment"));
-        $this->assertTrue($a->can("read", "post"));
-        $this->assertFalse($a->can("write", "comment"));
-        $this->assertTrue($a->can("write", "post"));
-        $this->assertFalse($a->can("upload", "image"));
-        $this->assertFalse($a->can("reset", "system"));
+        $auth = $this->getAuth("contributor");
+        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
+            [true,  "read",   "comment"],
+            [true,  "read",   "post"],
+            [false, "write",  "comment"],
+            [true,  "write",  "post"],
+            [false, "upload", "image"],
+            [false, "reset",  "system"],
+        ]);
     }
 
     public function testPostWriteOnlyContributorPolicies() {
         // Including single action definition of another role
-        $a = $this->getAuth("contributor");
-        $this->assertTrue($a->can("read", "comment"));
-        $this->assertTrue($a->can("read", "post"));
-        $this->assertFalse($a->can("write", "comment"));
-        $this->assertTrue($a->can("write", "post"));
-        $this->assertFalse($a->can("upload", "image"));
-        $this->assertFalse($a->can("reset", "system"));
+        $auth = $this->getAuth("contributor");
+        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
+            [true,  "read",   "comment"],
+            [true,  "read",   "post"],
+            [false, "write",  "comment"],
+            [true,  "write",  "post"],
+            [false, "upload", "image"],
+            [false, "reset",  "system"],
+        ]);
     }
 
     public function testCommentEditorPolicies() {
-        $a = $this->getAuth("comment_editor");
-        $this->assertTrue($a->can("read", "comment"));
-        $this->assertTrue($a->can("read", "post"));
-        $this->assertTrue($a->can("write", "comment"));
-        $this->assertFalse($a->can("write", "post")); // Force_deny
-        $this->assertTrue($a->can("upload", "image")); // Recursive inclusion
-        $this->assertFalse($a->can("reset", "system"));
+        $auth = $this->getAuth("comment_editor");
+        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
+            [true,  "read",   "comment"],
+            [true,  "read",   "post"],
+            [true,  "write",  "comment"],
+            [false, "write",  "post"], // Force_deny
+            [true,  "upload", "image"], // Recursive inclusion
+            [false, "reset",  "system"],
+        ]);
     }
 
     public function testAdminPolicies() {
         // Unrestricted access
-        $a = $this->getAuth("admin");
-        $this->assertTrue($a->can("read", "comment"));
-        $this->assertTrue($a->can("read", "post"));
-        $this->assertTrue($a->can("write", "comment"));
-        $this->assertTrue($a->can("write", "post"));
-        $this->assertTrue($a->can("upload", "image"));
-        $this->assertTrue($a->can("reset", "system"));
+        $auth = $this->getAuth("admin");
+        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
+            [true,  "read",   "comment"],
+            [true,  "read",   "post"],
+            [true,  "write",  "comment"],
+            [true,  "write",  "post"],
+            [true,  "upload", "image"],
+            [true,  "reset",  "system"],
+        ]);
     }
 
     public function testMultipleRoles() {
-        $a = $this->getAuth(["image_supplier", "comment_supplier"]);
-        $this->assertTrue($a->can("read", "comment"));
-        $this->assertTrue($a->can("read", "post"));
-        $this->assertTrue($a->can("write", "comment"));
-        $this->assertFalse($a->can("write", "post"));
-        $this->assertTrue($a->can("upload", "image"));
-        $this->assertFalse($a->can("reset", "system"));
+        $auth = $this->getAuth(["image_supplier", "comment_supplier"]);
+        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
+            [true,  "read",   "comment"],
+            [true,  "read",   "post"],
+            [true,  "write",  "comment"],
+            [false, "write",  "post"],
+            [true,  "upload", "image"],
+            [false, "reset",  "system"],
+        ]);
     }
 
-    public function testAuthSpecificOverride() {
-        $a = $this->getAuth("guest");
-        $a->appendPolicies(
+    public function testAuthAppend() {
+        // TODO Make this happen as though I were adding in another tiny role
+        $auth = $this->getAuth("guest");
+        $auth->appendPolicies([
             "post" => [
                 "write" => [
                     RoleAuthorizer::INCLUDE_ROLE => "contributor"
                 ]
             ]
-        );
+        ]);
+        // TODO Assert something here
     }
+
+    // TODO Allow us to remove all/some role-supplied policies for a context/action
 }

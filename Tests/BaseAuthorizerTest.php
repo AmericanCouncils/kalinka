@@ -9,7 +9,7 @@ class MyAuthorizer extends BaseAuthorizer
     }
 }
 
-class BaseAuthorizerTest extends PHPUnit_Framework_TestCase
+class BaseAuthorizerTest extends KalinkaTestCase
 {
     private $auth;
     protected function setUp() {
