@@ -14,7 +14,6 @@ abstract class BaseAuthorizer
 
     public function can($action, $contextType, $contextObject = null)
     {
-        return false;
     }
 
     abstract protected function getPermission($action, $context);

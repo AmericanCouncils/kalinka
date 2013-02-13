@@ -7,10 +7,12 @@ class RoleAuthorizerTest extends KalinkaTestCase
     protected function getAuth($roles) {
         $auth = new RoleAuthorizer($roles);
 
+        // We aren't using any context objects, so we can just use
+        // the RoleSubjectContext class for all these things
         $auth->registerContexts([
-            "comment" => "AC\Kalinka\Context\ObjectlessContext",
-            "post" => "AC\Kalinka\Context\ObjectlessContext",
-            "system" => "AC\Kalinka\Context\ObjectlessContext",
+            "comment" => "Fixtures\RoleSubjectContext",
+            "post" => "Fixtures\RoleSubjectContext",
+            "system" => "Fixtures\RoleSubjectContext",
         ]);
         $auth->registerActions([
             "comment" => ["read",   "write"],
