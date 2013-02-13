@@ -17,5 +17,5 @@ abstract class BaseAuthorizer
         return false;
     }
 
-    abstract protected function getPolicies($action, $context);
+    abstract protected function getPermission($action, $context);
 }

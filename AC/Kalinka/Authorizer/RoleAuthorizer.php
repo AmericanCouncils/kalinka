@@ -21,7 +21,7 @@ class RoleAuthorizer extends BaseAuthorizer
     {
     }
 
-    protected function getPolicies($action, $context)
+    protected function getPermission($action, $context)
     {
     }
 }

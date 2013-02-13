@@ -4,8 +4,8 @@ use AC\Kalinka\Authorizer\BaseAuthorizer;
 
 class MyAuthorizer extends BaseAuthorizer
 {
-    protected function getPolicies($action, $context) {
-        return ["allow"];
+    protected function getPermission($action, $context) {
+        return true;
     }
 }
 
