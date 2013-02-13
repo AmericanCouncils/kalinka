@@ -1,5 +1,7 @@
 <?php
 
+namespace Fixtures;
+
 class Document
 {
     private $owner;
@@ -14,8 +16,15 @@ class Document
         return $this->content;
     }
 
-    public function __construct($owner, $content) {
+    private $classified;
+    public function isClassified()
+    {
+        return $this->classified;
+    }
+
+    public function __construct($owner, $content, $classified = false) {
         $this->owner = $owner;
         $this->content = $content;
+        $this->classified = $classified;
     }
 }
