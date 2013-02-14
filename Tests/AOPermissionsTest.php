@@ -4,6 +4,7 @@ use AC\Kalinka\Authorizer\RoleAuthorizer;
 use AC\Kalinka\Context\BaseContext;
 
 use Fixtures\User;
+use Fixtures\UserSubjectContext;
 
 class AO
 {
@@ -11,6 +12,37 @@ class AO
     {
         $this->user = $user;
         $this->lang = $lang;
+    }
+}
+
+class AOContext extends UserSubjectContext
+{
+    public function isValidObject()
+    {
+        return (
+            gettype($this->object) == "object" &&
+            get_class($this->object) == "AO"
+        );
+    }
+
+    public function policyRequireLanguageMatch()
+    {
+        return true;
+    }
+
+    public function policyRequireRatingsNotBlinded()
+    {
+        return true;
+    }
+
+    public function policyAllowByWorklist()
+    {
+        return true;
+    }
+
+    public function policyAllowByOwnership()
+    {
+        return true;
     }
 }
 
@@ -45,18 +77,7 @@ class MyUserAuthorizer extends RoleAuthorizer
         foreach ($user->roles as $role) {
             $roleNames[] = $role->name;
         }
-        parent::__construct($roleNames);
-    }
-}
-
-class UserContext extends BaseContext
-{
-    protected function isValidSubject()
-    {
-        return (
-            gettype($this->subject) == "object" &&
-            get_class($this->subject) == "User"
-        );
+        parent::__construct($roleNames, $user);
     }
 }
 
@@ -65,14 +86,51 @@ class AOPermissionsTest extends KalinkaTestCase
     protected function getAuth($user)
     {
         $auth = new MyUserAuthorizer($user);
-        // TODO Configure auth
+
+        $auth->registerContexts([
+            "ao" => "AOContext"
+        ]);
+        $auth->registerActions([
+            "ao" => ["read", "read_ratings"]
+        ]);
+        $auth->registerRolePolicies([
+            "itemDev" => [
+                "ao" => [
+                    "read" => [
+                        "requireLanguageMatch",
+                        "allowByWorklist",
+                        "allowByOwnership",
+                    ],
+                    "read_ratings" => [
+                        // TODO Use cross-action references, once role auth has that
+                        "requireLanguageMatch",
+                        "allowByWorklist",
+                        "allowByOwnership",
+                        "requireRatingsNotBlinded",
+                    ]
+                ]
+            ],
+            "specialist" => [
+                "ao" => [
+                    "read" => [
+                        "requireLanguageMatch",
+                        "allow",
+                    ],
+                    "read_ratings" => [
+                        // TODO cross-action ref
+                        "requireLanguageMatch",
+                        "allow",
+                        "requireRatingsNotBlinded",
+                    ]
+                ]
+            ],
+        ]);
+
         return $auth;
     }
 
     protected function setUp()
     {
-        // Something item writers can do that specialists cannot: create new AOs
-        
         $this->dsimon = new User(
             'dsimon',
             [new Role('itemDev'), new Role('specialist')],
@@ -98,7 +156,7 @@ class AOPermissionsTest extends KalinkaTestCase
         $this->worklist2 = new Worklist(
             [$this->ao1, $this->ao2],
             [$this->dsimon, $this->evillemez],
-            new Workflow(['read_ratings' => false])
+            new Workflow(['blind_ratings' => true])
         );
         
     }

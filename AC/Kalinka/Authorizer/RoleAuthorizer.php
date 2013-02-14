@@ -79,6 +79,8 @@ class RoleAuthorizer extends BaseAuthorizer
             );
         }
 
+        // TODO Maybe require that all roles be defined, at least as an empty
+        // list? That way we avoid mispelling problems.
         $policies = null;
         $subRoles = [];
         if (array_key_exists($role, $this->rolePolicies)) {
