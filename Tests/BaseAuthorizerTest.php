@@ -15,7 +15,7 @@ class BaseAuthorizerTest extends KalinkaTestCase
     protected function setUp() {
         $this->auth = new MyAuthorizer();
         $this->auth->registerContexts([
-            "comment" => "AC\Kalinka\Context\ObjectlessContext",
+            "comment" => "AC\Kalinka\Context\BaseContext",
         ]);
         $this->auth->registerActions([
             "comment" => ["read", "write"]
@@ -28,21 +28,21 @@ class BaseAuthorizerTest extends KalinkaTestCase
 
     public function testExceptionOnUnknownContext() {
         $this->setExpectedException(
-            "InvalidArgumentException", "unknown context"
+            "InvalidArgumentException", "Unknown context"
         );
         $this->auth->can("write", "something");
     }
 
     public function testExceptionOnUnknownAction() {
         $this->setExpectedException(
-            "InvalidArgumentException", "unknown action"
+            "InvalidArgumentException", "Unknown action"
         );
         $this->auth->can("nom", "comment");
     }
 
     public function testExceptionOnUnknownBoth() {
         $this->setExpectedException(
-            "InvalidArgumentException", "unknown context"
+            "InvalidArgumentException", "Unknown context"
         );
         $this->auth->can("nom", "something");
     }
