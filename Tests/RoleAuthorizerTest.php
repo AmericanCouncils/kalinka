@@ -13,15 +13,16 @@ class RoleAuthorizerTest extends KalinkaTestCase
             "comment" => "Fixtures\RoleSubjectContext",
             "post" => "Fixtures\RoleSubjectContext",
             "system" => "Fixtures\RoleSubjectContext",
+            "image" => "Fixtures\RoleSubjectContext",
         ]);
         $auth->registerActions([
-            "comment" => ["read",   "write"],
-            "post" => ["read",   "write"],
+            "comment" => ["read", "write"],
+            "post" => ["read", "write"],
             "image" => ["upload"],
             "system" => ["reset"]
         ]);
         $auth->registerRolePolicies([
-            RoleAuthorizer::COMMON_POLICIES => [
+            RoleAuthorizer::DEFAULT_POLICIES => [
                 "comment" => [
                     "read" => "allow"
                 ],
@@ -39,27 +40,27 @@ class RoleAuthorizerTest extends KalinkaTestCase
                 ]
             ],
             "editor" => [
-                RoleAuthorizer::INCLUDE_ROLE => "contributor",
+                RoleAuthorizer::ACTS_AS => "contributor",
                 "comment" => [
                     RoleAuthorizer::ALL_ACTIONS => "allow"
                 ]
             ],
             "post_only_contributor" => [
                 "post" => [
-                    RoleAuthorizer::INCLUDE_ROLE => "contributor"
+                    RoleAuthorizer::ACTS_AS => "contributor"
                 ]
             ],
             "post_write_only_contributor" => [
                 "post" => [
                     "write" => [
-                        RoleAuthorizer::INCLUDE_ROLE => "contributor"
+                        RoleAuthorizer::INCLUDE_POLICIES => "contributor"
                     ]
                 ]
             ],
             "comment_editor" => [
-                RoleAuthorizer::INCLUDE_ROLE => "editor",
+                RoleAuthorizer::ACTS_AS => "editor",
                 "post" => [
-                    "write" => "force_deny"
+                    "write" => [] // No policies, so deny by default
                 ]
             ],
             "admin" => [
@@ -121,7 +122,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     public function testPostOnlyContributorPolicies() {
         // Including context definition of another role 
-        $auth = $this->getAuth("contributor");
+        $auth = $this->getAuth("post_only_contributor");
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -134,7 +135,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     public function testPostWriteOnlyContributorPolicies() {
         // Including single action definition of another role
-        $auth = $this->getAuth("contributor");
+        $auth = $this->getAuth("post_write_only_contributor");
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -188,7 +189,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
         $auth->appendPolicies([
             "post" => [
                 "write" => [
-                    RoleAuthorizer::INCLUDE_ROLE => "contributor"
+                    RoleAuthorizer::INCLUDE_POLICIES => "contributor"
                 ]
             ]
         ]);

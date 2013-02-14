@@ -5,6 +5,10 @@ namespace AC\Kalinka\Authorizer;
 abstract class BaseAuthorizer
 {
     private $subject;
+    public function getSubject() {
+        return $this->subject;
+    }
+
     public function __construct($subject = null) {
         $this->subject = $subject;
     }
@@ -22,9 +26,6 @@ abstract class BaseAuthorizer
     {
         // TODO Check for invalid argument
         foreach ($actionsMap as $context => $actions) {
-            if (!array_key_exists($context, $this->contextActions)) {
-                $this->contextActions[$context] = [];
-            }
             foreach ($actions as $action) {
                 $this->contextActions[$context][$action] = true;
             }
@@ -50,8 +51,8 @@ abstract class BaseAuthorizer
         }
 
         $context = new $contextClass($this->subject, $contextObject);
-        return $this->getPermission($action, $context);
+        return $this->getPermission($action, $contextType, $context);
     }
 
-    abstract protected function getPermission($action, $context);
+    abstract protected function getPermission($action, $contextType, $context);
 }

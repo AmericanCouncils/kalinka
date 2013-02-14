@@ -6,13 +6,20 @@ use AC\Kalinka\Context\BaseContext;
 
 class RoleSubjectContext extends BaseContext
 {
+    public function __construct($subject, $object = null) {
+        if (is_string($subject)) {
+            $subject = [$subject];
+        }
+        parent::__construct($subject, $object);
+    }
+
     protected function isValidSubject()
     {
-        return (gettype($this->subject) == "string");
+        return is_array($this->subject);
     }
 
     protected function policyNonGuest()
     {
-        return ($this->subject !== "guest");
+        return (array_search("guest", $this->subject) === FALSE);
     }
 }
