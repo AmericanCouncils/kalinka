@@ -23,7 +23,7 @@ class KalinkaTestCase extends \PHPUnit_Framework_TestCase
             $this->assertEquals(
                 $row[0],
                 call_user_func_array($callable, $args),
-                "Table row: $idx"
+                "Table row: $idx, on args:\n" . var_export($args, true)
             );
         }
     }
