@@ -8,10 +8,11 @@ use Fixtures\UserSubjectContext;
 
 class AO
 {
-    public function __construct($user, $lang)
+    public function __construct($user, $lang, $worklists = [])
     {
         $this->user = $user;
         $this->lang = $lang;
+        $this->worklists = $worklists;
     }
 }
 
@@ -27,22 +28,42 @@ class AOContext extends UserSubjectContext
 
     public function policyRequireLanguageMatch()
     {
-        return true;
+        if (array_search($this->object->lang, $this->subject->langs) === false) {
+            return false;
+        }
+        return BaseContext::ABSTAIN;
     }
 
     public function policyRequireRatingsNotBlinded()
     {
-        return true;
+        foreach ($this->object->worklists as $worklist) {
+            if (!is_null($worklist->workflow)) {
+                foreach ($worklist->workflow->map as $k => $v) {
+                    if ($k == "blind_ratings" && $v === true)  {
+                        return false;
+                    }
+                }
+            }
+        }
+        return BaseContext::ABSTAIN;
     }
 
-    public function policyAllowByWorklist()
+    public function policyAllowByWorklistMembership()
     {
-        return true;
+        foreach ($this->object->worklists as $worklist) {
+            if (array_search($this->subject, $worklist->users) !== false) {
+                return true;
+            }
+        }
+        return BaseContext::ABSTAIN;
     }
 
     public function policyAllowByOwnership()
     {
-        return true;
+        if ($this->object->user === $this->subject) {
+            return true;
+        }
+        return BaseContext::ABSTAIN;
     }
 }
 
@@ -55,8 +76,7 @@ class Role
 
 class Worklist
 {
-    public function __construct($aos = [], $users = [], $workflow = null) {
-        $this->aos = $aos;
+    public function __construct($users = [], $workflow = null) {
         $this->users = $users;
         $this->workflow = $workflow;
     }
@@ -98,13 +118,13 @@ class AOPermissionsTest extends KalinkaTestCase
                 "ao" => [
                     "read" => [
                         "requireLanguageMatch",
-                        "allowByWorklist",
+                        "allowByWorklistMembership",
                         "allowByOwnership",
                     ],
                     "read_ratings" => [
                         // TODO Use cross-action references, once role auth has that
                         "requireLanguageMatch",
-                        "allowByWorklist",
+                        "allowByWorklistMembership",
                         "allowByOwnership",
                         "requireRatingsNotBlinded",
                     ]
@@ -142,23 +162,20 @@ class AOPermissionsTest extends KalinkaTestCase
             ['ru']
         );
         
-        $this->ao1 = new AO($this->dsimon, 'ru');
-        $this->ao2 = new AO($this->evillemez, 'ru');
-        $this->ao3 = new AO(null, 'cn');
-        $this->ao4 = new AO(null, 'ar');
-        $this->ao5 = new AO($this->evillemez, 'ru');
-        $this->ao6 = new AO($this->dsimon, 'ru');
-        
         $this->worklist1 = new Worklist(
-            [$this->ao1, $this->ao3],
             [$this->evillemez]
         );
         $this->worklist2 = new Worklist(
-            [$this->ao1, $this->ao2],
             [$this->dsimon, $this->evillemez],
             new Workflow(['blind_ratings' => true])
         );
-        
+
+        $this->ao1 = new AO($this->dsimon, 'ru', [$this->worklist1, $this->worklist2]);
+        $this->ao2 = new AO($this->evillemez, 'ru', [$this->worklist2]);
+        $this->ao3 = new AO(null, 'cn', [$this->worklist1]);
+        $this->ao4 = new AO(null, 'ar');
+        $this->ao5 = new AO($this->evillemez, 'ru');
+        $this->ao6 = new AO($this->dsimon, 'ru');
     }
     
     public function testReadAO()
