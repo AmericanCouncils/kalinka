@@ -1,6 +1,9 @@
 <?php
 
 use AC\Kalinka\Authorizer\RoleAuthorizer;
+use AC\Kalinka\Context\BaseContext;
+
+use Fixtures\User;
 
 class AO
 {
@@ -8,15 +11,6 @@ class AO
     {
         $this->user = $user;
         $this->lang = $lang;
-    }
-}
-
-class User
-{
-    public function __construct($name, $roles = [], $langs = []) {
-        $this->name = $name;
-        $this->roles = $roles;
-        $this->langs = $langs;
     }
 }
 
@@ -55,8 +49,26 @@ class MyUserAuthorizer extends RoleAuthorizer
     }
 }
 
+class UserContext extends BaseContext
+{
+    protected function isValidSubject()
+    {
+        return (
+            gettype($this->subject) == "object" &&
+            get_class($this->subject) == "User"
+        );
+    }
+}
+
 class AOPermissionsTest extends KalinkaTestCase
 {
+    protected function getAuth($user)
+    {
+        $auth = new MyUserAuthorizer($user);
+        // TODO Configure auth
+        return $auth;
+    }
+
     protected function setUp()
     {
         // Something item writers can do that specialists cannot: create new AOs
@@ -89,13 +101,6 @@ class AOPermissionsTest extends KalinkaTestCase
             new Workflow(['read_ratings' => false])
         );
         
-    }
-    
-    protected function getAuth($user)
-    {
-        $auth = new MyUserAuthorizer($user);
-        // TODO Configure auth
-        return $auth;
     }
     
     public function testReadAO()

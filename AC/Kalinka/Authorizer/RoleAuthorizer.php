@@ -16,22 +16,14 @@ class RoleAuthorizer extends BaseAuthorizer
         return $this->roles;
     }
 
-    public function __construct($subject)
+    public function __construct($roles, $subject = null)
     {
         parent::__construct($subject);
-        $this->roles = $this->extractRolesFromSubject($subject);
-    }
 
-    protected function extractRolesFromSubject($subject)
-    {
-        if (is_string($subject)) {
-            return [$subject];
-        } elseif (is_array($subject)) {
-            return $subject;
-        } else {
-            throw new \InvalidArgumentException;
+        if (is_string($roles)) {
+            $roles = [$roles];
         }
-        return $subject;
+        $this->roles = $roles;
     }
 
     private $rolePolicies = [];

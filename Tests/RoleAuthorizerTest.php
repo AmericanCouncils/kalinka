@@ -8,12 +8,13 @@ class RoleAuthorizerTest extends KalinkaTestCase
         $auth = new RoleAuthorizer($roles);
 
         // We aren't using any context objects, so we can just use
-        // the RoleSubjectContext class for all these things
+        // the BaseContext class, which expects null for subject and
+        // object, for all these things
         $auth->registerContexts([
-            "comment" => "Fixtures\RoleSubjectContext",
-            "post" => "Fixtures\RoleSubjectContext",
-            "system" => "Fixtures\RoleSubjectContext",
-            "image" => "Fixtures\RoleSubjectContext",
+            "comment" => "AC\Kalinka\Context\BaseContext",
+            "post" => "AC\Kalinka\Context\BaseContext",
+            "system" => "AC\Kalinka\Context\BaseContext",
+            "image" => "AC\Kalinka\Context\BaseContext",
         ]);
         $auth->registerActions([
             "comment" => ["read", "write"],

@@ -4,37 +4,40 @@ use AC\Kalinka\Authorizer\BaseAuthorizer;
 use AC\Kalinka\Context\BaseContext;
 
 use Fixtures\Document;
-use Fixtures\RoleSubjectContext;
 use Fixtures\DocumentContext;
+use Fixtures\User;
+use Fixtures\UserSubjectContext;
 
 class ContextsTest extends PHPUnit_Framework_TestCase
 {
     public function testBuiltinPolicies()
     {
-        $c = new RoleSubjectContext("guest");
+        $c = new UserSubjectContext(new User("guest"));
         $this->assertEquals(true, $c->checkPolicy("allow"));
         $this->assertEquals(false, $c->checkPolicy("deny"));
         $this->assertEquals(BaseContext::ABSTAIN, $c->checkPolicy("abstain"));
     }
 
-    public function testSimpleCustomPolicies()
+    public function testContextSubjectPolicies()
     {
-        $guest_c = new RoleSubjectContext("guest");
-        $this->assertFalse($guest_c->checkPolicy("nonGuest"));
+        $guest_c = new UserSubjectContext(new User("jfk"));
+        $this->assertFalse($guest_c->checkPolicy("hasVowels"));
 
-        $user_c = new RoleSubjectContext("user");
-        $this->assertTrue($user_c->checkPolicy("nonGuest"));
+        $user_c = new UserSubjectContext(new User("dave"));
+        $this->assertTrue($user_c->checkPolicy("hasVowels"));
     }
 
-    public function testContextObjects()
+    public function testContextObjectPolicies()
     {
-        $doc1 = new Document("dave", "Public info");
-        $c1 = new DocumentContext("user", $doc1);
+        $doc1 = new Document("evan", "Public info");
+        $c1 = new DocumentContext(new User("dave"), $doc1);
         $this->assertTrue($c1->checkPolicy("unclassified"));
+        $this->assertFalse($c1->checkPolicy("owned"));
 
         $doc2 = new Document("evan", "Secrets!", true);
-        $c2 = new DocumentContext("user", $doc2);
+        $c2 = new DocumentContext(new User("evan"), $doc2);
         $this->assertFalse($c2->checkPolicy("unclassified"));
+        $this->assertTrue($c2->checkPolicy("owned"));
     }
 
     // TODO Test various context error conditions
