@@ -1,7 +1,7 @@
 {
     "name": "kalinka",
     "version": "0.1.0",
-    "description": "Authorization with a quickness",
+    "description": "Flexible authorization library for PHP",
     "keywords": ["authorization", "privilege", "cancan"],
     "type": "library",
     "license": "MIT",
