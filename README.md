@@ -38,7 +38,7 @@ The `subject` above is the user whose privileges are being checked. This can
 be an instance of your app's User class (as the code above assumes), or
 it can be something as simple as the name of the user as a string. The important
 thing is that it's everything about the user you need to know in order to
-determine if they're permitted to reach something.
+determine if they're allowed to do something.
 
 Guards may also have an `object`, which is the resource that the subject is trying to get
 at.  You'll need an additional Guard for each specific type of resource
@@ -87,7 +87,7 @@ class MyAppAuthorizer extends SimpleAuthorizer
         $this->registerPolicies([
             "document" => [
                 "read" => "allow",
-                "write" => "owner"
+                "write" => "documentOwner"
             ],
             "comment" => [
                 "read" => "allow",
