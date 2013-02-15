@@ -83,7 +83,7 @@ class Workflow
 
 class MyAppAuthorizer extends RoleAuthorizer
 {
-    public function __construct($user)
+    public function __construct(User $user)
     {
         $roleNames = [];
         foreach ($user->roles as $role) {
