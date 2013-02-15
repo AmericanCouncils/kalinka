@@ -81,7 +81,7 @@ class Workflow
     }
 }
 
-class MyUserAuthorizer extends RoleAuthorizer
+class MyAppAuthorizer extends RoleAuthorizer
 {
     public function __construct($user)
     {
@@ -97,7 +97,7 @@ class AOPermissionsTest extends KalinkaTestCase
 {
     protected function getAuth($user)
     {
-        $auth = new MyUserAuthorizer($user);
+        $auth = new MyAppAuthorizer($user);
 
         $auth->registerGuards([
             "ao" => "AOGuard"

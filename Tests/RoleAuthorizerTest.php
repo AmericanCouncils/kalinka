@@ -197,5 +197,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
         // TODO Assert something here
     }
 
-    // TODO Allow us to remove all/some role-supplied policies for a guard/action
+    // TODO Allow us to block all role-supplied policies for a guard/action
+
+    // TODO Test merging of policy lists via INCLUDE_POLICIES
 }
