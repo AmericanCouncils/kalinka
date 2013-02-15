@@ -90,22 +90,14 @@ class MyAppAuthorizer extends RoleAuthorizer
             $roleNames[] = $role->name;
         }
         parent::__construct($roleNames, $user);
-    }
-}
 
-class AOPermissionsTest extends KalinkaTestCase
-{
-    protected function getAuth($user)
-    {
-        $auth = new MyAppAuthorizer($user);
-
-        $auth->registerGuards([
+        $this->registerGuards([
             "ao" => "AOGuard"
         ]);
-        $auth->registerActions([
+        $this->registerActions([
             "ao" => ["read", "read_ratings"]
         ]);
-        $auth->registerRolePolicies([
+        $this->registerRolePolicies([
             "itemDev" => [
                 "ao" => [
                     "read" => [
@@ -114,7 +106,7 @@ class AOPermissionsTest extends KalinkaTestCase
                         "allowByOwnership",
                     ],
                     "read_ratings" => [
-                        // TODO Use cross-action references, once role auth has that
+                        // TODO Use cross-action references, once role this has that
                         "requireLanguageMatch",
                         "allowByWorklistMembership",
                         "allowByOwnership",
@@ -137,10 +129,11 @@ class AOPermissionsTest extends KalinkaTestCase
                 ]
             ],
         ]);
-
-        return $auth;
     }
+}
 
+class AOPermissionsTest extends KalinkaTestCase
+{
     protected function setUp()
     {
         $this->dsimon = new User(
@@ -172,7 +165,7 @@ class AOPermissionsTest extends KalinkaTestCase
     
     public function testReadAO()
     {
-        $auth = $this->getAuth($this->dsimon);
+        $auth = new MyAppAuthorizer($this->dsimon);
         $this->assertCallsEqual([$auth, "can"], ["read", "ao", self::X1], [
             [true,  $this->ao1], // In my language
             [true,  $this->ao2], // In my language
@@ -182,7 +175,7 @@ class AOPermissionsTest extends KalinkaTestCase
             [true,  $this->ao6], // In my language
         ]);
         
-        $auth = $this->getAuth($this->evillemez);
+        $auth = new MyAppAuthorizer($this->evillemez);
         $this->assertCallsEqual([$auth, "can"], ["read", "ao", self::X1], [
             [true,  $this->ao1], // In worklist1
             [true,  $this->ao2], // In worklist2
@@ -195,7 +188,7 @@ class AOPermissionsTest extends KalinkaTestCase
 
     public function testBlindRatingFromWorkflow()
     {
-        $auth = $this->getAuth($this->dsimon);
+        $auth = new MyAppAuthorizer($this->dsimon);
         $this->assertCallsEqual([$auth, "can"], ["read_ratings", "ao", self::X1], [
             [false, $this->ao1], // In worklist2 with blind rating
             [false, $this->ao2], // In worklist2 with blind rating
@@ -205,7 +198,7 @@ class AOPermissionsTest extends KalinkaTestCase
             [true,  $this->ao6], // Not in worklist2
         ]);
         
-        $auth = $this->getAuth($this->evillemez);
+        $auth = new MyAppAuthorizer($this->evillemez);
         $this->assertCallsEqual([$auth, "can"], ["read_ratings", "ao", self::X1], [
             [false, $this->ao1], // In worklist2 with blind rating
             [false, $this->ao2], // In worklist2 with blind rating

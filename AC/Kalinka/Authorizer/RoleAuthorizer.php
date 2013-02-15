@@ -26,7 +26,7 @@ class RoleAuthorizer extends BaseAuthorizer
     }
 
     private $rolePolicies = [];
-    public function registerRolePolicies($rolePolicies)
+    protected function registerRolePolicies($rolePolicies)
     {
         // TODO Check for validity
         $this->rolePolicies = $rolePolicies;

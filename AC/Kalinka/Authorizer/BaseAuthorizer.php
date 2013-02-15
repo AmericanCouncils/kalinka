@@ -14,7 +14,7 @@ abstract class BaseAuthorizer
     }
 
     private $guardClasses = [];
-    public function registerGuards($guardsMap)
+    protected function registerGuards($guardsMap)
     {
         // TODO Check for invalid argument
         $this->guardClasses =
@@ -22,7 +22,7 @@ abstract class BaseAuthorizer
     }
 
     private $guardActions = [];
-    public function registerActions($actionsMap)
+    protected function registerActions($actionsMap)
     {
         // TODO Check for invalid argument
         foreach ($actionsMap as $guard => $actions) {

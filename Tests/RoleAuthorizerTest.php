@@ -2,27 +2,28 @@
 
 use AC\Kalinka\Authorizer\RoleAuthorizer;
 
-class RoleAuthorizerTest extends KalinkaTestCase
+class OurRoleAuthorizer extends RoleAuthorizer
 {
-    protected function getAuth($roles) {
-        $auth = new RoleAuthorizer($roles);
+    public function __construct($roles)
+    {
+        parent::__construct($roles);
 
         // We aren't using any guard objects, so we can just use
         // the BaseGuard class, which expects null for subject and
         // object, for all these things
-        $auth->registerGuards([
+        $this->registerGuards([
             "comment" => "AC\Kalinka\Guard\BaseGuard",
             "post" => "AC\Kalinka\Guard\BaseGuard",
             "system" => "AC\Kalinka\Guard\BaseGuard",
             "image" => "AC\Kalinka\Guard\BaseGuard",
         ]);
-        $auth->registerActions([
+        $this->registerActions([
             "comment" => ["read", "write"],
             "post" => ["read", "write"],
             "image" => ["upload"],
             "system" => ["reset"]
         ]);
-        $auth->registerRolePolicies([
+        $this->registerRolePolicies([
             RoleAuthorizer::DEFAULT_POLICIES => [
                 "comment" => [
                     "read" => "allow"
@@ -78,13 +79,14 @@ class RoleAuthorizerTest extends KalinkaTestCase
                 ]
             ],
         ]);
-
-        return $auth;
     }
+}
 
+class RoleAuthorizerTest extends KalinkaTestCase
+{
     public function testGuestPolicies() {
         // Common policies only
-        $auth = $this->getAuth("guest");
+        $auth = new OurRoleAuthorizer("guest");
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -97,7 +99,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     public function testContributorPolicies() {
         // Adding to common policies
-        $auth = $this->getAuth("contributor");
+        $auth = new OurRoleAuthorizer("contributor");
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -110,7 +112,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     public function testEditorPolicies() {
         // Including another role and expanding on it
-        $auth = $this->getAuth("editor");
+        $auth = new OurRoleAuthorizer("editor");
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -123,7 +125,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     public function testPostOnlyContributorPolicies() {
         // Including guard definition of another role
-        $auth = $this->getAuth("post_only_contributor");
+        $auth = new OurRoleAuthorizer("post_only_contributor");
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -136,7 +138,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     public function testPostWriteOnlyContributorPolicies() {
         // Including single action definition of another role
-        $auth = $this->getAuth("post_write_only_contributor");
+        $auth = new OurRoleAuthorizer("post_write_only_contributor");
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -148,7 +150,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
     }
 
     public function testCommentEditorPolicies() {
-        $auth = $this->getAuth("comment_editor");
+        $auth = new OurRoleAuthorizer("comment_editor");
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -161,7 +163,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     public function testAdminPolicies() {
         // Unrestricted access
-        $auth = $this->getAuth("admin");
+        $auth = new OurRoleAuthorizer("admin");
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -173,7 +175,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
     }
 
     public function testMultipleRoles() {
-        $auth = $this->getAuth(["image_supplier", "comment_supplier"]);
+        $auth = new OurRoleAuthorizer(["image_supplier", "comment_supplier"]);
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -186,7 +188,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     public function testAuthAppend() {
         // TODO Make this happen as though I were adding in another tiny role
-        $auth = $this->getAuth("guest");
+        $auth = new OurRoleAuthorizer("guest");
         $auth->appendPolicies([
             "post" => [
                 "write" => [
