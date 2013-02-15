@@ -1,5 +1,5 @@
 {
-    "name": "kalinka",
+    "name": "ac/kalinka",
     "version": "0.1.0",
     "description": "Flexible authorization library for PHP",
     "keywords": ["authorization", "privilege", "cancan"],
