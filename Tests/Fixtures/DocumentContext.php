@@ -2,16 +2,8 @@
 
 namespace Fixtures;
 
-class DocumentContext extends UserSubjectContext
+class DocumentContext extends MyAppContext
 {
-    protected function isValidObject()
-    {
-        return (
-            gettype($this->object) == "object" &&
-            get_class($this->object) == "Fixtures\Document"
-        );
-    }
-
     protected function policyUnclassified()
     {
         return !$this->object->isClassified();

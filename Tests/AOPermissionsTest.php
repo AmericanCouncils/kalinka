@@ -3,8 +3,8 @@
 use AC\Kalinka\Authorizer\RoleAuthorizer;
 use AC\Kalinka\Context\BaseContext;
 
+use Fixtures\MyAppContext;
 use Fixtures\User;
-use Fixtures\UserSubjectContext;
 
 class AO
 {
@@ -16,16 +16,8 @@ class AO
     }
 }
 
-class AOContext extends UserSubjectContext
+class AOContext extends MyAppContext
 {
-    public function isValidObject()
-    {
-        return (
-            gettype($this->object) == "object" &&
-            get_class($this->object) == "AO"
-        );
-    }
-
     public function policyRequireLanguageMatch()
     {
         if (array_search($this->object->lang, $this->subject->langs) === false) {
