@@ -2,7 +2,7 @@
 
 namespace Fixtures;
 
-class DocumentContext extends MyAppContext
+class DocumentGuard extends MyAppGuard
 {
     protected function policyUnclassified()
     {

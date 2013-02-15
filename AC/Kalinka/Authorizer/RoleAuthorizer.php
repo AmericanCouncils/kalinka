@@ -8,7 +8,6 @@ class RoleAuthorizer extends BaseAuthorizer
     const ACTS_AS = "KALINKA_ROLEAUTH_KEY_ACTS_AS";
     const INCLUDE_POLICIES = "KALINKA_ROLEAUTH_KEY_INCLUDE_POLICIES";
     const ALL_ACTIONS = "KALINKA_ROLEAUTH_KEY_ALL_ACTIONS";
-    const ALL_CONTEXTS_AND_ACTIONS = "KALINKA_ROLEAUTH_KEY_ALL_CONTEXTS_AND_ACTIONS";
 
     private $roles = [];
     public function getRoles()
@@ -37,10 +36,10 @@ class RoleAuthorizer extends BaseAuthorizer
     {
     }
 
-    protected function getPermission($action, $contextType, $context)
+    protected function getPermission($action, $guardType, $guard)
     {
         foreach ($this->roles as $role) {
-            $policies = $this->resolvePolicies($role, $contextType, $action);
+            $policies = $this->resolvePolicies($role, $guardType, $action);
             if (is_string($policies)) {
                 $policies = [$policies];
             } elseif (is_null($policies)) {
@@ -49,7 +48,7 @@ class RoleAuthorizer extends BaseAuthorizer
 
             $approved = false;
             foreach ($policies as $policy) {
-                $result = $context->checkPolicy($policy);
+                $result = $guard->checkPolicy($policy);
                 if ($result === true) {
                     $approved = true;
                 } elseif ($result === false) {
@@ -65,7 +64,7 @@ class RoleAuthorizer extends BaseAuthorizer
         return false;
     }
 
-    private function resolvePolicies($role, $contextType, $action, $history = [])
+    private function resolvePolicies($role, $guardType, $action, $history = [])
     {
         $history[] = $role;
         if (array_search($role, $history) !== count($history)-1) {
@@ -74,7 +73,7 @@ class RoleAuthorizer extends BaseAuthorizer
             // then this error needs to be for the root one and to track
             // role+ct+action for uniqueness in history, not just role
             throw new \LogicError(
-                "Recursive loop while resolving \"$contextType\" \"$action\"" .
+                "Recursive loop while resolving \"$guardType\" \"$action\"" .
                 " via : " . implode(",", $history)
             );
         }
@@ -85,14 +84,14 @@ class RoleAuthorizer extends BaseAuthorizer
         $subRoles = [];
         if (array_key_exists($role, $this->rolePolicies)) {
             $roleDef = $this->rolePolicies[$role];
-            if (array_key_exists($contextType, $roleDef)) {
-                $contextDef = $roleDef[$contextType];
-                if (array_key_exists($action, $contextDef)) {
-                    $policies = $contextDef[$action];
-                } elseif (array_key_exists(self::ALL_ACTIONS, $contextDef)) {
-                    $policies = $contextDef[self::ALL_ACTIONS];
-                } elseif (array_key_exists(self::ACTS_AS, $contextDef)) {
-                    $refRoles = $contextDef[self::ACTS_AS];
+            if (array_key_exists($guardType, $roleDef)) {
+                $guardDef = $roleDef[$guardType];
+                if (array_key_exists($action, $guardDef)) {
+                    $policies = $guardDef[$action];
+                } elseif (array_key_exists(self::ALL_ACTIONS, $guardDef)) {
+                    $policies = $guardDef[self::ALL_ACTIONS];
+                } elseif (array_key_exists(self::ACTS_AS, $guardDef)) {
+                    $refRoles = $guardDef[self::ACTS_AS];
                     if (is_string($refRoles)) {
                         $refRoles = [$refRoles];
                     }
@@ -102,9 +101,9 @@ class RoleAuthorizer extends BaseAuthorizer
 
             if (
                 is_null($policies) &&
-                array_key_exists(self::ALL_CONTEXTS_AND_ACTIONS, $roleDef)
+                array_key_exists(self::ALL_ACTIONS, $roleDef)
             ) {
-                $policies = $roleDef[self::ALL_CONTEXTS_AND_ACTIONS];
+                $policies = $roleDef[self::ALL_ACTIONS];
             }
 
             if (
@@ -124,14 +123,14 @@ class RoleAuthorizer extends BaseAuthorizer
         }
 
         // TODO Test that ACTS_AS at the action level takes priority over
-        // any ACTS_AS at the context level
+        // any ACTS_AS at the guard level
 
         if (is_null($policies)) {
             // Reversed so that latter roles override earlier ones
             foreach (array_reverse($subRoles) as $subRole) {
                 $policies = $this->resolvePolicies(
                     $subRole,
-                    $contextType,
+                    $guardType,
                     $action,
                     $history
                 );
@@ -148,7 +147,7 @@ class RoleAuthorizer extends BaseAuthorizer
         ) {
             $policies = $this->resolvePolicies(
                 self::DEFAULT_POLICIES,
-                $contextType,
+                $guardType,
                 $action,
                 $history
             );
@@ -167,7 +166,7 @@ class RoleAuthorizer extends BaseAuthorizer
             foreach ($includedRoles as $includedRole) {
                 $includedPolicies = $this->resolvePolicies(
                     $includedRole,
-                    $contextType,
+                    $guardType,
                     $action,
                     $history
                 );

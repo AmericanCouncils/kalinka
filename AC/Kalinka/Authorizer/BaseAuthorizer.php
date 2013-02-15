@@ -13,46 +13,46 @@ abstract class BaseAuthorizer
         $this->subject = $subject;
     }
 
-    private $contextClasses = [];
-    public function registerContexts($contextsMap)
+    private $guardClasses = [];
+    public function registerGuards($guardsMap)
     {
         // TODO Check for invalid argument
-        $this->contextClasses =
-            array_merge($this->contextClasses, $contextsMap);
+        $this->guardClasses =
+            array_merge($this->guardClasses, $guardsMap);
     }
 
-    private $contextActions = [];
+    private $guardActions = [];
     public function registerActions($actionsMap)
     {
         // TODO Check for invalid argument
-        foreach ($actionsMap as $context => $actions) {
+        foreach ($actionsMap as $guard => $actions) {
             foreach ($actions as $action) {
-                $this->contextActions[$context][$action] = true;
+                $this->guardActions[$guard][$action] = true;
             }
         }
     }
 
-    public function can($action, $contextType, $contextObject = null)
+    public function can($action, $guardType, $guardObject = null)
     {
-        if (!array_key_exists($contextType, $this->contextClasses)) {
+        if (!array_key_exists($guardType, $this->guardClasses)) {
             throw new \InvalidArgumentException(
-                "Unknown context type \"$contextType\""
+                "Unknown guard type \"$guardType\""
             );
         }
-        $contextClass = $this->contextClasses[$contextType];
+        $guardClass = $this->guardClasses[$guardType];
 
         if (
-            !array_key_exists($contextType, $this->contextActions) ||
-            !array_key_exists($action, $this->contextActions[$contextType])
+            !array_key_exists($guardType, $this->guardActions) ||
+            !array_key_exists($action, $this->guardActions[$guardType])
         ) {
             throw new \InvalidArgumentException(
-                "Unknown action \"$action\" for context type \"$contextType\""
+                "Unknown action \"$action\" for guard type \"$guardType\""
             );
         }
 
-        $context = new $contextClass($this->subject, $contextObject);
-        return $this->getPermission($action, $contextType, $context);
+        $guard = new $guardClass($this->subject, $guardObject);
+        return $this->getPermission($action, $guardType, $guard);
     }
 
-    abstract protected function getPermission($action, $contextType, $context);
+    abstract protected function getPermission($action, $guardType, $guard);
 }

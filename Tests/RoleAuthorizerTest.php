@@ -7,14 +7,14 @@ class RoleAuthorizerTest extends KalinkaTestCase
     protected function getAuth($roles) {
         $auth = new RoleAuthorizer($roles);
 
-        // We aren't using any context objects, so we can just use
-        // the BaseContext class, which expects null for subject and
+        // We aren't using any guard objects, so we can just use
+        // the BaseGuard class, which expects null for subject and
         // object, for all these things
-        $auth->registerContexts([
-            "comment" => "AC\Kalinka\Context\BaseContext",
-            "post" => "AC\Kalinka\Context\BaseContext",
-            "system" => "AC\Kalinka\Context\BaseContext",
-            "image" => "AC\Kalinka\Context\BaseContext",
+        $auth->registerGuards([
+            "comment" => "AC\Kalinka\Guard\BaseGuard",
+            "post" => "AC\Kalinka\Guard\BaseGuard",
+            "system" => "AC\Kalinka\Guard\BaseGuard",
+            "image" => "AC\Kalinka\Guard\BaseGuard",
         ]);
         $auth->registerActions([
             "comment" => ["read", "write"],
@@ -65,7 +65,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
                 ]
             ],
             "admin" => [
-                RoleAuthorizer::ALL_CONTEXTS_AND_ACTIONS => "allow"
+                RoleAuthorizer::ALL_ACTIONS => "allow"
             ],
             "image_supplier" => [
                 "image" => [
@@ -122,7 +122,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
     }
 
     public function testPostOnlyContributorPolicies() {
-        // Including context definition of another role 
+        // Including guard definition of another role
         $auth = $this->getAuth("post_only_contributor");
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
@@ -197,5 +197,5 @@ class RoleAuthorizerTest extends KalinkaTestCase
         // TODO Assert something here
     }
 
-    // TODO Allow us to remove all/some role-supplied policies for a context/action
+    // TODO Allow us to remove all/some role-supplied policies for a guard/action
 }

@@ -4,7 +4,7 @@ use AC\Kalinka\Authorizer\BaseAuthorizer;
 
 class MyAuthorizer extends BaseAuthorizer
 {
-    protected function getPermission($action, $contextType, $context) {
+    protected function getPermission($action, $guardType, $guard) {
         return true;
     }
 }
@@ -14,8 +14,8 @@ class BaseAuthorizerTest extends KalinkaTestCase
     private $auth;
     protected function setUp() {
         $this->auth = new MyAuthorizer();
-        $this->auth->registerContexts([
-            "comment" => "AC\Kalinka\Context\BaseContext",
+        $this->auth->registerGuards([
+            "comment" => "AC\Kalinka\Guard\BaseGuard",
         ]);
         $this->auth->registerActions([
             "comment" => ["read", "write"]
@@ -26,9 +26,9 @@ class BaseAuthorizerTest extends KalinkaTestCase
         $this->assertTrue($this->auth->can("read", "comment"));
     }
 
-    public function testExceptionOnUnknownContext() {
+    public function testExceptionOnUnknownGuard() {
         $this->setExpectedException(
-            "InvalidArgumentException", "Unknown context"
+            "InvalidArgumentException", "Unknown guard"
         );
         $this->auth->can("write", "something");
     }
@@ -42,7 +42,7 @@ class BaseAuthorizerTest extends KalinkaTestCase
 
     public function testExceptionOnUnknownBoth() {
         $this->setExpectedException(
-            "InvalidArgumentException", "Unknown context"
+            "InvalidArgumentException", "Unknown guard"
         );
         $this->auth->can("nom", "something");
     }

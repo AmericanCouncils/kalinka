@@ -1,9 +1,9 @@
 <?php
 
 use AC\Kalinka\Authorizer\RoleAuthorizer;
-use AC\Kalinka\Context\BaseContext;
+use AC\Kalinka\Guard\BaseGuard;
 
-use Fixtures\MyAppContext;
+use Fixtures\MyAppGuard;
 use Fixtures\User;
 
 class AO
@@ -16,14 +16,14 @@ class AO
     }
 }
 
-class AOContext extends MyAppContext
+class AOGuard extends MyAppGuard
 {
     public function policyRequireLanguageMatch()
     {
         if (array_search($this->object->lang, $this->subject->langs) === false) {
             return false;
         }
-        return BaseContext::ABSTAIN;
+        return BaseGuard::ABSTAIN;
     }
 
     public function policyRequireRatingsNotBlinded()
@@ -37,7 +37,7 @@ class AOContext extends MyAppContext
                 }
             }
         }
-        return BaseContext::ABSTAIN;
+        return BaseGuard::ABSTAIN;
     }
 
     public function policyAllowByWorklistMembership()
@@ -47,7 +47,7 @@ class AOContext extends MyAppContext
                 return true;
             }
         }
-        return BaseContext::ABSTAIN;
+        return BaseGuard::ABSTAIN;
     }
 
     public function policyAllowByOwnership()
@@ -55,7 +55,7 @@ class AOContext extends MyAppContext
         if ($this->object->user === $this->subject) {
             return true;
         }
-        return BaseContext::ABSTAIN;
+        return BaseGuard::ABSTAIN;
     }
 }
 
@@ -99,8 +99,8 @@ class AOPermissionsTest extends KalinkaTestCase
     {
         $auth = new MyUserAuthorizer($user);
 
-        $auth->registerContexts([
-            "ao" => "AOContext"
+        $auth->registerGuards([
+            "ao" => "AOGuard"
         ]);
         $auth->registerActions([
             "ao" => ["read", "read_ratings"]

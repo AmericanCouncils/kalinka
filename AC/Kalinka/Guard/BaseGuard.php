@@ -1,8 +1,8 @@
 <?php
 
-namespace AC\Kalinka\Context;
+namespace AC\Kalinka\Guard;
 
-class BaseContext
+class BaseGuard
 {
     const ABSTAIN = -1;
 

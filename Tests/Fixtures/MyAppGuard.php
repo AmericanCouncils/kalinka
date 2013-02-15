@@ -2,9 +2,9 @@
 
 namespace Fixtures;
 
-use AC\Kalinka\Context\BaseContext;
+use AC\Kalinka\Guard\BaseGuard;
 
-class MyAppContext extends BaseContext
+class MyAppGuard extends BaseGuard
 {
     public function __construct($subject, $object = null) {
         if (!($subject instanceof User)) {
