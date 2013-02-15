@@ -40,24 +40,7 @@ class RoleAuthorizer extends BaseAuthorizer
     {
         foreach ($this->roles as $role) {
             $policies = $this->resolvePolicies($role, $guardType, $action);
-            if (is_string($policies)) {
-                $policies = [$policies];
-            } elseif (is_null($policies)) {
-                $policies = [];
-            }
-
-            $approved = false;
-            foreach ($policies as $policy) {
-                $result = $guard->checkPolicy($policy);
-                if ($result === true) {
-                    $approved = true;
-                } elseif ($result === false) {
-                    $approved = false;
-                    break;
-                }
-                // If it's not true or false, then this policy abstains
-            }
-            if ($approved) {
+            if ($this->evaluatePolicyList($guard, $policies)) {
                 return true;
             }
         }
@@ -70,7 +53,7 @@ class RoleAuthorizer extends BaseAuthorizer
         if (array_search($role, $history) !== count($history)-1) {
             // TODO Test this failure condition
             // TODO If we eventually have references that change ct or action,
-            // then this error needs to be for the root one and to track
+            // then this error needs to track
             // role+ct+action for uniqueness in history, not just role
             throw new \LogicError(
                 "Recursive loop while resolving \"$guardType\" \"$action\"" .
