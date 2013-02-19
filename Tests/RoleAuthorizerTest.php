@@ -24,7 +24,7 @@ class OurRoleAuthorizer extends RoleAuthorizer
             "system" => ["reset"]
         ]);
         $this->registerRolePolicies([
-            RoleAuthorizer::DEFAULT_POLICIES => [
+            "guest" => [
                 "comment" => [
                     "read" => "allow"
                 ],
@@ -32,9 +32,12 @@ class OurRoleAuthorizer extends RoleAuthorizer
                     "read" => "allow"
                 ]
             ],
-            "guest" => [],
             "contributor" => [
+                "comment" => [
+                    "read" => "allow"
+                ],
                 "post" => [
+                    "read" => "allow",
                     "write" => "allow"
                 ],
                 "image" => [
@@ -42,43 +45,61 @@ class OurRoleAuthorizer extends RoleAuthorizer
                 ]
             ],
             "editor" => [
-                RoleAuthorizer::ACTS_AS => "contributor",
                 "comment" => [
-                    RoleAuthorizer::ALL_ACTIONS => "allow"
-                ]
-            ],
-            "post_only_contributor" => [
+                    "read" => "allow",
+                    "write" => "allow"
+                ],
                 "post" => [
-                    RoleAuthorizer::ACTS_AS => "contributor"
-                ]
-            ],
-            "post_write_only_contributor" => [
-                "post" => [
-                    "write" => [
-                        RoleAuthorizer::INCLUDE_POLICIES => "contributor"
-                    ]
+                    "read" => "allow",
+                    "write" => "allow"
+                ],
+                "image" => [
+                    "upload" => "allow"
                 ]
             ],
             "comment_editor" => [
-                RoleAuthorizer::ACTS_AS => "editor",
+                "comment" => [
+                    "read" => "allow",
+                    "write" => "allow"
+                ],
                 "post" => [
-                    "write" => [] // No policies, so deny by default
+                    "read" => "allow",
+                    "write" => []
+                ],
+                "image" => [
+                    "upload" => "allow"
                 ]
             ],
-            "admin" => [
-                RoleAuthorizer::ALL_ACTIONS => "allow"
-            ],
             "image_supplier" => [
+                "comment" => [
+                    "read" => "allow"
+                ],
+                "post" => [
+                    "read" => "allow"
+                ],
                 "image" => [
                     "upload" => "allow"
                 ]
             ],
             "comment_supplier" => [
                 "comment" => [
+                    "read" => "allow",
                     "write" => "allow"
+                ],
+                "post" => [
+                    "read" => "allow"
                 ]
             ],
         ]);
+    }
+
+    protected function getPermission($action, $resType, $guard)
+    {
+        if (array_search("admin", $this->getRoles()) !== FALSE) {
+            return true;
+        } else {
+            return parent::getPermission($action, $resType, $guard);
+        }
     }
 }
 
@@ -119,32 +140,6 @@ class RoleAuthorizerTest extends KalinkaTestCase
             [true,  "write",  "comment"], // ALL_ACTIONS
             [true,  "write",  "post"], // ALL_ACTIONS
             [true,  "upload", "image"],
-            [false, "reset",  "system"],
-        ]);
-    }
-
-    public function testPostOnlyContributorPolicies() {
-        // Including guard definition of another role
-        $auth = new OurRoleAuthorizer("post_only_contributor");
-        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
-            [true,  "read",   "comment"],
-            [true,  "read",   "post"],
-            [false, "write",  "comment"],
-            [true,  "write",  "post"],
-            [false, "upload", "image"],
-            [false, "reset",  "system"],
-        ]);
-    }
-
-    public function testPostWriteOnlyContributorPolicies() {
-        // Including single action definition of another role
-        $auth = new OurRoleAuthorizer("post_write_only_contributor");
-        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
-            [true,  "read",   "comment"],
-            [true,  "read",   "post"],
-            [false, "write",  "comment"],
-            [true,  "write",  "post"],
-            [false, "upload", "image"],
             [false, "reset",  "system"],
         ]);
     }
