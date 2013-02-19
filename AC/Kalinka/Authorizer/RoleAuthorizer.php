@@ -52,6 +52,7 @@ class RoleAuthorizer extends AuthorizerAbstract
                 return true;
             }
         }
+
         return false;
     }
 

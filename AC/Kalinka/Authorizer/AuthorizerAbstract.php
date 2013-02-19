@@ -14,11 +14,13 @@ namespace AC\Kalinka\Authorizer;
 abstract class AuthorizerAbstract
 {
     private $subject;
-    public function getSubject() {
+    public function getSubject()
+    {
         return $this->subject;
     }
 
-    public function __construct($subject = null) {
+    public function __construct($subject = null)
+    {
         // TODO Set a flag when this is called, check for that flag in can()
         $this->subject = $subject;
     }
@@ -61,6 +63,7 @@ abstract class AuthorizerAbstract
         }
 
         $guard = new $guardClass($this->subject, $guardObject);
+
         return $this->getPermission($action, $resType, $guard);
     }
 
@@ -85,6 +88,7 @@ abstract class AuthorizerAbstract
             }
             // If it's not true or false, then this policy abstains
         }
+
         return $approved;
     }
 }

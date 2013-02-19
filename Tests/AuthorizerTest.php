@@ -4,7 +4,8 @@ use AC\Kalinka\Authorizer\AuthorizerAbstract;
 
 class MyAuthorizer extends AuthorizerAbstract
 {
-    public function __construct($subject = null) {
+    public function __construct($subject = null)
+    {
         parent::__construct($subject);
         $this->registerGuards([
             "comment" => "AC\Kalinka\Guard\BaseGuard",
@@ -14,7 +15,8 @@ class MyAuthorizer extends AuthorizerAbstract
         ]);
     }
 
-    protected function getPermission($action, $guardType, $guard) {
+    protected function getPermission($action, $guardType, $guard)
+    {
         return true;
     }
 }
@@ -22,29 +24,34 @@ class MyAuthorizer extends AuthorizerAbstract
 class AuthorizerTest extends KalinkaTestCase
 {
     private $auth;
-    protected function setUp() {
+    protected function setUp()
+    {
         $this->auth = new MyAuthorizer();
     }
 
-    public function testExplicitAllow() {
+    public function testExplicitAllow()
+    {
         $this->assertTrue($this->auth->can("read", "comment"));
     }
 
-    public function testExceptionOnUnknownResourceType() {
+    public function testExceptionOnUnknownResourceType()
+    {
         $this->setExpectedException(
             "InvalidArgumentException", "Unknown resource type"
         );
         $this->auth->can("write", "something");
     }
 
-    public function testExceptionOnUnknownAction() {
+    public function testExceptionOnUnknownAction()
+    {
         $this->setExpectedException(
             "InvalidArgumentException", "Unknown action"
         );
         $this->auth->can("nom", "comment");
     }
 
-    public function testExceptionOnUnknownBoth() {
+    public function testExceptionOnUnknownBoth()
+    {
         $this->setExpectedException(
             "InvalidArgumentException", "Unknown resource type"
         );

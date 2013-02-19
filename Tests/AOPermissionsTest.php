@@ -23,6 +23,7 @@ class AOGuard extends MyAppGuard
         if (array_search($this->object->lang, $this->subject->langs) === false) {
             return false;
         }
+
         return BaseGuard::ABSTAIN;
     }
 
@@ -31,12 +32,13 @@ class AOGuard extends MyAppGuard
         foreach ($this->object->worklists as $worklist) {
             if (!is_null($worklist->workflow)) {
                 foreach ($worklist->workflow->map as $k => $v) {
-                    if ($k == "blind_ratings" && $v === true)  {
+                    if ($k == "blind_ratings" && $v === true) {
                         return false;
                     }
                 }
             }
         }
+
         return BaseGuard::ABSTAIN;
     }
 
@@ -47,6 +49,7 @@ class AOGuard extends MyAppGuard
                 return true;
             }
         }
+
         return BaseGuard::ABSTAIN;
     }
 
@@ -55,20 +58,23 @@ class AOGuard extends MyAppGuard
         if ($this->object->user === $this->subject) {
             return true;
         }
+
         return BaseGuard::ABSTAIN;
     }
 }
 
 class Role
 {
-    public function __construct($name) {
+    public function __construct($name)
+    {
         $this->name = $name;
     }
 }
 
 class Worklist
 {
-    public function __construct($users = [], $workflow = null) {
+    public function __construct($users = [], $workflow = null)
+    {
         $this->users = $users;
         $this->workflow = $workflow;
     }
@@ -76,7 +82,8 @@ class Worklist
 
 class Workflow
 {
-    public function __construct($map = []) {
+    public function __construct($map = [])
+    {
         $this->map = $map;
     }
 }
@@ -146,7 +153,7 @@ class AOPermissionsTest extends KalinkaTestCase
             [new Role('itemDev')],
             ['ru']
         );
-        
+
         $this->worklist1 = new Worklist(
             [$this->evillemez]
         );
@@ -162,7 +169,7 @@ class AOPermissionsTest extends KalinkaTestCase
         $this->ao5 = new AO($this->evillemez, 'ru');
         $this->ao6 = new AO($this->dsimon, 'ru');
     }
-    
+
     public function testReadAO()
     {
         $auth = new MyAppAuthorizer($this->dsimon);
@@ -174,7 +181,7 @@ class AOPermissionsTest extends KalinkaTestCase
             [true,  $this->ao5], // Not in any worklist, but in my language
             [true,  $this->ao6], // In my language
         ]);
-        
+
         $auth = new MyAppAuthorizer($this->evillemez);
         $this->assertCallsEqual([$auth, "can"], ["read", "ao", self::X1], [
             [true,  $this->ao1], // In worklist1
@@ -197,7 +204,7 @@ class AOPermissionsTest extends KalinkaTestCase
             [true,  $this->ao5], // Not in worklist2
             [true,  $this->ao6], // Not in worklist2
         ]);
-        
+
         $auth = new MyAppAuthorizer($this->evillemez);
         $this->assertCallsEqual([$auth, "can"], ["read_ratings", "ao", self::X1], [
             [false, $this->ao1], // In worklist2 with blind rating

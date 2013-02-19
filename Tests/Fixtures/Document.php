@@ -22,7 +22,8 @@ class Document
         return $this->classified;
     }
 
-    public function __construct($owner, $content, $classified = false) {
+    public function __construct($owner, $content, $classified = false)
+    {
         $this->owner = $owner;
         $this->content = $content;
         $this->classified = $classified;

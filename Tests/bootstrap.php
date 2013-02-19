@@ -8,10 +8,10 @@ set_include_path(
     dirname(__DIR__) . "/Tests"
 );
 spl_autoload_register(function($c) {
-    $path = strtr($c, '\\_', '//').'.php'; 
+    $path = strtr($c, '\\_', '//').'.php';
     if (file_exists("Tests/" . $path)) {
-        require_once("Tests/" . $path);
+        require_once 'Tests/'. $path;
     } else {
-        require_once($path);
+        require_once $path;
     }
 });

@@ -18,7 +18,8 @@ abstract class SimpleAuthorizer extends AuthorizerAbstract
         $this->policyMap = $policies;
     }
 
-    protected function getPermission($action, $resType, $guard) {
+    protected function getPermission($action, $resType, $guard)
+    {
         if (!array_key_exists($resType, $this->policyMap)) {
             throw new \InvalidArgumentError("Unknown resource type '$resType'");
         }
@@ -28,6 +29,7 @@ abstract class SimpleAuthorizer extends AuthorizerAbstract
         }
 
         $policies = $this->policyMap[$resType][$action];
+
         return $this->evaluatePolicyList($guard, $policies);
     }
 }
