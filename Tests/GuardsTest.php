@@ -9,12 +9,10 @@ use Fixtures\User;
 
 class GuardsTest extends PHPUnit_Framework_TestCase
 {
-    public function testBuiltinPolicies()
+    public function testBuiltinAllowPolicy()
     {
         $c = new MyAppGuard(new User("guest"));
         $this->assertEquals(true, $c->checkPolicy("allow"));
-        $this->assertEquals(false, $c->checkPolicy("deny"));
-        $this->assertEquals(BaseGuard::ABSTAIN, $c->checkPolicy("abstain"));
     }
 
     public function testGuardSubjectPolicies()

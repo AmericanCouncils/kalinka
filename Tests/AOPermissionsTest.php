@@ -18,16 +18,12 @@ class AO
 
 class AOGuard extends MyAppGuard
 {
-    public function policyRequireLanguageMatch()
+    public function policyLanguageMatch()
     {
-        if (array_search($this->object->lang, $this->subject->langs) === false) {
-            return false;
-        }
-
-        return BaseGuard::ABSTAIN;
+        return (array_search($this->object->lang, $this->subject->langs) !== false);
     }
 
-    public function policyRequireRatingsNotBlinded()
+    public function policyRatingsNotBlinded()
     {
         foreach ($this->object->worklists as $worklist) {
             if (!is_null($worklist->workflow)) {
@@ -39,10 +35,10 @@ class AOGuard extends MyAppGuard
             }
         }
 
-        return BaseGuard::ABSTAIN;
+        return true;
     }
 
-    public function policyAllowByWorklistMembership()
+    public function policyWorklistMembership()
     {
         foreach ($this->object->worklists as $worklist) {
             if (array_search($this->subject, $worklist->users) !== false) {
@@ -50,16 +46,12 @@ class AOGuard extends MyAppGuard
             }
         }
 
-        return BaseGuard::ABSTAIN;
+        return false;
     }
 
-    public function policyAllowByOwnership()
+    public function policyOwnership()
     {
-        if ($this->object->user === $this->subject) {
-            return true;
-        }
-
-        return BaseGuard::ABSTAIN;
+        return ($this->object->user === $this->subject);
     }
 }
 
@@ -108,30 +100,24 @@ class MyAppAuthorizer extends RoleAuthorizer
             "itemDev" => [
                 "ao" => [
                     "read" => [
-                        "requireLanguageMatch",
-                        "allowByWorklistMembership",
-                        "allowByOwnership",
+                        "languageMatch",
+                        ["worklistMembership", "ownership"]
                     ],
                     "read_ratings" => [
-                        // TODO Use cross-action references, once role this has that
-                        "requireLanguageMatch",
-                        "allowByWorklistMembership",
-                        "allowByOwnership",
-                        "requireRatingsNotBlinded",
+                        "languageMatch",
+                        "ratingsNotBlinded",
+                        ["worklistMembership", "ownership"]
                     ]
                 ]
             ],
             "specialist" => [
                 "ao" => [
                     "read" => [
-                        "requireLanguageMatch",
-                        "allow",
+                        "languageMatch",
                     ],
                     "read_ratings" => [
-                        // TODO cross-action ref
-                        "requireLanguageMatch",
-                        "allow",
-                        "requireRatingsNotBlinded",
+                        "languageMatch",
+                        "ratingsNotBlinded",
                     ]
                 ]
             ],

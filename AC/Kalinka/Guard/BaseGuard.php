@@ -11,8 +11,6 @@ namespace AC\Kalinka\Guard;
  */
 class BaseGuard
 {
-    const ABSTAIN = -1;
-
     protected $subject;
     protected $object;
 
@@ -34,36 +32,37 @@ class BaseGuard
         if (is_string($policies)) {
             $policies = [$policies];
         } elseif (is_null($policies)) {
-            $policies = [];
+            return false;
+        } elseif (count($policies) == 0) {
+            // TODO Test this!
+            return false;
         }
 
-        $approved = false;
+        // Outer policy list is an AND-list
         foreach ($policies as $policy) {
-            $result = $this->checkPolicy($policy);
-            if ($result === true) {
-                $approved = true;
-            } elseif ($result === false) {
-                $approved = false;
-                break;
+            if (is_array($policy)) {
+                $result = false;
+                // Inner policy lists are OR-lists
+                foreach ($policy as $subpolicy) {
+                    if ($this->checkPolicy($subpolicy)) {
+                        $result = true;
+                        break;
+                    }
+                }
+            } else {
+                $result = $this->checkPolicy($policy);
             }
-            // If it's not true or false, then this policy abstains
+
+            if (!$result) {
+                return false;
+            }
         }
 
-        return $approved;
+        return true;
     }
 
     protected function policyAllow()
     {
         return true;
-    }
-
-    protected function policyDeny()
-    {
-        return false;
-    }
-
-    protected function policyAbstain()
-    {
-        return self::ABSTAIN;
     }
 }

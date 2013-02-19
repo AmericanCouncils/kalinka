@@ -82,7 +82,7 @@ class OurRoleAuthorizer extends RoleAuthorizer
 
     protected function getPermission($action, $resType, $guard)
     {
-        if (array_search("admin", $this->getRoles()) !== FALSE) {
+        if (array_search("admin", $this->getRoles()) !== false) {
             return true;
         } else {
             return parent::getPermission($action, $resType, $guard);
