@@ -46,6 +46,7 @@ class RoleAuthorizer extends AuthorizerAbstract
 
     protected function getPermission($action, $resType, $guard)
     {
+        // TODO If one of our roles doesn't exist, raise an exception
         foreach ($this->roles as $role) {
             if (
                 array_key_exists($role, $this->rolePolicies) &&
@@ -55,7 +56,7 @@ class RoleAuthorizer extends AuthorizerAbstract
                 $policies = $this->rolePolicies[$role][$resType][$action];
                 if (
                     !is_null($policies) &&
-                    $this->evaluatePolicyList($guard, $policies)
+                    $guard->checkPolicyList($policies)
                 ) {
                     return true;
                 }

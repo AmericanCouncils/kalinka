@@ -68,27 +68,4 @@ abstract class AuthorizerAbstract
     }
 
     abstract protected function getPermission($action, $resType, $guard);
-
-    protected function evaluatePolicyList($guard, $policies)
-    {
-        if (is_string($policies)) {
-            $policies = [$policies];
-        } elseif (is_null($policies)) {
-            $policies = [];
-        }
-
-        $approved = false;
-        foreach ($policies as $policy) {
-            $result = $guard->checkPolicy($policy);
-            if ($result === true) {
-                $approved = true;
-            } elseif ($result === false) {
-                $approved = false;
-                break;
-            }
-            // If it's not true or false, then this policy abstains
-        }
-
-        return $approved;
-    }
 }

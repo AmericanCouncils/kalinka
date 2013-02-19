@@ -24,7 +24,7 @@ class OurRoleAuthorizer extends RoleAuthorizer
             "system" => ["reset"]
         ]);
         $this->registerRolePolicies([
-            "guest" => [
+            "_common" => [
                 "comment" => [
                     "read" => "allow"
                 ],
@@ -32,12 +32,10 @@ class OurRoleAuthorizer extends RoleAuthorizer
                     "read" => "allow"
                 ]
             ],
+            "guest" => [
+            ],
             "contributor" => [
-                "comment" => [
-                    "read" => "allow"
-                ],
                 "post" => [
-                    "read" => "allow",
                     "write" => "allow"
                 ],
                 "image" => [
@@ -46,11 +44,9 @@ class OurRoleAuthorizer extends RoleAuthorizer
             ],
             "editor" => [
                 "comment" => [
-                    "read" => "allow",
                     "write" => "allow"
                 ],
                 "post" => [
-                    "read" => "allow",
                     "write" => "allow"
                 ],
                 "image" => [
@@ -59,11 +55,9 @@ class OurRoleAuthorizer extends RoleAuthorizer
             ],
             "comment_editor" => [
                 "comment" => [
-                    "read" => "allow",
                     "write" => "allow"
                 ],
                 "post" => [
-                    "read" => "allow",
                     "write" => []
                 ],
                 "image" => [
@@ -71,19 +65,12 @@ class OurRoleAuthorizer extends RoleAuthorizer
                 ]
             ],
             "image_supplier" => [
-                "comment" => [
-                    "read" => "allow"
-                ],
-                "post" => [
-                    "read" => "allow"
-                ],
                 "image" => [
                     "upload" => "allow"
                 ]
             ],
             "comment_supplier" => [
                 "comment" => [
-                    "read" => "allow",
                     "write" => "allow"
                 ],
                 "post" => [
@@ -107,7 +94,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 {
     public function testGuestPolicies() {
         // Common policies only
-        $auth = new OurRoleAuthorizer("guest");
+        $auth = new OurRoleAuthorizer(["_common", "guest"]);
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -120,7 +107,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     public function testContributorPolicies() {
         // Adding to common policies
-        $auth = new OurRoleAuthorizer("contributor");
+        $auth = new OurRoleAuthorizer(["_common", "contributor"]);
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -133,7 +120,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     public function testEditorPolicies() {
         // Including another role and expanding on it
-        $auth = new OurRoleAuthorizer("editor");
+        $auth = new OurRoleAuthorizer(["_common", "editor"]);
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -145,7 +132,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
     }
 
     public function testCommentEditorPolicies() {
-        $auth = new OurRoleAuthorizer("comment_editor");
+        $auth = new OurRoleAuthorizer(["_common", "comment_editor"]);
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -158,7 +145,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     public function testAdminPolicies() {
         // Unrestricted access
-        $auth = new OurRoleAuthorizer("admin");
+        $auth = new OurRoleAuthorizer(["_common", "admin"]);
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -170,7 +157,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
     }
 
     public function testMultipleRoles() {
-        $auth = new OurRoleAuthorizer(["image_supplier", "comment_supplier"]);
+        $auth = new OurRoleAuthorizer(["_common", "image_supplier", "comment_supplier"]);
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
@@ -183,7 +170,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     public function testAuthAppend() {
         // TODO Make this happen as though I were adding in another tiny role
-        $auth = new OurRoleAuthorizer("guest");
+        $auth = new OurRoleAuthorizer(["_common", "guest"]);
         $auth->appendPolicies([
             "post" => [
                 "write" => [

@@ -30,6 +30,6 @@ abstract class SimpleAuthorizer extends AuthorizerAbstract
 
         $policies = $this->policyMap[$resType][$action];
 
-        return $this->evaluatePolicyList($guard, $policies);
+        return $guard->checkPolicyList($policies);
     }
 }

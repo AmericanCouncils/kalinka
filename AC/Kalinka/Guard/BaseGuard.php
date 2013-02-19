@@ -29,6 +29,29 @@ class BaseGuard
         return call_user_func([$this, "policy" . ucfirst($name)]);
     }
 
+    public function checkPolicyList($policies)
+    {
+        if (is_string($policies)) {
+            $policies = [$policies];
+        } elseif (is_null($policies)) {
+            $policies = [];
+        }
+
+        $approved = false;
+        foreach ($policies as $policy) {
+            $result = $this->checkPolicy($policy);
+            if ($result === true) {
+                $approved = true;
+            } elseif ($result === false) {
+                $approved = false;
+                break;
+            }
+            // If it's not true or false, then this policy abstains
+        }
+
+        return $approved;
+    }
+
     protected function policyAllow()
     {
         return true;
