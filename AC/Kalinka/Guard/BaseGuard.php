@@ -2,6 +2,13 @@
 
 namespace AC\Kalinka\Guard;
 
+/**
+ * Base class for Guard classes, which define security policies.
+ *
+ * Note that whether or not the policies actually apply in any given
+ * case is determed by Authorizers; the Guard classes simply make
+ * the policies available.
+ */
 class BaseGuard
 {
     const ABSTAIN = -1;

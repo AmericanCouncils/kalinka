@@ -1,8 +1,8 @@
 <?php
 
-use AC\Kalinka\Authorizer\BaseAuthorizer;
+use AC\Kalinka\Authorizer\AuthorizerAbstract;
 
-class MyAuthorizer extends BaseAuthorizer
+class MyAuthorizer extends AuthorizerAbstract
 {
     public function __construct($subject = null) {
         parent::__construct($subject);
@@ -19,7 +19,7 @@ class MyAuthorizer extends BaseAuthorizer
     }
 }
 
-class BaseAuthorizerTest extends KalinkaTestCase
+class AuthorizerTest extends KalinkaTestCase
 {
     private $auth;
     protected function setUp() {
@@ -30,9 +30,9 @@ class BaseAuthorizerTest extends KalinkaTestCase
         $this->assertTrue($this->auth->can("read", "comment"));
     }
 
-    public function testExceptionOnUnknownGuard() {
+    public function testExceptionOnUnknownResourceType() {
         $this->setExpectedException(
-            "InvalidArgumentException", "Unknown guard"
+            "InvalidArgumentException", "Unknown resource type"
         );
         $this->auth->can("write", "something");
     }
@@ -46,7 +46,7 @@ class BaseAuthorizerTest extends KalinkaTestCase
 
     public function testExceptionOnUnknownBoth() {
         $this->setExpectedException(
-            "InvalidArgumentException", "Unknown guard"
+            "InvalidArgumentException", "Unknown resource type"
         );
         $this->auth->can("nom", "something");
     }

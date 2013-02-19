@@ -2,7 +2,15 @@
 
 namespace AC\Kalinka\Authorizer;
 
-class RoleAuthorizer extends BaseAuthorizer
+/**
+ * Authorizer that maps named roles to applicable policies.
+ *
+ * To use this class effectively, derive your own subclass of it and
+ * call registerRolePolicies() in your subclass's constructor,
+ * in addition to the registerGuards() and registerActions()
+ * methods supplied by AuthorizerAbstract.
+ */
+class RoleAuthorizer extends AuthorizerAbstract
 {
     const DEFAULT_POLICIES = "KALINKA_ROLEAUTH_KEY_DEFAULT_POLICIES";
     const ACTS_AS = "KALINKA_ROLEAUTH_KEY_ACTS_AS";
@@ -36,10 +44,10 @@ class RoleAuthorizer extends BaseAuthorizer
     {
     }
 
-    protected function getPermission($action, $guardType, $guard)
+    protected function getPermission($action, $resType, $guard)
     {
         foreach ($this->roles as $role) {
-            $policies = $this->resolvePolicies($role, $guardType, $action);
+            $policies = $this->resolvePolicies($role, $resType, $action);
             if ($this->evaluatePolicyList($guard, $policies)) {
                 return true;
             }
@@ -47,7 +55,7 @@ class RoleAuthorizer extends BaseAuthorizer
         return false;
     }
 
-    private function resolvePolicies($role, $guardType, $action, $history = [])
+    private function resolvePolicies($role, $resType, $action, $history = [])
     {
         $history[] = $role;
         if (array_search($role, $history) !== count($history)-1) {
@@ -56,7 +64,7 @@ class RoleAuthorizer extends BaseAuthorizer
             // then this error needs to track
             // role+ct+action for uniqueness in history, not just role
             throw new \LogicError(
-                "Recursive loop while resolving \"$guardType\" \"$action\"" .
+                "Recursive loop while resolving \"$resType\" \"$action\"" .
                 " via : " . implode(",", $history)
             );
         }
@@ -67,8 +75,8 @@ class RoleAuthorizer extends BaseAuthorizer
         $subRoles = [];
         if (array_key_exists($role, $this->rolePolicies)) {
             $roleDef = $this->rolePolicies[$role];
-            if (array_key_exists($guardType, $roleDef)) {
-                $guardDef = $roleDef[$guardType];
+            if (array_key_exists($resType, $roleDef)) {
+                $guardDef = $roleDef[$resType];
                 if (array_key_exists($action, $guardDef)) {
                     $policies = $guardDef[$action];
                 } elseif (array_key_exists(self::ALL_ACTIONS, $guardDef)) {
@@ -113,7 +121,7 @@ class RoleAuthorizer extends BaseAuthorizer
             foreach (array_reverse($subRoles) as $subRole) {
                 $policies = $this->resolvePolicies(
                     $subRole,
-                    $guardType,
+                    $resType,
                     $action,
                     $history
                 );
@@ -130,7 +138,7 @@ class RoleAuthorizer extends BaseAuthorizer
         ) {
             $policies = $this->resolvePolicies(
                 self::DEFAULT_POLICIES,
-                $guardType,
+                $resType,
                 $action,
                 $history
             );
@@ -149,7 +157,7 @@ class RoleAuthorizer extends BaseAuthorizer
             foreach ($includedRoles as $includedRole) {
                 $includedPolicies = $this->resolvePolicies(
                     $includedRole,
-                    $guardType,
+                    $resType,
                     $action,
                     $history
                 );

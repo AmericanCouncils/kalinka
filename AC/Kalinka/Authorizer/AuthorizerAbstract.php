@@ -2,7 +2,16 @@
 
 namespace AC\Kalinka\Authorizer;
 
-abstract class BaseAuthorizer
+/**
+ * Base class for Authorizer classes, which grant or deny access to resources.
+ *
+ * Implementations of AuthorizerAbstract must provide the getPermission() method.
+ * They also must at some point call the registerGuards() and registerActions()
+ * methods with the appropriate setup values, before any calls to can() are made.
+ * The constructor is a convenient place to do this, just don't forget to call
+ * the parent constructor as well.
+ */
+abstract class AuthorizerAbstract
 {
     private $subject;
     public function getSubject() {
@@ -10,51 +19,52 @@ abstract class BaseAuthorizer
     }
 
     public function __construct($subject = null) {
+        // TODO Set a flag when this is called, check for that flag in can()
         $this->subject = $subject;
     }
 
-    private $guardClasses = [];
+    private $resourceGuardClasses = [];
     protected function registerGuards($guardsMap)
     {
         // TODO Check for invalid argument
-        $this->guardClasses =
-            array_merge($this->guardClasses, $guardsMap);
+        $this->resourceGuardClasses =
+            array_merge($this->resourceGuardClasses, $guardsMap);
     }
 
-    private $guardActions = [];
+    private $resourceActions = [];
     protected function registerActions($actionsMap)
     {
         // TODO Check for invalid argument
         foreach ($actionsMap as $guard => $actions) {
             foreach ($actions as $action) {
-                $this->guardActions[$guard][$action] = true;
+                $this->resourceActions[$guard][$action] = true;
             }
         }
     }
 
-    public function can($action, $guardType, $guardObject = null)
+    public function can($action, $resType, $guardObject = null)
     {
-        if (!array_key_exists($guardType, $this->guardClasses)) {
+        if (!array_key_exists($resType, $this->resourceGuardClasses)) {
             throw new \InvalidArgumentException(
-                "Unknown guard type \"$guardType\""
+                "Unknown resource type \"$resType\""
             );
         }
-        $guardClass = $this->guardClasses[$guardType];
+        $guardClass = $this->resourceGuardClasses[$resType];
 
         if (
-            !array_key_exists($guardType, $this->guardActions) ||
-            !array_key_exists($action, $this->guardActions[$guardType])
+            !array_key_exists($resType, $this->resourceActions) ||
+            !array_key_exists($action, $this->resourceActions[$resType])
         ) {
             throw new \InvalidArgumentException(
-                "Unknown action \"$action\" for guard type \"$guardType\""
+                "Unknown action \"$action\" for resource type \"$resType\""
             );
         }
 
         $guard = new $guardClass($this->subject, $guardObject);
-        return $this->getPermission($action, $guardType, $guard);
+        return $this->getPermission($action, $resType, $guard);
     }
 
-    abstract protected function getPermission($action, $guardType, $guard);
+    abstract protected function getPermission($action, $resType, $guard);
 
     protected function evaluatePolicyList($guard, $policies)
     {

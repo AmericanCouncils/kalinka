@@ -1,6 +1,5 @@
 <?php
 
-use AC\Kalinka\Authorizer\BaseAuthorizer;
 use AC\Kalinka\Guard\BaseGuard;
 
 use Fixtures\MyAppGuard;
