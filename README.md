@@ -2,6 +2,8 @@
 
 Kalinka helps you determine who's allowed to do what in your app.
 
+[API Documentation](http://americancouncils.github.com/kalinka/annotated.html)
+
 This library is for *authorization*, not *authentication*. You'll need a
 different library for actually logging your users in and out, managing
 passwords, OpenID, and so on. Kalinka is for
