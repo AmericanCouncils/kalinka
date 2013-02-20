@@ -59,6 +59,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow2" class="tabs2">
     <ul class="tablist">
       <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
+      <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
 <!-- window showing the filter options -->
@@ -66,7 +67,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -82,6 +83,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="class_guard_1_1_base_guard-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Guard\BaseGuard Class Reference</div>  </div>
@@ -90,16 +93,139 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Base class for Guard classes, which define security policies.  
  <a href="class_guard_1_1_base_guard.html#details">More...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a49a0e0b2af9baab31e3e4406d996f27a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_guard_1_1_base_guard.html#a49a0e0b2af9baab31e3e4406d996f27a">__construct</a> ($subject=null, $object=null)</td></tr>
+<tr class="memdesc:a49a0e0b2af9baab31e3e4406d996f27a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new Guard with the given subject and object, both of which are optional for <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a>.  <a href="#a49a0e0b2af9baab31e3e4406d996f27a"></a><br/></td></tr>
+<tr class="memitem:a58c2e3246598818b4dc27d9b79b7382b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_guard_1_1_base_guard.html#a58c2e3246598818b4dc27d9b79b7382b">checkPolicy</a> ($name)</td></tr>
+<tr class="memdesc:a58c2e3246598818b4dc27d9b79b7382b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the named policy permits access.  <a href="#a58c2e3246598818b4dc27d9b79b7382b"></a><br/></td></tr>
+<tr class="memitem:a5c9e6260d364b6c61f09fec9fb0c31ab"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_guard_1_1_base_guard.html#a5c9e6260d364b6c61f09fec9fb0c31ab">checkPolicyList</a> ($policies)</td></tr>
+<tr class="memdesc:a5c9e6260d364b6c61f09fec9fb0c31ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a policy list collectively permits access.  <a href="#a5c9e6260d364b6c61f09fec9fb0c31ab"></a><br/></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a8a733b3e7da6d144e42c64bd461026cb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_guard_1_1_base_guard.html#a8a733b3e7da6d144e42c64bd461026cb">policyAllow</a> ()</td></tr>
+<tr class="memdesc:a8a733b3e7da6d144e42c64bd461026cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">A policy that always returns <code>true</code>.  <a href="#a8a733b3e7da6d144e42c64bd461026cb"></a><br/></td></tr>
+</table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Base class for Guard classes, which define security policies. </p>
-<p>Note that whether or not the policies actually apply in any given case is determed by Authorizers; the Guard classes simply make the policies available. </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+<p>Note that whether or not the policies actually apply in any given case is determed by Authorizers; the Guard classes simply make the policies available.</p>
+<p>Your application should create a class which extends <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a> and includes any policies that apply based on the subject alone (e.g. checking if the user has an admin flag set). Then, any resources in your application that have policies specifically related to them (e.g. checking if a post is marked as editable) or involving a relationship between them and the subject (e.g. checking if a post is owned by the current user) need their own Guard class that extend from your app's Guard class.</p>
+<p>Examples of how to write Guards are available in <a href="index.html">README.md</a>.</p>
+<p>Besides deriving from this class, it can sometimes be useful to map a resource directly to <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a>, or to your application's base guard class. This way, you can have "virtual" resources, which are not associated with any particular class of object. For example, suppose you want to control access to a global system reset button. You could map a resource type named <code>system</code> to <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a>, with a single action <code>reset</code>. You may then call <code>can("reset", "system")</code> on your Authorizer to check access to the button, as the third argument of <code>can()</code> defaults to <code>null</code>. </p>
+</div><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a49a0e0b2af9baab31e3e4406d996f27a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Guard\BaseGuard::__construct </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$subject</em> = <code>null</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$object</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates a new Guard with the given subject and object, both of which are optional for <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">$subject</td><td>An object instance or scalar with information about the user performing actions. </td></tr>
+    <tr><td class="paramname">$object</td><td>An object instance or scalar with information about the resource an action is operating on. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2>Member Function Documentation</h2>
+<a class="anchor" id="a58c2e3246598818b4dc27d9b79b7382b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Guard\BaseGuard::checkPolicy </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if the named policy permits access. </p>
+<p>This method looks for a method named policyFoo, where "foo" is the value of <code>$name</code> (the first letter of the policy name is automatically capitalized). That method must return a boolean value; <code>null</code> is <em>not</em> automatically assumed to be false.</p>
+<dl class="section return"><dt>Returns</dt><dd>Boolean </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a5c9e6260d364b6c61f09fec9fb0c31ab"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Guard\BaseGuard::checkPolicyList </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$policies</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if a policy list collectively permits access. </p>
+<p>Every entry in the list must permit access for the list overall to do so (i.e. the list is joined by logical ANDs).</p>
+<p>Individual entries in the list can be a string with a policy names, or an array of policies. These sub-arrays will approve access as a whole if any item in the sub-array does so (i.e. the sub-array is joined by logical ORs).</p>
+<p>For example, if you pass <code>["a", ["b", "c"]]</code> to checkPolicyList, it will return true only if <code>policyA</code> returns true <em>AND</em> at least one of <code>policyB</code> or <code>policyC</code> return true.</p>
+<dl class="section return"><dt>Returns</dt><dd>Boolean </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a8a733b3e7da6d144e42c64bd461026cb"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Guard\BaseGuard::policyAllow </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>A policy that always returns <code>true</code>. </p>
+<p>This is useful in Authorizer configurations when you just want to make some action generally accessible. </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>AC/Kalinka/Guard/BaseGuard.php</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Feb 20 2013 13:54:10 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Feb 20 2013 18:46:30 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
