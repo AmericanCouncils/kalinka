@@ -14,18 +14,37 @@ namespace AC\Kalinka\Authorizer;
 abstract class AuthorizerAbstract
 {
     private $subject;
+    /**
+     * Returns the subject that was set by the constructor.
+     */
     public function getSubject()
     {
         return $this->subject;
     }
 
+    /**
+     * Sets up the authorizer with the given subject.
+     *
+     * The subject is passed as the first argument to all Guard instances
+     * constructed by `can()`.
+     */
     public function __construct($subject = null)
     {
         // TODO Set a flag when this is called, check for that flag in can()
+        // It's okay if it was set to a null value, we just want to make sure
+        // that they didn't forget to call upwards.
         $this->subject = $subject;
     }
 
     private $resourceGuardClasses = [];
+    /**
+     * Associates resource types with Guard classes.
+     *
+     * Resource types are strings passed as the 2nd argument to `can()`,
+     * which identify what sort of resource the user is trying to access.
+     * These should generally be camel cased with the first character lowercase,
+     * like `thisExample`.
+     */
     protected function registerGuards($guardsMap)
     {
         // TODO Check for invalid argument
