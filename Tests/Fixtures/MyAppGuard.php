@@ -15,4 +15,14 @@ class MyAppGuard extends BaseGuard
     {
         return preg_match("/[aeiou]/", $this->subject->name) == 1;
     }
+
+    protected function policyAckNoReturnValue()
+    {
+        // Do nothing
+    }
+
+    protected function policyAckBadReturnValue()
+    {
+        return 3;
+    }
 }

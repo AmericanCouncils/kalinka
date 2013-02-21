@@ -62,9 +62,14 @@ class BaseGuard
      */
     public function checkPolicy($name)
     {
-        // TODO Catch and complain about NULLs coming back, they indicate
-        // that somebody forgot a 'return'!
-        return call_user_func([$this, "policy" . ucfirst($name)]);
+        $result = call_user_func([$this, "policy" . ucfirst($name)]);
+        if (is_bool($result)) {
+            return $result;
+        } else {
+            throw new \LogicException(
+                "From policy $name: invalid return value " . var_export($result, true)
+            );
+        }
     }
 
     /**

@@ -37,5 +37,17 @@ class GuardsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($c2->checkPolicy("owned"));
     }
 
-    // TODO Test various guard error conditions
+    public function testPolicyFailsWithNoReturnValue()
+    {
+        $c = new MyAppGuard(new User("guest"));
+        $this->setExpectedException("LogicException", "invalid return value");
+        $c->checkPolicy("ackNoReturnValue");
+    }
+
+    public function testPolicyFailsWithBadReturnValue()
+    {
+        $c = new MyAppGuard(new User("guest"));
+        $this->setExpectedException("LogicException", "invalid return value");
+        $c->checkPolicy("ackBadReturnValue");
+    }
 }
