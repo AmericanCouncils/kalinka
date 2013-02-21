@@ -7,6 +7,19 @@ use Fixtures\Document;
 use Fixtures\DocumentGuard;
 use Fixtures\User;
 
+class BadGuard extends BaseGuard
+{
+    protected function policyAckNoReturnValue()
+    {
+        // Do nothing
+    }
+
+    protected function policyAckBadReturnValue()
+    {
+        return 3;
+    }
+}
+
 class GuardsTest extends KalinkaTestCase
 {
     public function testBuiltinAllowPolicy()
@@ -65,14 +78,14 @@ class GuardsTest extends KalinkaTestCase
 
     public function testPolicyFailsWithNoReturnValue()
     {
-        $c = new MyAppGuard(new User("guest"));
+        $c = new BadGuard();
         $this->setExpectedException("LogicException", "invalid return value");
         $c->checkPolicy("ackNoReturnValue");
     }
 
     public function testPolicyFailsWithBadReturnValue()
     {
-        $c = new MyAppGuard(new User("guest"));
+        $c = new BadGuard(new User("guest"));
         $this->setExpectedException("LogicException", "invalid return value");
         $c->checkPolicy("ackBadReturnValue");
     }

@@ -25,14 +25,4 @@ class MyAppGuard extends BaseGuard
     {
         return ($this->subject->name == "What");
     }
-
-    protected function policyAckNoReturnValue()
-    {
-        // Do nothing
-    }
-
-    protected function policyAckBadReturnValue()
-    {
-        return 3;
-    }
 }
