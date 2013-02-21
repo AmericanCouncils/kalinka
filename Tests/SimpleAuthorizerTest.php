@@ -28,8 +28,7 @@ class OurSimpleAuthorizer extends SimpleAuthorizer
 
 class SimpleAuthorizerTest extends KalinkaTestCase
 {
-    public function testSimpleAuthorizer()
-    {
+    public function testSimpleAuthorizer() {
         $user = new User("dave");
         $auth = new OurSimpleAuthorizer($user);
         $doc1 = new Document("dave", "My stuff");

@@ -1,8 +1,8 @@
 #!/usr/bin/env watchr
 
-watch('(AC|Tests)/.+\.php') do |m|
+watch('(AC|Tests|doxygen)/.+\.php') do |m|
     success = system("phpunit")
-    if success
+    if m[1] == "AC" and success
         docsgen = system("doxygen > /dev/null")
         if docsgen
             puts "(Documentation regenerated)"

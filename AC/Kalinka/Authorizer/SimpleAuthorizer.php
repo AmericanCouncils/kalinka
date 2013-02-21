@@ -13,6 +13,11 @@ namespace AC\Kalinka\Authorizer;
 abstract class SimpleAuthorizer extends AuthorizerAbstract
 {
     private $policyMap = [];
+    /* Associates resource types and actions with policy lists.
+     *
+     * See Guard\BaseGuard::checkPolicyList() for details on
+     * how policy lists work.
+     */
     public function registerPolicies($policies)
     {
         $this->policyMap = $policies;

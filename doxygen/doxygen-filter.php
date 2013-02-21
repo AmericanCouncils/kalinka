@@ -53,13 +53,12 @@ function process_php($source)
             switch ($id) {
             case T_DOC_COMMENT :
                 $text = preg_replace('/@ORM[^\n\r]+(\n\r?)/', '\\1', $text);
-                /*
-                 *$text = preg_replace(
-                 *    '/([^\s.-]+)\\\\([^\s.-]+)/',
-                 *    '[$1\\\\\\\\$2](@ref $1::$2)',
-                 *    $text
-                 *);
-                 */
+                // FIXME Only works on 1-level-deep nesting
+                $text = preg_replace(
+                    '/([,. ])([^\s."`\'-]+)\\\\([^\s."`\'-]+)([,. ])/',
+                    '$1[$2\\\\\\\\$3](@ref $2::$3)$4',
+                    $text
+                );
                 if (preg_match('#@var\s+[^\$]*\*/#ms', $text)) {
                     $buffer = preg_replace('#(@var\s+[^\n\r]+)(\n\r?.*\*/)#ms',
                         '$1 \$\$\$$2', $text);

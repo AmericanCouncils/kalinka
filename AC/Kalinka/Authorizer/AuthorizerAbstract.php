@@ -40,7 +40,7 @@ abstract class AuthorizerAbstract
      * The class is passed in as a string with the fully-qualified class name.
      *
      * @param $guardsMap An associative array mapping resource types to Guard
-     *                   classes, e.g. `"document" => "MyApp\Guards\DocumentGuard"`
+     *                   classes, e.g. "document" => "MyApp\Guards\DocumentGuard"
      */
     protected function registerGuards($guardsMap)
     {
@@ -49,6 +49,7 @@ abstract class AuthorizerAbstract
             array_merge($this->resourceGuardClasses, $guardsMap);
     }
 
+    private $resourceActions = [];
     /**
      * Associates each resource type with a list of actions.
      *
@@ -61,9 +62,8 @@ abstract class AuthorizerAbstract
      * four CRUD verbs.
      *
      * @param $actionsMap An associative array mapping resource types
-     *                    to lists of actions, e.g. `"document" => ["read","write"]`
+     *                    to lists of actions, e.g. "document" => ["read","write"]
      */
-    private $resourceActions = [];
     protected function registerActions($actionsMap)
     {
         // TODO Check for invalid argument
@@ -87,7 +87,7 @@ abstract class AuthorizerAbstract
      * @param $guardObject (Optional) The object to pass to the Guard class
      *                     constructor. This can be `null` if that's appropriate for
      *                     the Guard class, e.g. if this is a "virtual" resource
-     *                     (see [Guard\\BaseGuard](@ref Guard::BaseGuard) for
+     *                     (see Guard\BaseGuard for
      *                     more information on this).
      * @return Boolean
      */
