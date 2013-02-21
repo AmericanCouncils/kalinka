@@ -115,12 +115,14 @@ Public Member Functions</h2></td></tr>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:ad9c78522a66264ed0220d9baa9eedfba"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ad9c78522a66264ed0220d9baa9eedfba">registerGuards</a> ($guardsMap)</td></tr>
 <tr class="memdesc:ad9c78522a66264ed0220d9baa9eedfba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates resource types with Guard classes.  <a href="#ad9c78522a66264ed0220d9baa9eedfba"></a><br/></td></tr>
+<tr class="memitem:aef5c0150c93d30ffb13fc3e323028c86"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#aef5c0150c93d30ffb13fc3e323028c86">registerActions</a> ($actionsMap)</td></tr>
+<tr class="memdesc:aef5c0150c93d30ffb13fc3e323028c86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates each resource type with a list of actions.  <a href="#aef5c0150c93d30ffb13fc3e323028c86"></a><br/></td></tr>
 <tr class="memitem:a4f34bed07737f0c6fc797e434570d8d6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#a4f34bed07737f0c6fc797e434570d8d6">getPermission</a> ($action, $resType, $guard)</td></tr>
 <tr class="memdesc:a4f34bed07737f0c6fc797e434570d8d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Method provided by subclasses to implement the Authorizer.  <a href="#a4f34bed07737f0c6fc797e434570d8d6"></a><br/></td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Base class for Authorizer classes, which grant or deny access to resources. </p>
-<p>Implementations of <a class="el" href="class_authorizer_1_1_authorizer_abstract.html" title="Base class for Authorizer classes, which grant or deny access to resources.">AuthorizerAbstract</a> must provide the <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#a4f34bed07737f0c6fc797e434570d8d6" title="Method provided by subclasses to implement the Authorizer.">getPermission()</a> method. They also must at some point call the <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ad9c78522a66264ed0220d9baa9eedfba" title="Associates resource types with Guard classes.">registerGuards()</a> and registerActions() methods with the appropriate setup values, before any calls to <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ac7f1d1bd8f2a2f0b8c568278bb8d52b8" title="Decides if an action on a resource is permitted.">can()</a> are made. The constructor is a convenient place to do this, just don't forget to call the parent constructor as well. </p>
+<p>Implementations of <a class="el" href="class_authorizer_1_1_authorizer_abstract.html" title="Base class for Authorizer classes, which grant or deny access to resources.">AuthorizerAbstract</a> must provide the <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#a4f34bed07737f0c6fc797e434570d8d6" title="Method provided by subclasses to implement the Authorizer.">getPermission()</a> method. They also must at some point call the <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ad9c78522a66264ed0220d9baa9eedfba" title="Associates resource types with Guard classes.">registerGuards()</a> and <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#aef5c0150c93d30ffb13fc3e323028c86" title="Associates each resource type with a list of actions.">registerActions()</a> methods with the appropriate setup values, before any calls to <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ac7f1d1bd8f2a2f0b8c568278bb8d52b8" title="Decides if an action on a resource is permitted.">can()</a> are made. The constructor is a convenient place to do this, just don't forget to call the parent constructor as well. </p>
 </div><h2>Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="ab75976d04cfdf315a980f980f462dfc3"></a>
 <div class="memitem">
@@ -236,6 +238,40 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="aef5c0150c93d30ffb13fc3e323028c86"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Authorizer\AuthorizerAbstract::registerActions </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$actionsMap</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Associates each resource type with a list of actions. </p>
+<p>Resource types are just descriptive strings; see <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ad9c78522a66264ed0220d9baa9eedfba" title="Associates resource types with Guard classes.">registerGuards()</a> for more information on that.</p>
+<p>Actions are also just strings. By convention they are camel cased. Try to stick with a consistent scheme for actions among your various resource types, for example using "read" and "write", or using the four CRUD verbs.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">$actionsMap</td><td>An associative array mapping resource types to lists of actions, e.g. "document" =&gt; ["read","write"] </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a class="anchor" id="ad9c78522a66264ed0220d9baa9eedfba"></a>
 <div class="memitem">
 <div class="memproto">
@@ -263,7 +299,7 @@ Protected Member Functions</h2></td></tr>
 <p>The class is passed in as a string with the fully-qualified class name.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">$guardsMap</td><td>An associative array mapping resource types to Guard classes, e.g. <code>"document" =&gt; "MyApp\\Guards\\DocumentGuard"</code> </td></tr>
+    <tr><td class="paramname">$guardsMap</td><td>An associative array mapping resource types to Guard classes, e.g. "document" =&gt; "MyApp\Guards\DocumentGuard" </td></tr>
   </table>
   </dd>
 </dl>
@@ -276,7 +312,7 @@ Protected Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 21 2013 14:46:35 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Feb 21 2013 17:28:45 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

@@ -104,11 +104,16 @@ Inheritance diagram for Authorizer\SimpleAuthorizer:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:ad6f8ba37752aec9d019543b61097b173"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_simple_authorizer.html#ad6f8ba37752aec9d019543b61097b173">getPermission</a> ($action, $resType, $guard)</td></tr>
-<tr class="memdesc:ad6f8ba37752aec9d019543b61097b173"><td class="mdescLeft">&#160;</td><td class="mdescRight">Method provided by subclasses to implement the Authorizer.  <a href="#ad6f8ba37752aec9d019543b61097b173"></a><br/></td></tr>
+<tr class="memitem:a13673a89347afefd528bcef2feb077bb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_simple_authorizer.html#a13673a89347afefd528bcef2feb077bb">registerPolicies</a> ($policies)</td></tr>
+<tr class="memdesc:a13673a89347afefd528bcef2feb077bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates resource types and actions with policy lists.  <a href="#a13673a89347afefd528bcef2feb077bb"></a><br/></td></tr>
+<tr class="memitem:ad6f8ba37752aec9d019543b61097b173"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad6f8ba37752aec9d019543b61097b173"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_simple_authorizer.html#ad6f8ba37752aec9d019543b61097b173">getPermission</a> ($action, $resType, $guard)</td></tr>
+<tr class="memdesc:ad6f8ba37752aec9d019543b61097b173"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of abstract method from <a class="el" href="class_authorizer_1_1_authorizer_abstract.html" title="Base class for Authorizer classes, which grant or deny access to resources.">AuthorizerAbstract</a>. <br/></td></tr>
 <tr class="inherit_header pro_methods_class_authorizer_1_1_authorizer_abstract"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_authorizer_1_1_authorizer_abstract')"><img src="closed.png" alt="-"/>&nbsp;Protected Member Functions inherited from <a class="el" href="class_authorizer_1_1_authorizer_abstract.html">Authorizer\AuthorizerAbstract</a></td></tr>
 <tr class="memitem:ad9c78522a66264ed0220d9baa9eedfba inherit pro_methods_class_authorizer_1_1_authorizer_abstract"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ad9c78522a66264ed0220d9baa9eedfba">registerGuards</a> ($guardsMap)</td></tr>
 <tr class="memdesc:ad9c78522a66264ed0220d9baa9eedfba inherit pro_methods_class_authorizer_1_1_authorizer_abstract"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates resource types with Guard classes.  <a href="#ad9c78522a66264ed0220d9baa9eedfba"></a><br/></td></tr>
+<tr class="memitem:aef5c0150c93d30ffb13fc3e323028c86 inherit pro_methods_class_authorizer_1_1_authorizer_abstract"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#aef5c0150c93d30ffb13fc3e323028c86">registerActions</a> ($actionsMap)</td></tr>
+<tr class="memdesc:aef5c0150c93d30ffb13fc3e323028c86 inherit pro_methods_class_authorizer_1_1_authorizer_abstract"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates each resource type with a list of actions.  <a href="#aef5c0150c93d30ffb13fc3e323028c86"></a><br/></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -120,9 +125,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Authorizer that applies policies simply based on resource type. </p>
-<p>To use this class effectively, derive your own subclass of it and call registerPolicies() in your subclass's constructor, in addition to the <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ad9c78522a66264ed0220d9baa9eedfba" title="Associates resource types with Guard classes.">registerGuards()</a> and registerActions() methods supplied by <a class="el" href="class_authorizer_1_1_authorizer_abstract.html" title="Base class for Authorizer classes, which grant or deny access to resources.">AuthorizerAbstract</a>. </p>
+<p>To use this class effectively, derive your own subclass of it and call <a class="el" href="class_authorizer_1_1_simple_authorizer.html#a13673a89347afefd528bcef2feb077bb" title="Associates resource types and actions with policy lists.">registerPolicies()</a> in your subclass's constructor, in addition to the <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ad9c78522a66264ed0220d9baa9eedfba" title="Associates resource types with Guard classes.">registerGuards()</a> and <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#aef5c0150c93d30ffb13fc3e323028c86" title="Associates each resource type with a list of actions.">registerActions()</a> methods supplied by <a class="el" href="class_authorizer_1_1_authorizer_abstract.html" title="Base class for Authorizer classes, which grant or deny access to resources.">AuthorizerAbstract</a>.</p>
+<p>See the <a href="index.html#getting-started">"Getting Strated" section in README.md</a> for examples. </p>
 </div><h2>Member Function Documentation</h2>
-<a class="anchor" id="ad6f8ba37752aec9d019543b61097b173"></a>
+<a class="anchor" id="a13673a89347afefd528bcef2feb077bb"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -130,27 +136,11 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Authorizer\SimpleAuthorizer::getPermission </td>
+          <td class="memname">Authorizer\SimpleAuthorizer::registerPolicies </td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$action</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>$policies</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$resType</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$guard</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -160,10 +150,14 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Method provided by subclasses to implement the Authorizer. </p>
-<p>This method is called by <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ac7f1d1bd8f2a2f0b8c568278bb8d52b8" title="Decides if an action on a resource is permitted.">can()</a> to make the decision about allowing or denying access to perform an action on a resource. </p>
-
-<p>Reimplemented from <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#a4f34bed07737f0c6fc797e434570d8d6">Authorizer\AuthorizerAbstract</a>.</p>
+<p>Associates resource types and actions with policy lists. </p>
+<p>See <a href="index.html#combining-policies">"Combining Policies" section in README.md</a> for details on how policy lists work.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">$policies</td><td>Two-level associative array mapping resource types and actions to policy lists, e.g. <code>"document" =&gt; ["read" =&gt; "allow", "write" =&gt; "owner"]</code> </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -173,7 +167,7 @@ Additional Inherited Members</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 21 2013 14:46:35 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Feb 21 2013 17:28:45 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
