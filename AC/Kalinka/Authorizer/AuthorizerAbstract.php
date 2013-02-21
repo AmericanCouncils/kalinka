@@ -13,6 +13,7 @@ namespace AC\Kalinka\Authorizer;
  */
 abstract class AuthorizerAbstract
 {
+    private $constructorCalled = false;
     private $subject;
 
     /**
@@ -23,9 +24,7 @@ abstract class AuthorizerAbstract
      */
     public function __construct($subject = null)
     {
-        // TODO Set a flag when this is called, check for that flag in can()
-        // It's okay if it was set to a null value, we just want to make sure
-        // that they didn't forget to call upwards.
+        $this->constructorCalled = true;
         $this->subject = $subject;
     }
 
@@ -44,6 +43,7 @@ abstract class AuthorizerAbstract
      */
     protected function registerGuards($guardsMap)
     {
+        $this->assertCtorCalled();
         $this->resourceGuardClasses =
             array_merge($this->resourceGuardClasses, $guardsMap);
     }
@@ -65,6 +65,7 @@ abstract class AuthorizerAbstract
      */
     protected function registerActions($actionsMap)
     {
+        $this->assertCtorCalled();
         foreach ($actionsMap as $guard => $actions) {
             foreach ($actions as $action) {
                 $this->resourceActions[$guard][$action] = true;
@@ -126,4 +127,14 @@ abstract class AuthorizerAbstract
      * denying access to perform an action on a resource.
      */
     abstract protected function getPermission($action, $resType, $guard);
+
+    private function assertCtorCalled()
+    {
+        if (!($this->constructorCalled)) {
+            throw new \LogicException(
+                "You must call parent::__construct with the subject" .
+                " from the constructor of any derivative of AuthorizerAbstract"
+            );
+        }
+    }
 }
