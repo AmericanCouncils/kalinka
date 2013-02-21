@@ -96,7 +96,6 @@ class BaseGuard
         } elseif (is_null($policies)) {
             return false;
         } elseif (count($policies) == 0) {
-            // TODO Test this!
             return false;
         }
 

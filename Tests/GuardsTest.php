@@ -7,7 +7,7 @@ use Fixtures\Document;
 use Fixtures\DocumentGuard;
 use Fixtures\User;
 
-class GuardsTest extends PHPUnit_Framework_TestCase
+class GuardsTest extends KalinkaTestCase
 {
     public function testBuiltinAllowPolicy()
     {
@@ -35,6 +35,32 @@ class GuardsTest extends PHPUnit_Framework_TestCase
         $c2 = new DocumentGuard(new User("evan"), $doc2);
         $this->assertFalse($c2->checkPolicy("unclassified"));
         $this->assertTrue($c2->checkPolicy("owned"));
+    }
+
+    public function testPolicyLists()
+    {
+        $c = new MyAppGuard(new User("guest"));
+        $this->assertTrue($c->checkPolicy("allow"));
+        $this->assertFalse($c->checkPolicy("userIsOnFirst"));
+
+        $this->assertCallsEqual([$c, "checkPolicyList"], [self::X1], [
+            [true , "allow"],
+            [true , ["allow"]],
+            [false, "userIsOnFirst"],
+            [false, ["userIsOnFirst"]],
+            [true , ["allow", "usernameHasVowels"]],
+            [true , ["allow", "allow"]],
+            [false, ["allow", "userIsOnFirst"]],
+            [false, ["userIsOnFirst", "userIsOnFirst"]],
+            [true, ["allow", ["userIsOnFirst", "usernameHasVowels"]]],
+            [false, ["allow", ["userIsOnFirst", "userIsOnSecond"]]],
+            [false, ["userIsOnSecond", ["userIsOnFirst", "usernameHasVowels"]]],
+            [false, ["userIsOnFirst", ["allow", "usernameHasVowels"]]],
+            [true, [["allow", "usernameHasVowels"]]],
+            [false, null],
+            [false, []],
+            [false, [[]]]
+        ]);
     }
 
     public function testPolicyFailsWithNoReturnValue()

@@ -16,6 +16,16 @@ class MyAppGuard extends BaseGuard
         return preg_match("/[aeiou]/", $this->subject->name) == 1;
     }
 
+    protected function policyUserIsOnFirst()
+    {
+        return ($this->subject->name == "Who");
+    }
+
+    protected function policyUserIsOnSecond()
+    {
+        return ($this->subject->name == "What");
+    }
+
     protected function policyAckNoReturnValue()
     {
         // Do nothing
