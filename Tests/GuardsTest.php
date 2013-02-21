@@ -56,6 +56,7 @@ class GuardsTest extends KalinkaTestCase
         $this->assertTrue($c->checkPolicy("allow"));
         $this->assertFalse($c->checkPolicy("userIsOnFirst"));
 
+        // The "onFirst" and "onSecond" policies will always return false below
         $this->assertCallsEqual([$c, "checkPolicyList"], [self::X1], [
             [true , "allow"],
             [true , ["allow"]],

@@ -44,7 +44,6 @@ abstract class AuthorizerAbstract
      */
     protected function registerGuards($guardsMap)
     {
-        // TODO Check for invalid argument
         $this->resourceGuardClasses =
             array_merge($this->resourceGuardClasses, $guardsMap);
     }
@@ -66,7 +65,6 @@ abstract class AuthorizerAbstract
      */
     protected function registerActions($actionsMap)
     {
-        // TODO Check for invalid argument
         foreach ($actionsMap as $guard => $actions) {
             foreach ($actions as $action) {
                 $this->resourceActions[$guard][$action] = true;
@@ -111,8 +109,14 @@ abstract class AuthorizerAbstract
 
         $guard = new $guardClass($this->subject, $guardObject);
 
-        // TODO Validate boolean
-        return $this->getPermission($action, $resType, $guard);
+        $result = $this->getPermission($action, $resType, $guard);
+        if (is_bool($result)) {
+            return $result;
+        } else {
+            throw new \LogicException(
+                "Got invalid getPermission result " . var_export($result, true)
+            );
+        }
     }
 
     /**

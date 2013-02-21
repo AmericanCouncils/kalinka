@@ -21,12 +21,36 @@ class MyAuthorizer extends AuthorizerAbstract
     }
 }
 
+class BadValuesAuthorizer extends AuthorizerAbstract
+{
+    public function __construct($subject = null)
+    {
+        parent::__construct($subject);
+        $this->registerGuards([
+            "something" => "AC\Kalinka\Guard\BaseGuard"
+        ]);
+        $this->registerActions([
+            "something" => ["read", "write"]
+        ]);
+    }
+
+    protected function getPermission($action, $resType, $guard)
+    {
+        if ($action == "read") {
+            // Do nothing
+        } else {
+            return 3;
+        }
+    }
+}
+
 class AuthorizerTest extends KalinkaTestCase
 {
     private $auth;
     protected function setUp()
     {
         $this->auth = new MyAuthorizer();
+        $this->badAuth = new BadValuesAuthorizer();
     }
 
     public function testExplicitAllow()
@@ -56,5 +80,21 @@ class AuthorizerTest extends KalinkaTestCase
             "InvalidArgumentException", "Unknown resource type"
         );
         $this->auth->can("nom", "something");
+    }
+
+    public function testExceptionOnNullGetPermissionResult()
+    {
+        $this->setExpectedException(
+            "LogicException", "invalid getPermission result"
+        );
+        $this->badAuth->can("read", "something");
+    }
+
+    public function testExceptionOnInvalidGetPermissionResult()
+    {
+        $this->setExpectedException(
+            "LogicException", "invalid getPermission result"
+        );
+        $this->badAuth->can("write", "something");
     }
 }
