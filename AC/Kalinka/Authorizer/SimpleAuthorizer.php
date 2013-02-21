@@ -9,20 +9,31 @@ namespace AC\Kalinka\Authorizer;
  * call registerPolicies() in your subclass's constructor,
  * in addition to the registerGuards() and registerActions()
  * methods supplied by AuthorizerAbstract.
+ *
+ * See the <a href="index.html#getting-started">"Getting Strated" section
+ * in README.md</a> for examples.
  */
 abstract class SimpleAuthorizer extends AuthorizerAbstract
 {
     private $policyMap = [];
-    /* Associates resource types and actions with policy lists.
+    /**
+     * Associates resource types and actions with policy lists.
      *
-     * See Guard\BaseGuard::checkPolicyList() for details on
-     * how policy lists work.
+     * See <a href="index.html#combining-policies">"Combining Policies" section
+     * in README.md</a> for details on how policy lists work.
+     *
+     * @param $policies Two-level associative array mapping resource types
+     *                  and actions to policy lists, e.g. `"document" => ["read" =>
+     *                  "allow", "write" => "owner"]`
      */
-    public function registerPolicies($policies)
+    protected function registerPolicies($policies)
     {
         $this->policyMap = $policies;
     }
 
+    /**
+     * Implementation of abstract method from AuthorizerAbstract.
+     */
     protected function getPermission($action, $resType, $guard)
     {
         if (!array_key_exists($resType, $this->policyMap)) {

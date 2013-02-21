@@ -18,7 +18,7 @@ You can get Kalinka via composer:
         "ac/kalinka": "dev-master"
     }
 
-## Getting Started
+## <a id="getting-started"></a>Getting Started
 
 Create a base Guard class for your app. Guards are where you
 define your security policies. Policies are just boolean-retuning methods
@@ -130,7 +130,7 @@ if ($auth->can("write", "document", $someDocument)) {
 }
 ```
 
-## Combining Policies
+## <a id="combining-policies"></a>Combining Policies
 
 Suppose that you only want to allow documents to be edited only if they are
 unlocked *and* the user owns them. This can be done by supplying a list

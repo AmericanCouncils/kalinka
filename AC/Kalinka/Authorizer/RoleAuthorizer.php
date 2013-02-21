@@ -45,6 +45,17 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
     }
 
     private $rolePolicies = [];
+    /**
+     * Associates roles with policy settings
+     *
+     * See <a href="index.html#roles">"Roles" section
+     * in README.md</a> for more details on the argument to this method.
+     *
+     * @param $rolePolicies A three-level associative array mapping roles,
+     *                      resource types, and actions to policy lists,
+     *                      e.g. `"contributor" => ["document" => ["read" =>
+     *                      "allow", "write" => "owner"]]`
+     */
     protected function registerRolePolicies($rolePolicies)
     {
         // TODO Check for validity
@@ -55,6 +66,9 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
     {
     }
 
+    /**
+     * Implementation of abstract method from AuthorizerAbstract.
+     */
     protected function getPermission($action, $resType, $guard)
     {
         // TODO If one of our roles doesn't exist, raise an exception
