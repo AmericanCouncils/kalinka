@@ -113,7 +113,7 @@ Protected Member Functions</h2></td></tr>
 <p>Note that whether or not the policies actually apply in any given case is determed by Authorizers; the Guard classes simply make the policies available.</p>
 <p>Your application should create a class which extends <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a> and includes any policies that apply based on the subject alone (e.g. checking if the user has an admin flag set). Then, any resources in your application that have policies specifically related to them (e.g. checking if a post is marked as editable) or involving a relationship between them and the subject (e.g. checking if a post is owned by the current user) need their own Guard class that extend from your app's Guard class.</p>
 <p>Examples of how to write Guards are available in <a href="index.html">README.md</a>.</p>
-<p>Besides deriving from this class, it can sometimes be useful to map a resource directly to <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a>, or to your application's base guard class. This way, you can have "virtual" resources, which are not associated with any particular class of object. For example, suppose you want to control access to a global system reset button. You could map a resource type named <code>system</code> to <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a>, with a single action <code>reset</code>. You may then call <code>can("reset", "system")</code> on your Authorizer to check access to the button, as the third argument of <code>can()</code> defaults to <code>null</code>. </p>
+<p>Besides deriving from this class, it can sometimes be useful to map a resource directly to <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a>, or to your application's base guard class. This way, you can have "virtual" resources, which are not associated with any <code>object</code>. For example, suppose you want to control access to a global system reset button. You could map a resource type named <code>system</code> to <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a>, with a single action <code>reset</code>. You may then call <code>can("reset", "system")</code> on your Authorizer to check access to the button, as the third argument of <code>can()</code> defaults to <code>null</code>. </p>
 </div><h2>Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a49a0e0b2af9baab31e3e4406d996f27a"></a>
 <div class="memitem">
@@ -225,7 +225,7 @@ Protected Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Feb 20 2013 18:46:30 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Feb 21 2013 14:46:35 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
