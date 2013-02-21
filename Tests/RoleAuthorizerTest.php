@@ -178,5 +178,9 @@ class RoleAuthorizerTest extends KalinkaTestCase
 
     // TODO Allow us to block all role-supplied policies for a guard/action
 
-    // TODO Test merging of policy lists via INCLUDE_POLICIES
+    public function testExceptionOnInvalidRole() {
+        $auth = new OurRoleAuthorizer(["_common", "foo"]);
+        $this->setExpectedException("RuntimeException", "No such role");
+        $auth->can("read", "comment");
+    }
 }

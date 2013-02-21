@@ -28,7 +28,11 @@ abstract class SimpleAuthorizer extends AuthorizerAbstract
      */
     protected function registerPolicies($policies)
     {
-        $this->policyMap = $policies;
+        foreach ($policies as $resType => $actions) {
+            foreach ($actions as $action => $policyList) {
+                $this->policyMap[$resType][$action] = $policyList;
+            }
+        }
     }
 
     /**

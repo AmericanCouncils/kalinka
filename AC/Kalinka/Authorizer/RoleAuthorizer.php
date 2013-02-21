@@ -15,6 +15,8 @@ namespace AC\Kalinka\Authorizer;
  */
 abstract class RoleAuthorizer extends AuthorizerAbstract
 {
+    private $rolesValidated = false;
+
     private $roles = [];
     public function getRoles()
     {
@@ -58,8 +60,16 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
      */
     protected function registerRolePolicies($rolePolicies)
     {
-        // TODO Check for validity
-        $this->rolePolicies = $rolePolicies;
+        foreach ($rolePolicies as $role => $resTypes) {
+            if (!array_key_exists($role, $this->rolePolicies)) {
+                $this->rolePolicies[$role] = [];
+            }
+            foreach ($resTypes as $resType => $actions) {
+                foreach ($actions as $action => $policyList) {
+                    $this->rolePolicies[$role][$resType][$action] = $policyList;
+                }
+            }
+        }
     }
 
     public function appendPolicies($policies)
@@ -71,10 +81,10 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
      */
     protected function getPermission($action, $resType, $guard)
     {
-        // TODO If one of our roles doesn't exist, raise an exception
+        $this->assertValidRoles();
+
         foreach ($this->roles as $role) {
             if (
-                array_key_exists($role, $this->rolePolicies) &&
                 array_key_exists($resType, $this->rolePolicies[$role]) &&
                 array_key_exists($action, $this->rolePolicies[$role][$resType])
             ) {
@@ -89,5 +99,20 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
         }
 
         return false;
+    }
+
+    private function assertValidRoles()
+    {
+        if ($this->rolesValidated) {
+            return true;
+        }
+
+        foreach ($this->roles as $role) {
+            if (!array_key_exists($role, $this->rolePolicies)) {
+                throw new \RuntimeException("No such role $role registered");
+            }
+        }
+
+        $this->rolesValidated = true;
     }
 }

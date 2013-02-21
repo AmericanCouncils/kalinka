@@ -66,9 +66,9 @@ abstract class AuthorizerAbstract
     protected function registerActions($actionsMap)
     {
         $this->assertCtorCalled();
-        foreach ($actionsMap as $guard => $actions) {
+        foreach ($actionsMap as $resType => $actions) {
             foreach ($actions as $action) {
-                $this->resourceActions[$guard][$action] = true;
+                $this->resourceActions[$resType][$action] = true;
             }
         }
     }
