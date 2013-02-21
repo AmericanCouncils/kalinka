@@ -29,6 +29,10 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
      * Constructs a RoleAuthorizer.
      *
      * This should be called from a derivative class's constructor.
+     *
+     * @param $roles A list of roles (strings) that are held by the subject.
+     * @param $subject The subject passed as the first argument to all Guard
+     *                 instances constructed by `can()`.
      */
     public function __construct($roles, $subject = null)
     {
