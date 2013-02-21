@@ -1,0 +1,11 @@
+#!/usr/bin/env watchr
+
+watch('(AC|Tests)/.+\.php') do |m|
+    success = system("phpunit")
+    if success
+        docsgen = system("doxygen > /dev/null")
+        if docsgen
+            puts "(Documentation regenerated)"
+        end
+    end
+end
