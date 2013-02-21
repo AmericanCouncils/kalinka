@@ -177,7 +177,7 @@ If you need something even more complicated than that, you could always
 implement it as its own policy. Policies can call each other with the
 `checkPolicy()` method on `BaseGuard`.
 
-## Roles
+## <a id="roles"></a>Roles
 
 `SimpleAuthorizer` will only work for very straightforward setups, where the same
 policies apply to everyone. In real systems, it's more common

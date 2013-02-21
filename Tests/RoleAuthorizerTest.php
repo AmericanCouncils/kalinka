@@ -82,7 +82,7 @@ class OurRoleAuthorizer extends RoleAuthorizer
 
     protected function getPermission($action, $resType, $guard)
     {
-        if (array_search("admin", $this->getRoles()) !== false) {
+        if ($this->hasRole("admin")) {
             return true;
         } else {
             return parent::getPermission($action, $resType, $guard);
@@ -172,11 +172,6 @@ class RoleAuthorizerTest extends KalinkaTestCase
         // TODO Make this happen as though I were adding in another tiny role
         $auth = new OurRoleAuthorizer(["_common", "guest"]);
         $auth->appendPolicies([
-            "post" => [
-                "write" => [
-                    RoleAuthorizer::INCLUDE_POLICIES => "contributor"
-                ]
-            ]
         ]);
         // TODO Assert something here
     }

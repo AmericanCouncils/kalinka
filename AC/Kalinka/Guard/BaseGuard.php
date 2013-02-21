@@ -23,7 +23,7 @@ namespace AC\Kalinka\Guard;
  * Besides deriving from this class, it can sometimes be useful to map a
  * resource directly to BaseGuard, or to your application's base guard class.
  * This way, you can have "virtual" resources,
- * which are not associated with any particular class of object. For
+ * which are not associated with any `object`. For
  * example, suppose you want to control access to a global system reset
  * button. You could map a resource type named `system` to BaseGuard, with
  * a single action `reset`. You may then call `can("reset", "system")` on your
