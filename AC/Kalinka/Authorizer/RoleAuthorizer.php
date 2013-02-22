@@ -18,20 +18,6 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
     private $rolesValidated = false;
 
     private $roles = [];
-    /**
-     * Returns the list of roles.
-     */
-    public function getRoles()
-    {
-        return $this->roles;
-    }
-    /**
-     * Returns true if a given role is in the list of roles
-     */
-    public function hasRole($role)
-    {
-        return (array_search($role, $this->roles) !== false);
-    }
 
     /**
      * Constructs a RoleAuthorizer.
@@ -50,30 +36,6 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
             $roles = [$roles];
         }
         $this->roles = $roles;
-    }
-
-    private $roleInclusions = [];
-    /**
-     * Specifies specific sub-parts of roles to use in access checks.
-     *
-     * These are considered as though they were additional roles,
-     * in that access will be permitted if the included policy lists
-     * allow access or if the regular role policy lists do so.
-     *
-     * You may include the policies for every action of a resource type,
-     * or only for particular actions.
-     *
-     * @param $roleInclusions An associative array mapping resource types to
-     *                        role names e.g. `"post" => "editor"`, or to
-     *                        arrays mapping particular
-     *                        actions to role names e.g. `"post" => ["write"
-     *                        => "editor", "read" => "guest"]`
-     */
-    protected function registerRoleInclusions($roleInclusions)
-    {
-        foreach ($roleInclusions as $resType => $inclusions) {
-            $this->roleInclusions[$resType][] = $inclusions;
-        }
     }
 
     private $rolePolicies = [];
@@ -102,6 +64,52 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
         }
     }
 
+    private $roleExclusions = [];
+    /**
+     * Specifies specific sub-parts of roles to ignore in access checks.
+     *
+     * You may exclude the policies for every action of a resource type,
+     * or only for particular actions.
+     *
+     * @param $roleExclusions An associative array mapping resource types to
+     *                        role names e.g. `"post" => "editor"`, or to
+     *                        arrays mapping particular
+     *                        actions to role names e.g. `"post" => ["write"
+     *                        => "editor", "read" => "guest"]`
+     */
+    protected function registerRoleExclusions($roleExclusions)
+    {
+        foreach ($roleExclusions as $resType => $exclusions) {
+            $this->roleExclusions[$resType][] = $exclusions;
+        }
+    }
+
+    private $roleInclusions = [];
+    /**
+     * Specifies specific sub-parts of roles to use in access checks.
+     *
+     * These are considered as though they were additional roles,
+     * in that access will be permitted if the included policy lists
+     * allow access or if the regular role policy lists do so.
+     *
+     * You may include the policies for every action of a resource type,
+     * or only for particular actions.
+     *
+     * Inclusions take priority over exclusions.
+     *
+     * @param $roleInclusions An associative array mapping resource types to
+     *                        role names e.g. `"post" => "editor"`, or to
+     *                        arrays mapping particular
+     *                        actions to role names e.g. `"post" => ["write"
+     *                        => "editor", "read" => "guest"]`
+     */
+    protected function registerRoleInclusions($roleInclusions)
+    {
+        foreach ($roleInclusions as $resType => $inclusions) {
+            $this->roleInclusions[$resType][] = $inclusions;
+        }
+    }
+
     /**
      * Implementation of abstract method from AuthorizerAbstract.
      */
@@ -110,7 +118,29 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
         $this->assertValidRoles();
 
         foreach ($this->roles as $role) {
-            if ($this->getRolePermission($role, $action, $resType, $guard)) {
+            $excluded = false;
+            if (array_key_exists($resType, $this->roleExclusions)) {
+                foreach ($this->roleExclusions[$resType] as $exclusion) {
+                    if (is_string($exclusion) && $exclusion == $role) {
+                        $excluded = true;
+                        break;
+                    }
+
+                    if (
+                        is_array($exclusion) &&
+                        array_key_exists($action, $exclusion) &&
+                        $exclusion[$action] == $role
+                    ) {
+                        $excluded = true;
+                        break;
+                    }
+                }
+            }
+
+            if (
+                !$excluded &&
+                $this->getRolePermission($role, $action, $resType, $guard)
+            ) {
                 return true;
             }
         }
@@ -141,7 +171,13 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
         return false;
     }
 
-    private function getRolePermission($role, $action, $resType, $guard)
+    /**
+     * Used by getPermission to determine access checks under a given role.
+     *
+     * If you want to implement roles with unusual semantics (e.g. a superadmin
+     * role which always has access to everything), override this method.
+     */
+    protected function getRolePermission($role, $action, $resType, $guard)
     {
         if (
             array_key_exists($resType, $this->rolePolicies[$role]) &&

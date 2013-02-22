@@ -4,11 +4,12 @@ use AC\Kalinka\Authorizer\RoleAuthorizer;
 
 class OurRoleAuthorizer extends RoleAuthorizer
 {
-    public function __construct($roles, $roleInclusions = [])
+    public function __construct($roles, $roleInclusions = [], $roleExclusions = [])
     {
         parent::__construct(null, $roles);
 
         $this->registerRoleInclusions($roleInclusions);
+        $this->registerRoleExclusions($roleExclusions);
         // We aren't using any guard objects, so we can just use
         // the BaseGuard class, which expects null for subject and
         // object, for all these things
@@ -25,6 +26,7 @@ class OurRoleAuthorizer extends RoleAuthorizer
             "system" => ["reset"]
         ]);
         $this->registerRolePolicies([
+            "admin" => [], // Handled specially in getRolePermission
             "_common" => [
                 "comment" => [
                     "read" => "allow"
@@ -33,8 +35,7 @@ class OurRoleAuthorizer extends RoleAuthorizer
                     "read" => "allow"
                 ]
             ],
-            "guest" => [
-            ],
+            "guest" => [], // No rights beyond the default
             "contributor" => [
                 "post" => [
                     "write" => "allow"
@@ -83,12 +84,12 @@ class OurRoleAuthorizer extends RoleAuthorizer
         ]);
     }
 
-    protected function getPermission($action, $resType, $guard)
+    protected function getRolePermission($role, $action, $resType, $guard)
     {
-        if ($this->hasRole("admin")) {
+        if ($role == "admin") {
             return true;
         } else {
-            return parent::getPermission($action, $resType, $guard);
+            return parent::getRolePermission($role, $action, $resType, $guard);
         }
     }
 }
@@ -151,7 +152,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
     }
 
     public function testAdminPolicies() {
-        // Unrestricted access
+        // Unrestricted access due to overriding getRolePermission
         $auth = new OurRoleAuthorizer(["_common", "admin"]);
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
@@ -178,14 +179,59 @@ class RoleAuthorizerTest extends KalinkaTestCase
     }
 
     public function testRoleInclusions() {
-        $auth = new OurRoleAuthorizer(["_common", "guest"],
-            [
+        $auth = new OurRoleAuthorizer(["_common", "guest"], [
             "image" => "editor",
             "post" => ["write" => "editor"]
+        ]);
+        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
+            [true,  "read",   "comment"],
+            [true,  "read",   "post"],
+            [false, "write",  "comment"],
+            [true, "write",  "post"],
+            [false, "disemvowel", "comment"],
+            [true, "upload", "image"],
+            [false, "reset",  "system"],
+        ]);
+    }
+
+    public function testRoleExclusions() {
+        $auth = new OurRoleAuthorizer(["_common", "editor"],
+            [],
+            [
+                "image" => "editor",
+                "comment" => [
+                    "disemvowel" => "editor",
+                    "write" => "_common" // Should make no difference
+                ]
             ]
         );
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
+            [true,  "read",   "post"],
+            [true,  "write",  "comment"],
+            [true,  "write",  "post"],
+            [false,  "disemvowel", "comment"],
+            [false,  "upload", "image"],
+            [false, "reset",  "system"],
+        ]);
+    }
+
+    public function testRoleInclusionsOverrideExclusions() {
+        $auth = new OurRoleAuthorizer(["_common", "guest"],
+            [
+                "image" => "editor", // Should override the exclusion below
+                "post" => ["write" => "editor"]
+            ],
+            [
+                "image" => "editor",
+                "comment" => [
+                    "read" => "_common",
+                    "disemvowel" => "editor"
+                ]
+            ]
+        );
+        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
+            [false,  "read",   "comment"],
             [true,  "read",   "post"],
             [false, "write",  "comment"],
             [true, "write",  "post"],

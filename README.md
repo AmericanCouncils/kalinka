@@ -198,7 +198,7 @@ class MyAppAuthorizer extends RoleAuthorizer
         foreach ($user->getRoles() as $role) {
             $roleNames[] = $role->getName();
         }
-        parent::__construct($roleNames, $user);
+        parent::__construct($user, $roleNames);
 
         $this->registerGuards([
             "document" => "MyApp\Guards\DocumentGuard",
@@ -283,4 +283,28 @@ It is also possible to include only particular actions from a role:
 $this->registerRoleInclusions([
     "comment" => ["update" => "administrator", "delete" => "administrator"]
 ]);
+```
+
+These included sections are treated as though they were another role; access
+is permitted if any included policy lists approve it, *or* if any of the policy
+lists from the user's regular roles approve it. If your goal is to block off
+or replace parts of your roles, rather than appending onto them, you can use
+the `registerRoleExclusions()` method, which takes the same form of argument:
+
+```php
+use AC\Kalinka\Authorizer\RoleAuthorizer;
+
+class MyAppAuthorizer extends RoleAuthorizer
+{
+    public function __construct(MyUserClass $user)
+    {
+        // ...
+
+        if ($user->isDeniedPostConstributorAccess()) {
+            $this->registerRoleExclusions([
+                "post" => "contributor"
+            ]);
+        }
+    }
+}
 ```
