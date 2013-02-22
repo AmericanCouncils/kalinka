@@ -1,6 +1,7 @@
 #!/usr/bin/env watchr
 
 watch('(AC|Tests|doxygen)/.+\.php') do |m|
+    5.times { puts "" }
     success = system("phpunit")
     if m[1] == "AC" and success
         docsgen = system("doxygen > /dev/null")
