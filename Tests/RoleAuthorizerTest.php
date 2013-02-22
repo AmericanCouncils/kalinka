@@ -4,10 +4,11 @@ use AC\Kalinka\Authorizer\RoleAuthorizer;
 
 class OurRoleAuthorizer extends RoleAuthorizer
 {
-    public function __construct($roles)
+    public function __construct($roles, $roleInclusions = [])
     {
-        parent::__construct($roles);
+        parent::__construct(null, $roles);
 
+        $this->registerRoleInclusions($roleInclusions);
         // We aren't using any guard objects, so we can just use
         // the BaseGuard class, which expects null for subject and
         // object, for all these things
@@ -18,7 +19,7 @@ class OurRoleAuthorizer extends RoleAuthorizer
             "image" => "AC\Kalinka\Guard\BaseGuard",
         ]);
         $this->registerActions([
-            "comment" => ["read", "write"],
+            "comment" => ["read", "write", "disemvowel"],
             "post" => ["read", "write"],
             "image" => ["upload"],
             "system" => ["reset"]
@@ -44,7 +45,8 @@ class OurRoleAuthorizer extends RoleAuthorizer
             ],
             "editor" => [
                 "comment" => [
-                    "write" => "allow"
+                    "write" => "allow",
+                    "disemvowel" => "allow"
                 ],
                 "post" => [
                     "write" => "allow"
@@ -55,10 +57,11 @@ class OurRoleAuthorizer extends RoleAuthorizer
             ],
             "comment_editor" => [
                 "comment" => [
-                    "write" => "allow"
+                    "write" => "allow",
+                    "disemvowel" => "allow"
                 ],
                 "post" => [
-                    "write" => []
+                    "write" => [] // Should be the same as skipping post section
                 ],
                 "image" => [
                     "upload" => "allow"
@@ -100,6 +103,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
             [true,  "read",   "post"],
             [false, "write",  "comment"],
             [false, "write",  "post"],
+            [false, "disemvowel", "comment"],
             [false, "upload", "image"],
             [false, "reset",  "system"],
         ]);
@@ -113,6 +117,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
             [true,  "read",   "post"],
             [false, "write",  "comment"],
             [true,  "write",  "post"],
+            [false, "disemvowel", "comment"],
             [true,  "upload", "image"],
             [false, "reset",  "system"],
         ]);
@@ -124,8 +129,9 @@ class RoleAuthorizerTest extends KalinkaTestCase
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
-            [true,  "write",  "comment"], // ALL_ACTIONS
-            [true,  "write",  "post"], // ALL_ACTIONS
+            [true,  "write",  "comment"],
+            [true,  "write",  "post"],
+            [true,  "disemvowel", "comment"],
             [true,  "upload", "image"],
             [false, "reset",  "system"],
         ]);
@@ -137,8 +143,9 @@ class RoleAuthorizerTest extends KalinkaTestCase
             [true,  "read",   "comment"],
             [true,  "read",   "post"],
             [true,  "write",  "comment"],
-            [false, "write",  "post"], // Force_deny
-            [true,  "upload", "image"], // Recursive inclusion
+            [false, "write",  "post"],
+            [true,  "disemvowel", "comment"],
+            [true,  "upload", "image"],
             [false, "reset",  "system"],
         ]);
     }
@@ -151,6 +158,7 @@ class RoleAuthorizerTest extends KalinkaTestCase
             [true,  "read",   "post"],
             [true,  "write",  "comment"],
             [true,  "write",  "post"],
+            [true,  "disemvowel", "comment"],
             [true,  "upload", "image"],
             [true,  "reset",  "system"],
         ]);
@@ -163,17 +171,29 @@ class RoleAuthorizerTest extends KalinkaTestCase
             [true,  "read",   "post"],
             [true,  "write",  "comment"],
             [false, "write",  "post"],
+            [false, "disemvowel", "comment"],
             [true,  "upload", "image"],
             [false, "reset",  "system"],
         ]);
     }
 
     public function testAuthAppend() {
-        // TODO Make this happen as though I were adding in another tiny role
-        $auth = new OurRoleAuthorizer(["_common", "guest"]);
-        $auth->appendPolicies([
+        $auth = new OurRoleAuthorizer(
+            ["_common", "guest"],
+            [
+            "image" => "editor",
+            "post" => ["write" => "editor"]
+            ]
+        );
+        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
+            [true,  "read",   "comment"],
+            [true,  "read",   "post"],
+            [false, "write",  "comment"],
+            [true, "write",  "post"],
+            [false, "disemvowel", "comment"],
+            [true, "upload", "image"],
+            [false, "reset",  "system"],
         ]);
-        // TODO Assert something here
     }
 
     // TODO Allow us to block all role-supplied policies for a guard/action

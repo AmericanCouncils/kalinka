@@ -18,7 +18,7 @@ You can get Kalinka via composer:
         "ac/kalinka": "dev-master"
     }
 
-## <a id="getting-started"></a>Getting Started
+## Getting Started
 
 Create a base Guard class for your app. Guards are where you
 define your security policies. Policies are just boolean-retuning methods
@@ -130,7 +130,7 @@ if ($auth->can("write", "document", $someDocument)) {
 }
 ```
 
-## <a id="combining-policies"></a>Combining Policies
+## Combining Policies
 
 Suppose that you only want to allow documents to be edited only if they are
 unlocked *and* the user owns them. This can be done by supplying a list
@@ -177,14 +177,15 @@ If you need something even more complicated than that, you could always
 implement it as its own policy. Policies can call each other with the
 `checkPolicy()` method on `BaseGuard`.
 
-## <a id="roles"></a>Roles
+## Roles
 
 `SimpleAuthorizer` will only work for very straightforward setups, where the same
 policies apply to everyone. In real systems, it's more common
 that you have a bunch of different roles that people can belong to, each of
 which has access to resources under
 a variety of different circumstances. The easiest way to accomplish this is to
-extend from `RoleAuthorizer`, which provides a `registerRolePolicies()` method:
+extend from `RoleAuthorizer`, which provides a `registerRolePolicies()` method
+that replaces the functionality of `SimpleAuthorizer`'s `registerPolicies()` method:
 
 ```php
 use AC\Kalinka\Authorizer\RoleAuthorizer;
@@ -219,6 +220,7 @@ class MyAppAuthorizer extends RoleAuthorizer
                 "comment" => [
                     "read" => "allow",
                 ]
+                // ...
             ],
             "customer" => [
                 "document" => [
@@ -234,17 +236,7 @@ class MyAppAuthorizer extends RoleAuthorizer
                 ],
                 // ...
             ],
-            "admin" => [
-                "document" => [
-                    "read" => "allow",
-                    "write" => "documentUnlocked"
-                ],
-                "comment" => [
-                    "read" => "allow",
-                    "create" => "allow",
-                    "delete" => "allow"
-                ]
-            ]
+            // ...
         ]);
     }
 }
@@ -257,3 +249,38 @@ user allows the action, then it is allowed overall.
 This is a much more flexible solution than adding role-like policies
 to your Guards, as we did above with the `policyAdmin()` method of
 `MyAppBaseGuard`.
+
+## Splicing Roles
+
+You may sometimes have special situations where the desired permissions don't
+match up perfectly with your roles. For example, you might have a user who has
+all the rights of the "contributor" role, but also can act as an "administrator"
+when it comes to manipulating comments, without having any of the other privileges
+of administrators. You can handle this situation with your `RoleAuthorizer`
+derivative by using the `registerRoleInclusions()` method:
+
+```php
+use AC\Kalinka\Authorizer\RoleAuthorizer;
+
+class MyAppAuthorizer extends RoleAuthorizer
+{
+    public function __construct(MyUserClass $user)
+    {
+        // ...
+
+        if ($user->isCommentAdmin()) {
+            $this->registerRoleInclusions([
+                "comment" => "administrator"
+            ]);
+        }
+    }
+}
+```
+
+It is also possible to include only particular actions from a role:
+
+```php
+$this->registerRoleInclusions([
+    "comment" => ["update" => "administrator", "delete" => "administrator"]
+]);
+```

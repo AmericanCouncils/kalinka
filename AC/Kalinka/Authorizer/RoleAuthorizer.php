@@ -18,10 +18,16 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
     private $rolesValidated = false;
 
     private $roles = [];
+    /**
+     * Returns the list of roles.
+     */
     public function getRoles()
     {
         return $this->roles;
     }
+    /**
+     * Returns true if a given role is in the list of roles
+     */
     public function hasRole($role)
     {
         return (array_search($role, $this->roles) !== false);
@@ -36,7 +42,7 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
      * @param $subject The subject passed as the first argument to all Guard
      *                 instances constructed by `can()`.
      */
-    public function __construct($roles, $subject = null)
+    public function __construct($subject, $roles)
     {
         parent::__construct($subject);
 
@@ -46,9 +52,36 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
         $this->roles = $roles;
     }
 
+    private $roleInclusions = [];
+    /**
+     * Specifies specific sub-parts of roles to use in access checks.
+     *
+     * These are considered as though they were additional roles,
+     * in that access will be permitted if the included policy lists
+     * allow access or if the regular role policy lists do so.
+     *
+     * You may include the policies for every action of a resource type,
+     * or only for particular actions.
+     *
+     * @param $roleInclusions An associative array mapping resource types to
+     *                        role names e.g. `"post" => "editor"`, or to
+     *                        arrays mapping particular
+     *                        actions to role names e.g. `"post" => ["write"
+     *                        => "editor", "read" => "guest"]`
+     */
+    protected function registerRoleInclusions($roleInclusions)
+    {
+        // TODO If we're validating role inclusions, then we
+        // need to unset the rolesValidated flag when this method
+        // is called.
+        foreach ($roleInclusions as $resType => $inclusions) {
+            $this->roleInclusions[$resType][] = $inclusions;
+        }
+    }
+
     private $rolePolicies = [];
     /**
-     * Associates roles with policy settings
+     * Associates roles with policy settings.
      *
      * See <a href="index.html#roles">"Roles" section
      * in README.md</a> for more details on the argument to this method.
@@ -72,10 +105,6 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
         }
     }
 
-    public function appendPolicies($policies)
-    {
-    }
-
     /**
      * Implementation of abstract method from AuthorizerAbstract.
      */
@@ -84,17 +113,43 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
         $this->assertValidRoles();
 
         foreach ($this->roles as $role) {
-            if (
-                array_key_exists($resType, $this->rolePolicies[$role]) &&
-                array_key_exists($action, $this->rolePolicies[$role][$resType])
-            ) {
-                $policies = $this->rolePolicies[$role][$resType][$action];
+            if ($this->getRolePermission($role, $action, $resType, $guard)) {
+                return true;
+            }
+        }
+
+        if (array_key_exists($resType, $this->roleInclusions)) {
+            foreach ($this->roleInclusions[$resType] as $tgt) {
+                $tgtRole = null;
+                if (is_string($tgt)) {
+                    $tgtRole = $tgt;
+                } elseif (is_array($tgt) && array_key_exists($action, $tgt)) {
+                    $tgtRole = $tgt[$action];
+                }
                 if (
-                    !is_null($policies) &&
-                    $guard->checkPolicyList($policies)
+                    !is_null($tgtRole) &&
+                    $this->getRolePermission($tgtRole, $action, $resType, $guard)
                 ) {
                     return true;
                 }
+            }
+        }
+
+        return false;
+    }
+
+    private function getRolePermission($role, $action, $resType, $guard)
+    {
+        if (
+            array_key_exists($resType, $this->rolePolicies[$role]) &&
+            array_key_exists($action, $this->rolePolicies[$role][$resType])
+        ) {
+            $policies = $this->rolePolicies[$role][$resType][$action];
+            if (
+                !is_null($policies) &&
+                $guard->checkPolicyList($policies)
+            ) {
+                return true;
             }
         }
 
@@ -112,6 +167,8 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
                 throw new \RuntimeException("No such role $role registered");
             }
         }
+
+        // TODO Validate role inclusions
 
         $this->rolesValidated = true;
     }

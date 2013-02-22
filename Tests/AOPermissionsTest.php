@@ -88,7 +88,7 @@ class MyAppAuthorizer extends RoleAuthorizer
         foreach ($user->roles as $role) {
             $roleNames[] = $role->name;
         }
-        parent::__construct($roleNames, $user);
+        parent::__construct($user, $roleNames);
 
         $this->registerGuards([
             "ao" => "AOGuard"
