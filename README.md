@@ -60,6 +60,7 @@ class DocumentGuard extends MyAppBaseGuard
     protected function policyDocumentUnlocked()
     {
         return !($this->object->isLocked());
+    }
 }
 ```
 
