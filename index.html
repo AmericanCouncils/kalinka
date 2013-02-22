@@ -183,7 +183,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --><p>The principle here is that the outer list is AND-connected, while inner lists are OR-connected.</p>
 <p>If you need something even more complicated than that, you could always implement it as its own policy. Policies can call each other with the <code>checkPolicy()</code> method on <code>BaseGuard</code>.</p>
 <h2>Roles</h2>
-<p><code>SimpleAuthorizer</code> will only work for very straightforward setups, where the same policies apply to everyone. In real systems, it's more common that you have a bunch of different roles that people can belong to, each of which has access to resources under a variety of different circumstances. The easiest way to accomplish this is to extend from <code>RoleAuthorizer</code>, which provides a <code>registerRolePolicies()</code> method:</p>
+<p><code>SimpleAuthorizer</code> will only work for very straightforward setups, where the same policies apply to everyone. In real systems, it's more common that you have a bunch of different roles that people can belong to, each of which has access to resources under a variety of different circumstances. The easiest way to accomplish this is to extend from <code>RoleAuthorizer</code>, which provides a <code>registerRolePolicies()</code> method that replaces the functionality of <code>SimpleAuthorizer</code>'s <code>registerPolicies()</code> method:</p>
 <div class="fragment"><div class="line">use AC\Kalinka\Authorizer\RoleAuthorizer;</div>
 <div class="line"></div>
 <div class="line"><span class="keyword">class </span>MyAppAuthorizer <span class="keyword">extends</span> RoleAuthorizer</div>
@@ -194,7 +194,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line">        <span class="keywordflow">foreach</span> ($user-&gt;getRoles() as $role) {</div>
 <div class="line">            $roleNames[] = $role-&gt;getName();</div>
 <div class="line">        }</div>
-<div class="line">        parent::__construct($roleNames, $user);</div>
+<div class="line">        parent::__construct($user, $roleNames);</div>
 <div class="line"></div>
 <div class="line">        $this-&gt;registerGuards([</div>
 <div class="line">            <span class="stringliteral">&quot;document&quot;</span> =&gt; <span class="stringliteral">&quot;MyApp\Guards\DocumentGuard&quot;</span>,</div>
@@ -216,6 +216,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line">                <span class="stringliteral">&quot;comment&quot;</span> =&gt; [</div>
 <div class="line">                    <span class="stringliteral">&quot;read&quot;</span> =&gt; <span class="stringliteral">&quot;allow&quot;</span>,</div>
 <div class="line">                ]</div>
+<div class="line">                <span class="comment">// ...</span></div>
 <div class="line">            ],</div>
 <div class="line">            <span class="stringliteral">&quot;customer&quot;</span> =&gt; [</div>
 <div class="line">                <span class="stringliteral">&quot;document&quot;</span> =&gt; [</div>
@@ -231,26 +232,53 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line">                ],</div>
 <div class="line">                <span class="comment">// ...</span></div>
 <div class="line">            ],</div>
-<div class="line">            <span class="stringliteral">&quot;admin&quot;</span> =&gt; [</div>
-<div class="line">                <span class="stringliteral">&quot;document&quot;</span> =&gt; [</div>
-<div class="line">                    <span class="stringliteral">&quot;read&quot;</span> =&gt; <span class="stringliteral">&quot;allow&quot;</span>,</div>
-<div class="line">                    <span class="stringliteral">&quot;write&quot;</span> =&gt; <span class="stringliteral">&quot;documentUnlocked&quot;</span></div>
-<div class="line">                ],</div>
-<div class="line">                <span class="stringliteral">&quot;comment&quot;</span> =&gt; [</div>
-<div class="line">                    <span class="stringliteral">&quot;read&quot;</span> =&gt; <span class="stringliteral">&quot;allow&quot;</span>,</div>
-<div class="line">                    <span class="stringliteral">&quot;create&quot;</span> =&gt; <span class="stringliteral">&quot;allow&quot;</span>,</div>
-<div class="line">                    <span class="stringliteral">&quot;delete&quot;</span> =&gt; <span class="stringliteral">&quot;allow&quot;</span></div>
-<div class="line">                ]</div>
-<div class="line">            ]</div>
+<div class="line">            <span class="comment">// ...</span></div>
 <div class="line">        ]);</div>
 <div class="line">    }</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>The roles are supplied as a list of strings. When a permissions check is made, each role is tried individually; if any role assigned to the user allows the action, then it is allowed overall.</p>
-<p>This is a much more flexible solution than adding role-like policies to your Guards, as we did above with the <code>policyAdmin()</code> method of <code>MyAppBaseGuard</code>. </p>
-</div></div><!-- contents -->
+<p>This is a much more flexible solution than adding role-like policies to your Guards, as we did above with the <code>policyAdmin()</code> method of <code>MyAppBaseGuard</code>.</p>
+<h2>Splicing Roles</h2>
+<p>You may sometimes have special situations where the desired permissions don't match up perfectly with your roles. For example, you might have a user who has all the rights of the "contributor" role, but also can act as an "administrator" when it comes to manipulating comments, without having any of the other privileges of administrators. You can handle this situation with your <code>RoleAuthorizer</code> derivative by using the <code>registerRoleInclusions()</code> method:</p>
+<div class="fragment"><div class="line">use AC\Kalinka\Authorizer\RoleAuthorizer;</div>
+<div class="line"></div>
+<div class="line"><span class="keyword">class </span>MyAppAuthorizer <span class="keyword">extends</span> RoleAuthorizer</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">public</span> <span class="keyword">function</span> __construct(MyUserClass $user)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="comment">// ...</span></div>
+<div class="line"></div>
+<div class="line">        <span class="keywordflow">if</span> ($user-&gt;isCommentAdmin()) {</div>
+<div class="line">            $this-&gt;registerRoleInclusions([</div>
+<div class="line">                <span class="stringliteral">&quot;comment&quot;</span> =&gt; <span class="stringliteral">&quot;administrator&quot;</span></div>
+<div class="line">            ]);</div>
+<div class="line">        }</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>It is also possible to include only particular actions from a role:</p>
+<div class="fragment"><div class="line">$this-&gt;registerRoleInclusions([</div>
+<div class="line">    <span class="stringliteral">&quot;comment&quot;</span> =&gt; [<span class="stringliteral">&quot;update&quot;</span> =&gt; <span class="stringliteral">&quot;administrator&quot;</span>, <span class="stringliteral">&quot;delete&quot;</span> =&gt; <span class="stringliteral">&quot;administrator&quot;</span>]</div>
+<div class="line">]);</div>
+</div><!-- fragment --><p>These included sections are treated as though they were another role; access is permitted if any included policy lists approve it, <em>or</em> if any of the policy lists from the user's regular roles approve it. If your goal is to block off or replace parts of your roles, rather than appending onto them, you can use the <code>registerRoleExclusions()</code> method, which takes the same form of argument:</p>
+<div class="fragment"><div class="line">use AC\Kalinka\Authorizer\RoleAuthorizer;</div>
+<div class="line"></div>
+<div class="line"><span class="keyword">class </span>MyAppAuthorizer <span class="keyword">extends</span> RoleAuthorizer</div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">public</span> <span class="keyword">function</span> __construct(MyUserClass $user)</div>
+<div class="line">    {</div>
+<div class="line">        <span class="comment">// ...</span></div>
+<div class="line"></div>
+<div class="line">        <span class="keywordflow">if</span> ($user-&gt;isDeniedPostConstributorAccess()) {</div>
+<div class="line">            $this-&gt;registerRoleExclusions([</div>
+<div class="line">                <span class="stringliteral">&quot;post&quot;</span> =&gt; <span class="stringliteral">&quot;contributor&quot;</span></div>
+<div class="line">            ]);</div>
+<div class="line">        }</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+</div><!-- fragment --> </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Feb 21 2013 17:28:45 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Feb 22 2013 13:02:03 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
