@@ -36,7 +36,9 @@ abstract class AuthorizerAbstract
      * which identify what sort of resource the user is trying to access.
      * By convention these are camel cased, like `thisExampleHere`.
      *
-     * The class is passed in as a string with the fully-qualified class name.
+     * The class is passed in as a string with the fully-qualified class name,
+     * or alternately a callable which takes two arguments, the subject and
+     * object, and returns an instance of an appropriate Guard class.
      *
      * @param $guardsMap An associative array mapping resource types to Guard
      *                   classes, e.g. "document" => "MyApp\Guards\DocumentGuard"
@@ -108,7 +110,13 @@ abstract class AuthorizerAbstract
             );
         }
 
-        $guard = new $guardClass($this->subject, $guardObject);
+        if (is_string($guardClass)) {
+            $guard = new $guardClass($this->subject, $guardObject);
+        } else if (is_callable($guardClass)) {
+            $guard = $guardClass($this->subject, $guardObject);
+        } else {
+            throw new \LogicException("Invalid guard class mapping for $resType");
+        }
 
         $result = $this->getPermission($action, $resType, $guard);
         if (is_bool($result)) {

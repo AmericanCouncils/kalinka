@@ -1,5 +1,6 @@
 <?php
 
+use AC\Kalinka\Guard\BaseGuard;
 use AC\Kalinka\Authorizer\AuthorizerAbstract;
 
 class MyAuthorizer extends AuthorizerAbstract
@@ -17,6 +18,33 @@ class MyAuthorizer extends AuthorizerAbstract
 
     protected function getPermission($action, $guardType, $guard)
     {
+        if (!($guard instanceof BaseGuard)) {
+            throw new RuntimeException;
+        }
+        return true;
+    }
+}
+
+class MyLambdaGuardAuthorizer extends AuthorizerAbstract
+{
+    public function __construct($subject = null)
+    {
+        parent::__construct($subject);
+        $this->registerGuards([
+            "comment" => function($sub, $obj) {
+                return new BaseGuard($sub, $obj);
+            }
+        ]);
+        $this->registerActions([
+            "comment" => ["read", "write"]
+        ]);
+    }
+
+    protected function getPermission($action, $guardType, $guard)
+    {
+        if (!($guard instanceof BaseGuard)) {
+            throw new RuntimeException;
+        }
         return true;
     }
 }
@@ -69,12 +97,18 @@ class AuthorizerTest extends KalinkaTestCase
     protected function setUp()
     {
         $this->auth = new MyAuthorizer();
+        $this->lambAuth = new MyLambdaGuardAuthorizer();
         $this->badAuth = new BadValuesAuthorizer();
     }
 
     public function testExplicitAllow()
     {
         $this->assertTrue($this->auth->can("read", "comment"));
+    }
+
+    public function testLambdaGuardGeneration()
+    {
+        $this->assertTrue($this->lambAuth->can("read", "comment"));
     }
 
     public function testExceptionOnUnknownResourceType()
