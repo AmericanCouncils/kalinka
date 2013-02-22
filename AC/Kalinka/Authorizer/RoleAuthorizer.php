@@ -71,9 +71,6 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
      */
     protected function registerRoleInclusions($roleInclusions)
     {
-        // TODO If we're validating role inclusions, then we
-        // need to unset the rolesValidated flag when this method
-        // is called.
         foreach ($roleInclusions as $resType => $inclusions) {
             $this->roleInclusions[$resType][] = $inclusions;
         }
@@ -126,11 +123,17 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
                 } elseif (is_array($tgt) && array_key_exists($action, $tgt)) {
                     $tgtRole = $tgt[$action];
                 }
-                if (
-                    !is_null($tgtRole) &&
-                    $this->getRolePermission($tgtRole, $action, $resType, $guard)
-                ) {
-                    return true;
+                if (!is_null($tgtRole)) {
+                    if (!array_key_exists($tgtRole, $this->rolePolicies)) {
+                        throw new \RuntimeException(
+                            "No such role $tgtRole registered"
+                        );
+                    }
+                    if (
+                        $this->getRolePermission($tgtRole, $action, $resType, $guard)
+                    ) {
+                        return true;
+                    }
                 }
             }
         }
@@ -167,8 +170,6 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
                 throw new \RuntimeException("No such role $role registered");
             }
         }
-
-        // TODO Validate role inclusions
 
         $this->rolesValidated = true;
     }

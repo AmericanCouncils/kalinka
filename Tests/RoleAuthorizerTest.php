@@ -177,9 +177,8 @@ class RoleAuthorizerTest extends KalinkaTestCase
         ]);
     }
 
-    public function testAuthAppend() {
-        $auth = new OurRoleAuthorizer(
-            ["_common", "guest"],
+    public function testRoleInclusions() {
+        $auth = new OurRoleAuthorizer(["_common", "guest"],
             [
             "image" => "editor",
             "post" => ["write" => "editor"]
@@ -196,11 +195,19 @@ class RoleAuthorizerTest extends KalinkaTestCase
         ]);
     }
 
-    // TODO Allow us to block all role-supplied policies for a guard/action
-
     public function testExceptionOnInvalidRole() {
         $auth = new OurRoleAuthorizer(["_common", "foo"]);
         $this->setExpectedException("RuntimeException", "No such role");
         $auth->can("read", "comment");
+    }
+
+    public function testExceptionOnInvalidRoleInclusion() {
+        $auth = new OurRoleAuthorizer(["_common", "guest"],
+            [
+            "image" => "foo",
+            ]
+        );
+        $this->setExpectedException("RuntimeException", "No such role");
+        $auth->can("upload", "image");
     }
 }
