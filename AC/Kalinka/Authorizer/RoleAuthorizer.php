@@ -68,8 +68,8 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
     /**
      * Specifies specific sub-parts of roles to ignore in access checks.
      *
-     * You may exclude the policies for every action of a resource type,
-     * or only for particular actions.
+     * You may exclude the policies for every action of a resource type
+     * in a particular role, or only for particular actions.
      *
      * @param $roleExclusions An associative array mapping resource types to
      *                        role names e.g. `"post" => "editor"`, or to
