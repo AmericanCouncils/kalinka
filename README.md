@@ -70,7 +70,7 @@ in any given situation. You can reference the policies implemented
 in your Guards, as well as the default "allow" policy that simply always
 permits access.
 
-If you don't define any policy for an action, it is always denies access by default.
+If you don't define any policy for an action, it is always denied by default.
 
 For most basic use cases, you can derive from `SimpleAuthorizer`:
 
