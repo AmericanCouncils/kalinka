@@ -50,7 +50,7 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
      *                      e.g. `"contributor" => ["document" => ["read" =>
      *                      "allow", "write" => "owner"]]`
      */
-    protected function registerRolePolicies($rolePolicies)
+    public function registerRolePolicies($rolePolicies)
     {
         foreach ($rolePolicies as $role => $resTypes) {
             if (!array_key_exists($role, $this->rolePolicies)) {
@@ -77,7 +77,7 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
      *                        actions to role names e.g. `"post" => ["write"
      *                        => "editor", "read" => "guest"]`
      */
-    protected function registerRoleExclusions($roleExclusions)
+    public function registerRoleExclusions($roleExclusions)
     {
         foreach ($roleExclusions as $resType => $exclusions) {
             $this->roleExclusions[$resType][] = $exclusions;
@@ -103,7 +103,7 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
      *                        actions to role names e.g. `"post" => ["write"
      *                        => "editor", "read" => "guest"]`
      */
-    protected function registerRoleInclusions($roleInclusions)
+    public function registerRoleInclusions($roleInclusions)
     {
         foreach ($roleInclusions as $resType => $inclusions) {
             $this->roleInclusions[$resType][] = $inclusions;

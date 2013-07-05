@@ -18,8 +18,7 @@ abstract class AuthorizerAbstract
     /**
      * Sets up the authorizer with the given subject.
      *
-     * @param $subject Passed as the first argument to all Guard instances
-     *                 constructed by `can()`.
+     * @param $subject Passed as the first argument to all policy method calls.
      */
     public function __construct($subject = null)
     {
@@ -41,7 +40,7 @@ abstract class AuthorizerAbstract
      * @param $guardsMap An associative array mapping resource types to Guard
      *                   classes, e.g. "document" => "MyApp\Guards\DocumentGuard"
      */
-    protected function registerGuards($guardsMap)
+    public function registerGuards($guardsMap)
     {
         $this->resourceGuardClasses =
             array_merge($this->resourceGuardClasses, $guardsMap);
@@ -62,7 +61,7 @@ abstract class AuthorizerAbstract
      * @param $actionsMap An associative array mapping resource types
      *                    to lists of actions, e.g. "document" => ["read","write"]
      */
-    protected function registerActions($actionsMap)
+    public function registerActions($actionsMap)
     {
         foreach ($actionsMap as $resType => $actions) {
             foreach ($actions as $action) {
@@ -95,6 +94,7 @@ abstract class AuthorizerAbstract
                 "Unknown resource type \"$resType\""
             );
         }
+
         $guardClass = $this->resourceGuardClasses[$resType];
 
         if (

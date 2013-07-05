@@ -26,7 +26,7 @@ abstract class SimpleAuthorizer extends AuthorizerAbstract
      *                  and actions to policy lists, e.g. `"document" => ["read" =>
      *                  "allow", "write" => "owner"]`
      */
-    protected function registerPolicies($policies)
+    public function registerPolicies($policies)
     {
         foreach ($policies as $resType => $actions) {
             foreach ($actions as $action => $policyList) {
