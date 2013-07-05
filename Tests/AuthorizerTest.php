@@ -72,25 +72,6 @@ class BadValuesAuthorizer extends AuthorizerAbstract
     }
 }
 
-class BadConstructAuthorizer extends AuthorizerAbstract
-{
-    public function __construct($subject = null)
-    {
-        // Forgot to call parent::__construct
-        $this->registerGuards([
-            "something" => "AC\Kalinka\Guard\BaseGuard"
-        ]);
-        $this->registerActions([
-            "something" => ["read", "write"]
-        ]);
-    }
-
-    protected function getPermission($action, $resType, $guard, $subject, $object)
-    {
-        return true;
-    }
-}
-
 class AuthorizerTest extends KalinkaTestCase
 {
     private $auth;
@@ -149,13 +130,5 @@ class AuthorizerTest extends KalinkaTestCase
             "LogicException", "invalid getPermission result"
         );
         $this->badAuth->can("write", "something");
-    }
-
-    public function testExceptionOnNotCallingAbstractAuthorizerConstruct()
-    {
-        $this->setExpectedException(
-            "LogicException", "must call parent::__construct"
-        );
-        $a = new BadConstructAuthorizer;
     }
 }
