@@ -4,13 +4,13 @@ namespace Fixtures;
 
 class DocumentGuard extends MyAppGuard
 {
-    protected function policyUnclassified()
+    protected function policyUnclassified($subject, $object)
     {
-        return !$this->object->isClassified();
+        return !$object->isClassified();
     }
 
-    protected function policyOwned()
+    protected function policyOwned($subject, $object)
     {
-        return ($this->object->getOwner() == $this->subject->name);
+        return ($object->getOwner() == $subject->name);
     }
 }

@@ -18,14 +18,14 @@ class AO
 
 class AOGuard extends MyAppGuard
 {
-    public function policyLanguageMatch()
+    public function policyLanguageMatch($subject, $object)
     {
-        return (array_search($this->object->lang, $this->subject->langs) !== false);
+        return (array_search($object->lang, $subject->langs) !== false);
     }
 
-    public function policyRatingsNotBlinded()
+    public function policyRatingsNotBlinded($subject, $object)
     {
-        foreach ($this->object->worklists as $worklist) {
+        foreach ($object->worklists as $worklist) {
             if (!is_null($worklist->workflow)) {
                 foreach ($worklist->workflow->map as $k => $v) {
                     if ($k == "blind_ratings" && $v === true) {
@@ -38,10 +38,10 @@ class AOGuard extends MyAppGuard
         return true;
     }
 
-    public function policyWorklistMembership()
+    public function policyWorklistMembership($subject, $object)
     {
-        foreach ($this->object->worklists as $worklist) {
-            if (array_search($this->subject, $worklist->users) !== false) {
+        foreach ($object->worklists as $worklist) {
+            if (array_search($subject, $worklist->users) !== false) {
                 return true;
             }
         }
@@ -49,9 +49,9 @@ class AOGuard extends MyAppGuard
         return false;
     }
 
-    public function policyOwnership()
+    public function policyOwnership($subject, $object)
     {
-        return ($this->object->user === $this->subject);
+        return ($object->user === $subject);
     }
 }
 

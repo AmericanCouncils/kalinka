@@ -16,7 +16,7 @@ class MyAuthorizer extends AuthorizerAbstract
         ]);
     }
 
-    protected function getPermission($action, $guardType, $guard)
+    protected function getPermission($action, $guardType, $guard, $subject, $object)
     {
         if (!($guard instanceof BaseGuard)) {
             throw new RuntimeException;
@@ -31,8 +31,8 @@ class MyLambdaGuardAuthorizer extends AuthorizerAbstract
     {
         parent::__construct($subject);
         $this->registerGuards([
-            "comment" => function($sub, $obj) {
-                return new BaseGuard($sub, $obj);
+            "comment" => function() {
+                return new BaseGuard();
             }
         ]);
         $this->registerActions([
@@ -40,7 +40,7 @@ class MyLambdaGuardAuthorizer extends AuthorizerAbstract
         ]);
     }
 
-    protected function getPermission($action, $guardType, $guard)
+    protected function getPermission($action, $guardType, $guard, $subject, $object)
     {
         if (!($guard instanceof BaseGuard)) {
             throw new RuntimeException;
@@ -62,7 +62,7 @@ class BadValuesAuthorizer extends AuthorizerAbstract
         ]);
     }
 
-    protected function getPermission($action, $resType, $guard)
+    protected function getPermission($action, $resType, $guard, $subject, $object)
     {
         if ($action == "read") {
             // Do nothing
@@ -85,7 +85,7 @@ class BadConstructAuthorizer extends AuthorizerAbstract
         ]);
     }
 
-    protected function getPermission($action, $resType, $guard)
+    protected function getPermission($action, $resType, $guard, $subject, $object)
     {
         return true;
     }

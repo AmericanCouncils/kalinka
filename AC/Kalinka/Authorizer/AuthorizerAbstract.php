@@ -110,15 +110,15 @@ abstract class AuthorizerAbstract
             );
         }
 
-        if (is_string($guardClass)) {
-            $guard = new $guardClass($this->subject, $guardObject);
-        } else if (is_callable($guardClass)) {
-            $guard = $guardClass($this->subject, $guardObject);
+        if (is_callable($guardClass)) {
+            $guard = $guardClass();
+        } elseif (is_string($guardClass)) {
+            $guard = new $guardClass();
         } else {
             throw new \LogicException("Invalid guard class mapping for $resType");
         }
-
-        $result = $this->getPermission($action, $resType, $guard);
+        
+        $result = $this->getPermission($action, $resType, $guard, $this->subject, $guardObject);
         if (is_bool($result)) {
             return $result;
         } else {
@@ -134,7 +134,7 @@ abstract class AuthorizerAbstract
      * This method is called by can() to make the decision about allowing or
      * denying access to perform an action on a resource.
      */
-    abstract protected function getPermission($action, $resType, $guard);
+    abstract protected function getPermission($action, $resType, $guard, $subject, $object);
 
     private function assertCtorCalled()
     {

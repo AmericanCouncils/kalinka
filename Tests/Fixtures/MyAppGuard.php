@@ -6,23 +6,18 @@ use AC\Kalinka\Guard\BaseGuard;
 
 class MyAppGuard extends BaseGuard
 {
-    public function __construct(User $subject, $object = null)
+    protected function policyUsernameHasVowels($subject)
     {
-        parent::__construct($subject, $object);
+        return preg_match("/[aeiou]/", $subject->name) == 1;
     }
 
-    protected function policyUsernameHasVowels()
+    protected function policyUserIsOnFirst($subject)
     {
-        return preg_match("/[aeiou]/", $this->subject->name) == 1;
+        return ($subject->name == "Who");
     }
 
-    protected function policyUserIsOnFirst()
+    protected function policyUserIsOnSecond($subject)
     {
-        return ($this->subject->name == "Who");
-    }
-
-    protected function policyUserIsOnSecond()
-    {
-        return ($this->subject->name == "What");
+        return ($subject->name == "What");
     }
 }

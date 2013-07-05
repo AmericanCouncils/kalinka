@@ -113,7 +113,7 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
     /**
      * Implementation of abstract method from AuthorizerAbstract.
      */
-    protected function getPermission($action, $resType, $guard)
+    protected function getPermission($action, $resType, $guard, $subject, $object)
     {
         $this->assertValidRoles();
 
@@ -139,7 +139,7 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
 
             if (
                 !$excluded &&
-                $this->getRolePermission($role, $action, $resType, $guard)
+                $this->getRolePermission($role, $action, $resType, $guard, $subject, $object)
             ) {
                 return true;
             }
@@ -160,7 +160,7 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
                         );
                     }
                     if (
-                        $this->getRolePermission($tgtRole, $action, $resType, $guard)
+                        $this->getRolePermission($tgtRole, $action, $resType, $guard, $subject, $object)
                     ) {
                         return true;
                     }
@@ -177,7 +177,7 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
      * If you want to implement roles with unusual semantics (e.g. a superadmin
      * role which always has access to everything), override this method.
      */
-    protected function getRolePermission($role, $action, $resType, $guard)
+    protected function getRolePermission($role, $action, $resType, $guard, $subject, $object)
     {
         if (
             array_key_exists($resType, $this->rolePolicies[$role]) &&
@@ -186,7 +186,7 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
             $policies = $this->rolePolicies[$role][$resType][$action];
             if (
                 !is_null($policies) &&
-                $guard->checkPolicyList($policies)
+                $guard->checkPolicyList($policies, $subject, $object)
             ) {
                 return true;
             }

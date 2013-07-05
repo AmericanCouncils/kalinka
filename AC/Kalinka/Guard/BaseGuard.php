@@ -32,24 +32,6 @@ namespace AC\Kalinka\Guard;
  */
 class BaseGuard
 {
-    protected $subject;
-    protected $object;
-
-    /**
-     * Creates a new Guard with the given subject and object,
-     * both of which are optional for BaseGuard.
-     *
-     * @param $subject An object instance or scalar with information about the
-     *                 user performing actions.
-     * @param $object  An object instance or scalar with information about the
-     *                 resource an action is operating on.
-     */
-    public function __construct($subject = null, $object = null)
-    {
-        $this->subject = $subject;
-        $this->object = $object;
-    }
-
     /**
      * Checks if the named policy permits access.
      *
@@ -60,9 +42,9 @@ class BaseGuard
      *
      * @return Boolean
      */
-    public function checkPolicy($name)
+    public function checkPolicy($name, $subject, $object = null)
     {
-        $result = call_user_func([$this, "policy" . ucfirst($name)]);
+        $result = call_user_func([$this, "policy" . ucfirst($name)], $subject, $object);
         if (is_bool($result)) {
             return $result;
         } else {
@@ -89,7 +71,7 @@ class BaseGuard
      *
      * @return Boolean
      */
-    public function checkPolicyList($policies)
+    public function checkPolicyList($policies, $subject, $object = null)
     {
         if (is_string($policies)) {
             $policies = [$policies];
@@ -105,13 +87,13 @@ class BaseGuard
                 $result = false;
                 // Inner policy lists are OR-lists
                 foreach ($policy as $subpolicy) {
-                    if ($this->checkPolicy($subpolicy)) {
+                    if ($this->checkPolicy($subpolicy, $subject, $object)) {
                         $result = true;
                         break;
                     }
                 }
             } else {
-                $result = $this->checkPolicy($policy);
+                $result = $this->checkPolicy($policy, $subject, $object);
             }
 
             if (!$result) {

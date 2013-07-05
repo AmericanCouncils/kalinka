@@ -84,12 +84,12 @@ class OurRoleAuthorizer extends RoleAuthorizer
         ]);
     }
 
-    protected function getRolePermission($role, $action, $resType, $guard)
+    protected function getRolePermission($role, $action, $resType, $guard, $subject, $object)
     {
         if ($role == "admin") {
             return true;
         } else {
-            return parent::getRolePermission($role, $action, $resType, $guard);
+            return parent::getRolePermission($role, $action, $resType, $guard, $subject, $object);
         }
     }
 }

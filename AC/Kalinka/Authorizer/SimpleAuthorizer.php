@@ -38,7 +38,7 @@ abstract class SimpleAuthorizer extends AuthorizerAbstract
     /**
      * Implementation of abstract method from AuthorizerAbstract.
      */
-    protected function getPermission($action, $resType, $guard)
+    protected function getPermission($action, $resType, $guard, $subject, $object)
     {
         if (!array_key_exists($resType, $this->policyMap)) {
             throw new \InvalidArgumentError("Unknown resource type '$resType'");
@@ -50,6 +50,6 @@ abstract class SimpleAuthorizer extends AuthorizerAbstract
 
         $policies = $this->policyMap[$resType][$action];
 
-        return $guard->checkPolicyList($policies);
+        return $guard->checkPolicyList($policies, $subject, $object);
     }
 }
