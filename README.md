@@ -30,9 +30,9 @@ use AC\Kalinka\Guard\BaseGuard;
 
 class MyAppBaseGuard extends BaseGuard
 {
-    protected function policyAdmin()
+    protected function policyAdmin($subject)
     {
-        return $this->subject->isAdmin();
+        return $subject->isAdmin();
     }
 }
 ```
@@ -43,7 +43,7 @@ it can be something as simple as the name of the user as a string. The important
 thing is that it lets you find out everything you need about the user to
 determine what they're allowed to do.
 
-Guards may also have an `object`, which is the resource that the subject is trying to get
+Policies may also accept an `object`, which is the resource that the subject is trying to get
 at.  You'll need to write a Guard class for each specific type of resource
 that has special policies. For example, suppose you have Documents that allow
 access based on whether or not the user owns that particular document, and/or
@@ -52,14 +52,14 @@ whether or not the document is "unlocked":
 ```php
 class DocumentGuard extends MyAppBaseGuard
 {
-    protected function policyDocumentOwner()
+    protected function policyDocumentOwner($subject, $object)
     {
-        return ($this->object->getOwnerId() == $this->subject->getId());
+        return ($object->getOwnerId() == $subject->getId());
     }
 
-    protected function policyDocumentUnlocked()
+    protected function policyDocumentUnlocked($subject, $object)
     {
-        return !($this->object->isLocked());
+        return !($object->isLocked());
     }
 }
 ```

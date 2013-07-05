@@ -45,6 +45,8 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
      * See <a href="index.html#roles">"Roles" section
      * in README.md</a> for more details on the argument to this method.
      *
+     * May be called multiple times to add additional role->policy associations.
+     *
      * @param $rolePolicies A three-level associative array mapping roles,
      *                      resource types, and actions to policy lists,
      *                      e.g. `"contributor" => ["document" => ["read" =>
@@ -71,6 +73,8 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
      * You may exclude the policies for every action of a resource type
      * in a particular role, or only for particular actions.
      *
+     * May be called multiple times to add additional role exclusions.
+     *
      * @param $roleExclusions An associative array mapping resource types to
      *                        role names e.g. `"post" => "editor"`, or to
      *                        arrays mapping particular
@@ -96,6 +100,8 @@ abstract class RoleAuthorizer extends AuthorizerAbstract
      * or only for particular actions.
      *
      * Inclusions take priority over exclusions.
+     *
+     * May be called multiple times to add additional role inclusions.
      *
      * @param $roleInclusions An associative array mapping resource types to
      *                        role names e.g. `"post" => "editor"`, or to

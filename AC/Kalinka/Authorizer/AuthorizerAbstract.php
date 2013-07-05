@@ -37,6 +37,8 @@ abstract class AuthorizerAbstract
      * or alternately a callable which takes two arguments, the subject and
      * object, and returns an instance of an appropriate Guard class.
      *
+     * May be called multiple times to register more guards.
+     *
      * @param $guardsMap An associative array mapping resource types to Guard
      *                   classes, e.g. "document" => "MyApp\Guards\DocumentGuard"
      */
@@ -57,6 +59,8 @@ abstract class AuthorizerAbstract
      * Try to stick with a consistent scheme for actions among your various
      * resource types, for example using "read" and "write", or using the
      * four CRUD verbs.
+     *
+     * May be called multiple times to register more actions.
      *
      * @param $actionsMap An associative array mapping resource types
      *                    to lists of actions, e.g. "document" => ["read","write"]

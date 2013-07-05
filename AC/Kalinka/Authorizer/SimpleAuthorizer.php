@@ -22,6 +22,8 @@ abstract class SimpleAuthorizer extends AuthorizerAbstract
      * See <a href="index.html#combining-policies">"Combining Policies" section
      * in README.md</a> for details on how policy lists work.
      *
+     * May be called multiple times to register more policy associations.
+     *
      * @param $policies Two-level associative array mapping resource types
      *                  and actions to policy lists, e.g. `"document" => ["read" =>
      *                  "allow", "write" => "owner"]`
