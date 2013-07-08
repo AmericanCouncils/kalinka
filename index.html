@@ -90,23 +90,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"></div>
 <div class="line"><span class="keyword">class </span>MyAppBaseGuard <span class="keyword">extends</span> BaseGuard</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">protected</span> <span class="keyword">function</span> policyAdmin()</div>
+<div class="line">    <span class="keyword">protected</span> <span class="keyword">function</span> policyAdmin($subject)</div>
 <div class="line">    {</div>
-<div class="line">        <span class="keywordflow">return</span> $this-&gt;subject-&gt;isAdmin();</div>
+<div class="line">        <span class="keywordflow">return</span> $subject-&gt;isAdmin();</div>
 <div class="line">    }</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>The <code>subject</code> above is the user whose privileges are being checked. This can be an instance of your app's User class (as the code above assumes), or it can be something as simple as the name of the user as a string. The important thing is that it lets you find out everything you need about the user to determine what they're allowed to do.</p>
-<p>Guards may also have an <code>object</code>, which is the resource that the subject is trying to get at. You'll need to write a Guard class for each specific type of resource that has special policies. For example, suppose you have Documents that allow access based on whether or not the user owns that particular document, and/or whether or not the document is "unlocked":</p>
+<p>Policies may also accept an <code>object</code>, which is the resource that the subject is trying to get at. You'll need to write a Guard class for each specific type of resource that has special policies. For example, suppose you have Documents that allow access based on whether or not the user owns that particular document, and/or whether or not the document is "unlocked":</p>
 <div class="fragment"><div class="line"><span class="keyword">class </span>DocumentGuard <span class="keyword">extends</span> MyAppBaseGuard</div>
 <div class="line">{</div>
-<div class="line">    <span class="keyword">protected</span> <span class="keyword">function</span> policyDocumentOwner()</div>
+<div class="line">    <span class="keyword">protected</span> <span class="keyword">function</span> policyDocumentOwner($subject, $object)</div>
 <div class="line">    {</div>
-<div class="line">        <span class="keywordflow">return</span> ($this-&gt;object-&gt;getOwnerId() == $this-&gt;subject-&gt;getId());</div>
+<div class="line">        <span class="keywordflow">return</span> ($object-&gt;getOwnerId() == $subject-&gt;getId());</div>
 <div class="line">    }</div>
 <div class="line"></div>
-<div class="line">    <span class="keyword">protected</span> <span class="keyword">function</span> policyDocumentUnlocked()</div>
+<div class="line">    <span class="keyword">protected</span> <span class="keyword">function</span> policyDocumentUnlocked($subject, $object)</div>
 <div class="line">    {</div>
-<div class="line">        <span class="keywordflow">return</span> !($this-&gt;<span class="keywordtype">object</span>-&gt;isLocked());</div>
+<div class="line">        <span class="keywordflow">return</span> !($object-&gt;isLocked());</div>
 <div class="line">    }</div>
 <div class="line">}</div>
 </div><!-- fragment --><p>When your app wants to do some actual access checks, these are done through an Authorizer. The Authorizer determines what Guard policies are applied in any given situation. You can reference the policies implemented in your Guards, as well as the default "allow" policy that simply always permits access.</p>
@@ -279,7 +279,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --> </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 22 2013 16:59:38 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jul 8 2013 14:10:32 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

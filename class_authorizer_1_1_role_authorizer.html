@@ -107,34 +107,32 @@ Inheritance diagram for Authorizer\RoleAuthorizer:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af5e6b3cf37b0ab5a62200a2838f46ba3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_role_authorizer.html#af5e6b3cf37b0ab5a62200a2838f46ba3">__construct</a> ($subject, $roles)</td></tr>
 <tr class="memdesc:af5e6b3cf37b0ab5a62200a2838f46ba3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="class_authorizer_1_1_role_authorizer.html" title="Authorizer that maps named roles to applicable policies.">RoleAuthorizer</a>.  <a href="#af5e6b3cf37b0ab5a62200a2838f46ba3"></a><br/></td></tr>
-<tr class="inherit_header pub_methods_class_authorizer_1_1_authorizer_abstract"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_authorizer_1_1_authorizer_abstract')"><img src="closed.png" alt="-"/>&nbsp;Public Member Functions inherited from <a class="el" href="class_authorizer_1_1_authorizer_abstract.html">Authorizer\AuthorizerAbstract</a></td></tr>
-<tr class="memitem:ab75976d04cfdf315a980f980f462dfc3 inherit pub_methods_class_authorizer_1_1_authorizer_abstract"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ab75976d04cfdf315a980f980f462dfc3">__construct</a> ($subject=null)</td></tr>
-<tr class="memdesc:ab75976d04cfdf315a980f980f462dfc3 inherit pub_methods_class_authorizer_1_1_authorizer_abstract"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up the authorizer with the given subject.  <a href="#ab75976d04cfdf315a980f980f462dfc3"></a><br/></td></tr>
-<tr class="memitem:ac7f1d1bd8f2a2f0b8c568278bb8d52b8 inherit pub_methods_class_authorizer_1_1_authorizer_abstract"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ac7f1d1bd8f2a2f0b8c568278bb8d52b8">can</a> ($action, $resType, $guardObject=null)</td></tr>
-<tr class="memdesc:ac7f1d1bd8f2a2f0b8c568278bb8d52b8 inherit pub_methods_class_authorizer_1_1_authorizer_abstract"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decides if an action on a resource is permitted.  <a href="#ac7f1d1bd8f2a2f0b8c568278bb8d52b8"></a><br/></td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
 <tr class="memitem:ab3d09dd2ded81b29a9f72b698aa0d2b2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_role_authorizer.html#ab3d09dd2ded81b29a9f72b698aa0d2b2">registerRolePolicies</a> ($rolePolicies)</td></tr>
 <tr class="memdesc:ab3d09dd2ded81b29a9f72b698aa0d2b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates roles with policy settings.  <a href="#ab3d09dd2ded81b29a9f72b698aa0d2b2"></a><br/></td></tr>
 <tr class="memitem:a26ac23a20aace05b25b6439a191562a3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_role_authorizer.html#a26ac23a20aace05b25b6439a191562a3">registerRoleExclusions</a> ($roleExclusions)</td></tr>
 <tr class="memdesc:a26ac23a20aace05b25b6439a191562a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies specific sub-parts of roles to ignore in access checks.  <a href="#a26ac23a20aace05b25b6439a191562a3"></a><br/></td></tr>
 <tr class="memitem:a6f6a4f9f6d23b524d992ff4c93cd4e3d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_role_authorizer.html#a6f6a4f9f6d23b524d992ff4c93cd4e3d">registerRoleInclusions</a> ($roleInclusions)</td></tr>
 <tr class="memdesc:a6f6a4f9f6d23b524d992ff4c93cd4e3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies specific sub-parts of roles to use in access checks.  <a href="#a6f6a4f9f6d23b524d992ff4c93cd4e3d"></a><br/></td></tr>
-<tr class="memitem:a2f8dab8a697eefcd465158d0c74a4b87"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2f8dab8a697eefcd465158d0c74a4b87"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_role_authorizer.html#a2f8dab8a697eefcd465158d0c74a4b87">getPermission</a> ($action, $resType, $guard)</td></tr>
-<tr class="memdesc:a2f8dab8a697eefcd465158d0c74a4b87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of abstract method from <a class="el" href="class_authorizer_1_1_authorizer_abstract.html" title="Base class for Authorizer classes, which grant or deny access to resources.">AuthorizerAbstract</a>. <br/></td></tr>
-<tr class="memitem:aa9efe9f77b72ba9e7c210ccf239b4e5b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_role_authorizer.html#aa9efe9f77b72ba9e7c210ccf239b4e5b">getRolePermission</a> ($role, $action, $resType, $guard)</td></tr>
-<tr class="memdesc:aa9efe9f77b72ba9e7c210ccf239b4e5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used by getPermission to determine access checks under a given role.  <a href="#aa9efe9f77b72ba9e7c210ccf239b4e5b"></a><br/></td></tr>
-<tr class="inherit_header pro_methods_class_authorizer_1_1_authorizer_abstract"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_class_authorizer_1_1_authorizer_abstract')"><img src="closed.png" alt="-"/>&nbsp;Protected Member Functions inherited from <a class="el" href="class_authorizer_1_1_authorizer_abstract.html">Authorizer\AuthorizerAbstract</a></td></tr>
-<tr class="memitem:ad9c78522a66264ed0220d9baa9eedfba inherit pro_methods_class_authorizer_1_1_authorizer_abstract"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ad9c78522a66264ed0220d9baa9eedfba">registerGuards</a> ($guardsMap)</td></tr>
-<tr class="memdesc:ad9c78522a66264ed0220d9baa9eedfba inherit pro_methods_class_authorizer_1_1_authorizer_abstract"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates resource types with Guard classes.  <a href="#ad9c78522a66264ed0220d9baa9eedfba"></a><br/></td></tr>
-<tr class="memitem:aef5c0150c93d30ffb13fc3e323028c86 inherit pro_methods_class_authorizer_1_1_authorizer_abstract"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#aef5c0150c93d30ffb13fc3e323028c86">registerActions</a> ($actionsMap)</td></tr>
-<tr class="memdesc:aef5c0150c93d30ffb13fc3e323028c86 inherit pro_methods_class_authorizer_1_1_authorizer_abstract"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates each resource type with a list of actions.  <a href="#aef5c0150c93d30ffb13fc3e323028c86"></a><br/></td></tr>
+<tr class="inherit_header pub_methods_class_authorizer_1_1_authorizer_abstract"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_authorizer_1_1_authorizer_abstract')"><img src="closed.png" alt="-"/>&nbsp;Public Member Functions inherited from <a class="el" href="class_authorizer_1_1_authorizer_abstract.html">Authorizer\AuthorizerAbstract</a></td></tr>
+<tr class="memitem:ab75976d04cfdf315a980f980f462dfc3 inherit pub_methods_class_authorizer_1_1_authorizer_abstract"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ab75976d04cfdf315a980f980f462dfc3">__construct</a> ($subject=null)</td></tr>
+<tr class="memdesc:ab75976d04cfdf315a980f980f462dfc3 inherit pub_methods_class_authorizer_1_1_authorizer_abstract"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up the authorizer with the given subject.  <a href="#ab75976d04cfdf315a980f980f462dfc3"></a><br/></td></tr>
+<tr class="memitem:ad9c78522a66264ed0220d9baa9eedfba inherit pub_methods_class_authorizer_1_1_authorizer_abstract"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ad9c78522a66264ed0220d9baa9eedfba">registerGuards</a> ($guardsMap)</td></tr>
+<tr class="memdesc:ad9c78522a66264ed0220d9baa9eedfba inherit pub_methods_class_authorizer_1_1_authorizer_abstract"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates resource types with Guard classes.  <a href="#ad9c78522a66264ed0220d9baa9eedfba"></a><br/></td></tr>
+<tr class="memitem:aef5c0150c93d30ffb13fc3e323028c86 inherit pub_methods_class_authorizer_1_1_authorizer_abstract"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#aef5c0150c93d30ffb13fc3e323028c86">registerActions</a> ($actionsMap)</td></tr>
+<tr class="memdesc:aef5c0150c93d30ffb13fc3e323028c86 inherit pub_methods_class_authorizer_1_1_authorizer_abstract"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates each resource type with a list of actions.  <a href="#aef5c0150c93d30ffb13fc3e323028c86"></a><br/></td></tr>
+<tr class="memitem:ac7f1d1bd8f2a2f0b8c568278bb8d52b8 inherit pub_methods_class_authorizer_1_1_authorizer_abstract"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ac7f1d1bd8f2a2f0b8c568278bb8d52b8">can</a> ($action, $resType, $guardObject=null)</td></tr>
+<tr class="memdesc:ac7f1d1bd8f2a2f0b8c568278bb8d52b8 inherit pub_methods_class_authorizer_1_1_authorizer_abstract"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decides if an action on a resource is permitted.  <a href="#ac7f1d1bd8f2a2f0b8c568278bb8d52b8"></a><br/></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:ac4d595e701f7c1f340b8f324f8cdaf72"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac4d595e701f7c1f340b8f324f8cdaf72"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_role_authorizer.html#ac4d595e701f7c1f340b8f324f8cdaf72">getPermission</a> ($action, $resType, $guard, $subject, $object)</td></tr>
+<tr class="memdesc:ac4d595e701f7c1f340b8f324f8cdaf72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of abstract method from <a class="el" href="class_authorizer_1_1_authorizer_abstract.html" title="Base class for Authorizer classes, which grant or deny access to resources.">AuthorizerAbstract</a>. <br/></td></tr>
+<tr class="memitem:a9616a6ccafde58b42c1f74ee82a49d7f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_authorizer_1_1_role_authorizer.html#a9616a6ccafde58b42c1f74ee82a49d7f">getRolePermission</a> ($role, $action, $resType, $guard, $subject, $object)</td></tr>
+<tr class="memdesc:a9616a6ccafde58b42c1f74ee82a49d7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used by getPermission to determine access checks under a given role.  <a href="#a9616a6ccafde58b42c1f74ee82a49d7f"></a><br/></td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Authorizer that maps named roles to applicable policies. </p>
-<p>To use this class effectively, derive your own subclass of it and call <a class="el" href="class_authorizer_1_1_role_authorizer.html#ab3d09dd2ded81b29a9f72b698aa0d2b2" title="Associates roles with policy settings.">registerRolePolicies()</a> in your subclass's constructor, in addition to the <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#ad9c78522a66264ed0220d9baa9eedfba" title="Associates resource types with Guard classes.">registerGuards()</a> and <a class="el" href="class_authorizer_1_1_authorizer_abstract.html#aef5c0150c93d30ffb13fc3e323028c86" title="Associates each resource type with a list of actions.">registerActions()</a> methods supplied by <a class="el" href="class_authorizer_1_1_authorizer_abstract.html" title="Base class for Authorizer classes, which grant or deny access to resources.">AuthorizerAbstract</a>.</p>
 <p>See the <a href="index.html#roles">"Roles" section in README.md</a> for examples. </p>
 </div><h2>Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="af5e6b3cf37b0ab5a62200a2838f46ba3"></a>
@@ -174,7 +172,7 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <h2>Member Function Documentation</h2>
-<a class="anchor" id="aa9efe9f77b72ba9e7c210ccf239b4e5b"></a>
+<a class="anchor" id="a9616a6ccafde58b42c1f74ee82a49d7f"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -203,7 +201,19 @@ Protected Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$guard</em>&#160;</td>
+          <td class="paramname"><em>$guard</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$subject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$object</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -226,9 +236,6 @@ Protected Member Functions</h2></td></tr>
 <a class="anchor" id="a26ac23a20aace05b25b6439a191562a3"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">Authorizer\RoleAuthorizer::registerRoleExclusions </td>
@@ -238,15 +245,11 @@ Protected Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Specifies specific sub-parts of roles to ignore in access checks. </p>
 <p>You may exclude the policies for every action of a resource type in a particular role, or only for particular actions.</p>
+<p>May be called multiple times to add additional role exclusions.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">$roleExclusions</td><td>An associative array mapping resource types to role names e.g. <code>"post" =&gt; "editor"</code>, or to arrays mapping particular actions to role names e.g. <code>"post" =&gt; ["write" =&gt; "editor", "read" =&gt; "guest"]</code> </td></tr>
@@ -259,9 +262,6 @@ Protected Member Functions</h2></td></tr>
 <a class="anchor" id="a6f6a4f9f6d23b524d992ff4c93cd4e3d"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">Authorizer\RoleAuthorizer::registerRoleInclusions </td>
@@ -271,17 +271,13 @@ Protected Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Specifies specific sub-parts of roles to use in access checks. </p>
 <p>These are considered as though they were additional roles, in that access will be permitted if the included policy lists allow access or if the regular role policy lists do so.</p>
 <p>You may include the policies for every action of a resource type, or only for particular actions.</p>
 <p>Inclusions take priority over exclusions.</p>
+<p>May be called multiple times to add additional role inclusions.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">$roleInclusions</td><td>An associative array mapping resource types to role names e.g. <code>"post" =&gt; "editor"</code>, or to arrays mapping particular actions to role names e.g. <code>"post" =&gt; ["write" =&gt; "editor", "read" =&gt; "guest"]</code> </td></tr>
@@ -294,9 +290,6 @@ Protected Member Functions</h2></td></tr>
 <a class="anchor" id="ab3d09dd2ded81b29a9f72b698aa0d2b2"></a>
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">Authorizer\RoleAuthorizer::registerRolePolicies </td>
@@ -306,15 +299,11 @@ Protected Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Associates roles with policy settings. </p>
 <p>See <a href="index.html#roles">"Roles" section in README.md</a> for more details on the argument to this method.</p>
+<p>May be called multiple times to add additional role-&gt;policy associations.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">$rolePolicies</td><td>A three-level associative array mapping roles, resource types, and actions to policy lists, e.g. <code>"contributor" =&gt; ["document" =&gt; ["read" =&gt; "allow", "write" =&gt; "owner"]]</code> </td></tr>
@@ -330,7 +319,7 @@ Protected Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 22 2013 16:59:38 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jul 8 2013 14:10:32 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

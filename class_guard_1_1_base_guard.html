@@ -96,12 +96,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a49a0e0b2af9baab31e3e4406d996f27a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_guard_1_1_base_guard.html#a49a0e0b2af9baab31e3e4406d996f27a">__construct</a> ($subject=null, $object=null)</td></tr>
-<tr class="memdesc:a49a0e0b2af9baab31e3e4406d996f27a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new Guard with the given subject and object, both of which are optional for <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a>.  <a href="#a49a0e0b2af9baab31e3e4406d996f27a"></a><br/></td></tr>
-<tr class="memitem:a58c2e3246598818b4dc27d9b79b7382b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_guard_1_1_base_guard.html#a58c2e3246598818b4dc27d9b79b7382b">checkPolicy</a> ($name)</td></tr>
-<tr class="memdesc:a58c2e3246598818b4dc27d9b79b7382b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the named policy permits access.  <a href="#a58c2e3246598818b4dc27d9b79b7382b"></a><br/></td></tr>
-<tr class="memitem:a5c9e6260d364b6c61f09fec9fb0c31ab"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_guard_1_1_base_guard.html#a5c9e6260d364b6c61f09fec9fb0c31ab">checkPolicyList</a> ($policies)</td></tr>
-<tr class="memdesc:a5c9e6260d364b6c61f09fec9fb0c31ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a policy list collectively permits access.  <a href="#a5c9e6260d364b6c61f09fec9fb0c31ab"></a><br/></td></tr>
+<tr class="memitem:ae6cbced82cb05f3bfd65fd1b6ecd85e0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_guard_1_1_base_guard.html#ae6cbced82cb05f3bfd65fd1b6ecd85e0">checkPolicy</a> ($name, $subject, $object=null)</td></tr>
+<tr class="memdesc:ae6cbced82cb05f3bfd65fd1b6ecd85e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the named policy permits access.  <a href="#ae6cbced82cb05f3bfd65fd1b6ecd85e0"></a><br/></td></tr>
+<tr class="memitem:a781db39e59281c6f32474110e27927be"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_guard_1_1_base_guard.html#a781db39e59281c6f32474110e27927be">checkPolicyList</a> ($policies, $subject, $object=null)</td></tr>
+<tr class="memdesc:a781db39e59281c6f32474110e27927be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a policy list collectively permits access.  <a href="#a781db39e59281c6f32474110e27927be"></a><br/></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -114,16 +112,22 @@ Protected Member Functions</h2></td></tr>
 <p>Your application should create a class which extends <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a> and includes any policies that apply based on the subject alone (e.g. checking if the user has an admin flag set). Then, any resources in your application that have policies specifically related to them (e.g. checking if a post is marked as editable) or involving a relationship between them and the subject (e.g. checking if a post is owned by the current user) need their own Guard class that extend from your app's Guard class.</p>
 <p>Examples of how to write Guards are available in <a href="index.html">README.md</a>.</p>
 <p>Besides deriving from this class, it can sometimes be useful to map a resource directly to <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a>, or to your application's base guard class. This way, you can have "virtual" resources, which are not associated with any <code>object</code>. For example, suppose you want to control access to a global system reset button. You could map a resource type named <code>system</code> to <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a>, with a single action <code>reset</code>. You may then call <code>can("reset", "system")</code> on your Authorizer to check access to the button, as the third argument of <code>can()</code> defaults to <code>null</code>. </p>
-</div><h2>Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a49a0e0b2af9baab31e3e4406d996f27a"></a>
+</div><h2>Member Function Documentation</h2>
+<a class="anchor" id="ae6cbced82cb05f3bfd65fd1b6ecd85e0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Guard\BaseGuard::__construct </td>
+          <td class="memname">Guard\BaseGuard::checkPolicy </td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$subject</em> = <code>null</code>, </td>
+          <td class="paramname"><em>$name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$subject</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -139,39 +143,13 @@ Protected Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Creates a new Guard with the given subject and object, both of which are optional for <a class="el" href="class_guard_1_1_base_guard.html" title="Base class for Guard classes, which define security policies.">BaseGuard</a>. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">$subject</td><td>An object instance or scalar with information about the user performing actions. </td></tr>
-    <tr><td class="paramname">$object</td><td>An object instance or scalar with information about the resource an action is operating on. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<h2>Member Function Documentation</h2>
-<a class="anchor" id="a58c2e3246598818b4dc27d9b79b7382b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">Guard\BaseGuard::checkPolicy </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
 <p>Checks if the named policy permits access. </p>
 <p>This method looks for a method named policyFoo, where "foo" is the value of <code>$name</code> (the first letter of the policy name is automatically capitalized). That method must return a boolean value; <code>null</code> is <em>not</em> automatically assumed to be false.</p>
 <dl class="section return"><dt>Returns</dt><dd>Boolean </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="a5c9e6260d364b6c61f09fec9fb0c31ab"></a>
+<a class="anchor" id="a781db39e59281c6f32474110e27927be"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -179,8 +157,24 @@ Protected Member Functions</h2></td></tr>
           <td class="memname">Guard\BaseGuard::checkPolicyList </td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>$policies</em></td><td>)</td>
+          <td class="paramname"><em>$policies</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$subject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>$object</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -225,7 +219,7 @@ Protected Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Feb 22 2013 16:59:38 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Jul 8 2013 14:10:32 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
