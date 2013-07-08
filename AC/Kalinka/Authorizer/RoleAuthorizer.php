@@ -5,15 +5,10 @@ namespace AC\Kalinka\Authorizer;
 /**
  * Authorizer that maps named roles to applicable policies.
  *
- * To use this class effectively, derive your own subclass of it and
- * call registerRolePolicies() in your subclass's constructor,
- * in addition to the registerGuards() and registerActions()
- * methods supplied by AuthorizerAbstract.
- *
  * See the <a href="index.html#roles">"Roles" section in README.md</a>
  * for examples.
  */
-abstract class RoleAuthorizer extends AuthorizerAbstract
+class RoleAuthorizer extends AuthorizerAbstract
 {
     private $rolesValidated = false;
 
