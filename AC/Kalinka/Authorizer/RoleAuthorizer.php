@@ -61,28 +61,6 @@ class RoleAuthorizer extends CommonAuthorizer
         }
     }
 
-    private $roleExclusions = [];
-    /**
-     * Specifies specific sub-parts of roles to ignore in access checks.
-     *
-     * You may exclude the policies for every action of a resource type
-     * in a particular role, or only for particular actions.
-     *
-     * May be called multiple times to add additional role exclusions.
-     *
-     * @param $roleExclusions An associative array mapping resource types to
-     *                        role names e.g. `"post" => "editor"`, or to
-     *                        arrays mapping particular
-     *                        actions to role names e.g. `"post" => ["write"
-     *                        => "editor", "read" => "guest"]`
-     */
-    public function registerRoleExclusions($roleExclusions)
-    {
-        foreach ($roleExclusions as $resType => $exclusions) {
-            $this->roleExclusions[$resType][] = $exclusions;
-        }
-    }
-
     private $roleInclusions = [];
     /**
      * Specifies specific sub-parts of roles to use in access checks.
@@ -93,8 +71,6 @@ class RoleAuthorizer extends CommonAuthorizer
      *
      * You may include the policies for every action of a resource type,
      * or only for particular actions.
-     *
-     * Inclusions take priority over exclusions.
      *
      * May be called multiple times to add additional role inclusions.
      *
@@ -119,27 +95,7 @@ class RoleAuthorizer extends CommonAuthorizer
         $this->assertValidRoles();
 
         foreach ($this->roles as $role) {
-            $excluded = false;
-            if (array_key_exists($resType, $this->roleExclusions)) {
-                foreach ($this->roleExclusions[$resType] as $exclusion) {
-                    if (is_string($exclusion) && $exclusion == $role) {
-                        $excluded = true;
-                        break;
-                    }
-
-                    if (
-                        is_array($exclusion) &&
-                        array_key_exists($action, $exclusion) &&
-                        $exclusion[$action] == $role
-                    ) {
-                        $excluded = true;
-                        break;
-                    }
-                }
-            }
-
             if (
-                !$excluded &&
                 $this->getRolePermission($role, $action, $resType, $guard, $subject, $object)
             ) {
                 return true;

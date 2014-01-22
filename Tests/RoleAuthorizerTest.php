@@ -3,29 +3,25 @@
 use AC\Kalinka\Authorizer\RoleAuthorizer;
 use AC\Kalinka\Guard\BaseGuard;
 
+class DummyGuard extends BaseGuard
+{
+    private $actions;
+    public function __construct($actions) { $this->actions = $actions; }
+    public function getActions() { return $this->actions; }
+}
+
 class OurRoleAuthorizer extends RoleAuthorizer
 {
-    public function __construct($roles, $roleInclusions = [], $roleExclusions = [])
+    public function __construct($roles, $roleInclusions = [])
     {
         parent::__construct(null, $roles);
 
         $this->registerRoleInclusions($roleInclusions);
-        $this->registerRoleExclusions($roleExclusions);
-        // We aren't using any guard objects, so we can just use
-        // the BaseGuard class, which expects null for subject and
-        // object, for all these things
-        $guard = new BaseGuard;
         $this->registerGuards([
-            "comment" => $guard,
-            "post" => $guard,
-            "system" => $guard,
-            "image" => $guard
-        ]);
-        $this->registerActions([
-            "comment" => ["read", "write", "disemvowel"],
-            "post" => ["read", "write"],
-            "image" => ["upload"],
-            "system" => ["reset"]
+            "comment" => new DummyGuard(["read", "write", "disemvowel"]),
+            "post" => new DummyGuard(["read", "write"]),
+            "system" => new DummyGuard(["reset"]),
+            "image" => new DummyGuard(["upload"])
         ]);
         $this->registerRolePolicies([
             "admin" => [], // Handled specially in getRolePermission
@@ -187,53 +183,6 @@ class RoleAuthorizerTest extends KalinkaTestCase
         ]);
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
             [true,  "read",   "comment"],
-            [true,  "read",   "post"],
-            [false, "write",  "comment"],
-            [true, "write",  "post"],
-            [false, "disemvowel", "comment"],
-            [true, "upload", "image"],
-            [false, "reset",  "system"],
-        ]);
-    }
-
-    public function testRoleExclusions() {
-        $auth = new OurRoleAuthorizer(["_common", "editor"],
-            [],
-            [
-                "image" => "editor",
-                "comment" => [
-                    "disemvowel" => "editor",
-                    "write" => "_common" // Should make no difference
-                ]
-            ]
-        );
-        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
-            [true,  "read",   "comment"],
-            [true,  "read",   "post"],
-            [true,  "write",  "comment"],
-            [true,  "write",  "post"],
-            [false,  "disemvowel", "comment"],
-            [false,  "upload", "image"],
-            [false, "reset",  "system"],
-        ]);
-    }
-
-    public function testRoleInclusionsOverrideExclusions() {
-        $auth = new OurRoleAuthorizer(["_common", "guest"],
-            [
-                "image" => "editor", // Should override the exclusion below
-                "post" => ["write" => "editor"]
-            ],
-            [
-                "image" => "editor",
-                "comment" => [
-                    "read" => "_common",
-                    "disemvowel" => "editor"
-                ]
-            ]
-        );
-        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
-            [false,  "read",   "comment"],
             [true,  "read",   "post"],
             [false, "write",  "comment"],
             [true, "write",  "post"],

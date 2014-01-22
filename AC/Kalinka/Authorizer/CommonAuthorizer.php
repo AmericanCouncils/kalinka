@@ -8,8 +8,8 @@ use AC\Kalinka\Guard\IGuard;
  * Base class for Authorizer classes, which grant or deny access to resources.
  *
  * Implementations of CommonAuthorizer must provide the getPermission() method.
- * They also must at some point call the registerGuards() and registerActions()
- * methods with the appropriate setup values, before any calls to can() are made.
+ * They also must at some point call the registerGuards()
+ * method with the appropriate setup values, before any calls to can() are made.
  * The constructor is a convenient place to do this, just don't forget to call
  * the parent constructor as well.
  */
@@ -45,32 +45,6 @@ abstract class CommonAuthorizer implements IAuthorizer
         $this->guards = array_merge($this->guards, $guardsMap);
     }
 
-    private $resourceActions = [];
-    /**
-     * Associates each resource type with a list of actions.
-     *
-     * Resource types are just descriptive strings; see registerGuards() for
-     * more information on that.
-     *
-     * Actions are also just strings. By convention they are camel cased.
-     * Try to stick with a consistent scheme for actions among your various
-     * resource types, for example using "read" and "write", or using the
-     * four CRUD verbs.
-     *
-     * May be called multiple times to register more actions.
-     *
-     * @param $actionsMap An associative array mapping resource types
-     *                    to lists of actions, e.g. "document" => ["read","write"]
-     */
-    public function registerActions($actionsMap)
-    {
-        foreach ($actionsMap as $resType => $actions) {
-            foreach ($actions as $action) {
-                $this->resourceActions[$resType][$action] = true;
-            }
-        }
-    }
-
     /**
      * Decides if an action on a resource is permitted.
      *
@@ -95,18 +69,17 @@ abstract class CommonAuthorizer implements IAuthorizer
             );
         }
 
+        $guard = $this->guards[$resType];
+        if (!is_a($guard, IGuard::class)) {
+            throw new \LogicException("Invalid guard for $resType");
+        }
+
         if (
-            !array_key_exists($resType, $this->resourceActions) ||
-            !array_key_exists($action, $this->resourceActions[$resType])
+            !in_array($action, $guard->getActions())
         ) {
             throw new \InvalidArgumentException(
                 "Unknown action \"$action\" for resource type \"$resType\""
             );
-        }
-
-        $guard = $this->guards[$resType];
-        if (!is_a($guard, IGuard::class)) {
-            throw new \LogicException("Invalid guard for $resType");
         }
 
         $result = $this->getPermission($action, $resType, $guard, $this->subject, $guardObject);

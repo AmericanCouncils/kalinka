@@ -20,15 +20,14 @@ You can get Kalinka via composer:
 
 ## Getting Started
 
-Create a base Guard class for your app. Guards are where you
+Create a base abstract Guard class for your app. Guards are where you
 define your security policies. Policies are just boolean-retuning methods
-whose names start with "policy". Here is an example Guard
-base class for your app:
+whose names start with "policy". Here is an example:
 
 ```php
 use AC\Kalinka\Guard\BaseGuard;
 
-class MyAppBaseGuard extends BaseGuard
+abstract class MyAppBaseGuard extends BaseGuard
 {
     protected function policyAdmin($subject)
     {
@@ -43,15 +42,35 @@ it can be something as simple as the name of the user as a string. The important
 thing is that it lets you find out everything you need about the user to
 determine what they're allowed to do.
 
-Policies may also accept an `object`, which is the resource that the subject is trying to get
-at.  You'll need to write a Guard class for each specific type of resource
-that has special policies. For example, suppose you have Documents that allow
-access based on whether or not the user owns that particular document, and/or
-whether or not the document is "unlocked":
+`MyAppBaseGuard` is abstract because it doesn't define any actions. Actions
+are strings which represent various things the subject might want to do,
+and which you may or may not permit. For your more specific Guard
+classes, you'll need to provide a `getActions` method which returns an array:
 
 ```php
 class DocumentGuard extends MyAppBaseGuard
 {
+    public function getActions()
+    {
+        return ["read", "write"];
+    }
+}
+```
+
+Policies may also accept an `object` as their second
+argument, which is a specific resource that the subject is trying to get at.
+For example, suppose you have Documents that allow access based on whether or
+not the user owns that particular document, and/or whether the document is
+"unlocked":
+
+```php
+class DocumentGuard extends MyAppBaseGuard
+{
+    public function getActions()
+    {
+        return ["read", "write"];
+    }
+
     protected function policyDocumentOwner($subject, $object)
     {
         return ($object->getOwnerId() == $subject->getId());
@@ -76,7 +95,7 @@ For most basic use cases, you can derive from `SimpleAuthorizer`:
 
 ```php
 use AC\Kalinka\Authorizer\SimpleAuthorizer;
-use MyApp\Guards\MyAppBaseGuard;
+use MyApp\Guards\CommentGuard;
 use MyApp\Guards\DocumentGuard;
 
 class MyAppAuthorizer extends SimpleAuthorizer
@@ -87,14 +106,8 @@ class MyAppAuthorizer extends SimpleAuthorizer
 
         $this->registerGuards([
             "document" => new DocumentGuard,
-            "comment" => new MyAppBaseGuard,
+            "comment" => new CommentGuard,
             // ... and so on for all your protected resources
-        ]);
-
-        $this->registerActions([
-            "document" => ["read", "write"],
-            "comment" => ["read", "create", "delete"],
-            // ...
         ]);
 
         $this->registerPolicies([
@@ -112,11 +125,6 @@ class MyAppAuthorizer extends SimpleAuthorizer
     }
 }
 ```
-
-Notice how comments are handled by `MyAppBaseGuard`; we did not have to
-write a new `CommentGuard` class. We don't have any policies that care about
-the content of comments, so there's no need to write a special
-class for guarding them.
 
 Now after all that, we're ready to do authorization! Whenever you want to check
 if access to some resource is allowed, just create an instance
@@ -158,7 +166,7 @@ of several different policies allows it, even if the others do not. Suppose
 that for the purposes of writing documents, being an admin is as good as
 being the document's owner, but the rule about the document being unlocked
 still applies to everyone. In that case, you can use an inner list:
- 
+
 ```php
 // ...
 $this->registerPolicies([
@@ -192,7 +200,7 @@ that replaces the functionality of `SimpleAuthorizer`'s `registerPolicies()` met
 
 ```php
 use AC\Kalinka\Authorizer\RoleAuthorizer;
-use MyApp\Guards\MyAppBaseGuard;
+use MyApp\Guards\CommentGuard;
 use MyApp\Guards\DocumentGuard;
 
 class MyAppAuthorizer extends RoleAuthorizer
@@ -207,14 +215,8 @@ class MyAppAuthorizer extends RoleAuthorizer
 
         $this->registerGuards([
             "document" => new DocumentGuard,
-            "comment" => new MyAppBaseGuard,
+            "comment" => new CommentGuard,
             // ... and so on for all your protected resources
-        ]);
-
-        $this->registerActions([
-            "document" => ["read", "write"],
-            "comment" => ["read", "create", "delete"],
-            // ...
         ]);
 
         $this->registerRolePolicies([
@@ -255,14 +257,13 @@ This is a much more flexible solution than adding role-like policies
 to your Guards, as we did above with the `policyAdmin()` method of
 `MyAppBaseGuard`.
 
-## Splicing Roles
+## Partially Included Roles
 
 You may sometimes have special situations where the desired permissions don't
 match up perfectly with your roles. For example, you might have a user who has
 all the rights of the "contributor" role, but also can act as an "administrator"
-when it comes to manipulating comments, without having any of the other privileges
-of administrators. You can handle this situation with your `RoleAuthorizer`
-derivative by using the `registerRoleInclusions()` method:
+when it comes to manipulating comments. You can handle this situation with your
+`RoleAuthorizer` derivative by using the `registerRoleInclusions()` method:
 
 ```php
 use AC\Kalinka\Authorizer\RoleAuthorizer;
@@ -292,24 +293,4 @@ $this->registerRoleInclusions([
 
 These included sections are treated as though they were another role; access
 is permitted if any included policy lists approve it, *or* if any of the policy
-lists from the user's regular roles approve it. If your goal is to block off
-or replace parts of your roles, rather than appending onto them, you can use
-the `registerRoleExclusions()` method, which takes the same form of argument:
-
-```php
-use AC\Kalinka\Authorizer\RoleAuthorizer;
-
-class MyAppAuthorizer extends RoleAuthorizer
-{
-    public function __construct(MyUserClass $user)
-    {
-        // ...
-
-        if ($user->isDeniedPostConstributorAccess()) {
-            $this->registerRoleExclusions([
-                "post" => "contributor"
-            ]);
-        }
-    }
-}
-```
+lists from the user's regular roles approve it.

@@ -15,9 +15,6 @@ class OurSimpleAuthorizer extends SimpleAuthorizer
         $this->registerGuards([
             "document" => new DocumentGuard()
         ]);
-        $this->registerActions([
-            "document" => ["read", "write"]
-        ]);
         $this->registerPolicies([
             "document" => [
                 "read" => [ "unclassified" ],

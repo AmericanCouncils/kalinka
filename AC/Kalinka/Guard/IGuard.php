@@ -33,4 +33,11 @@ interface IGuard
      * @return Array of strings
      */
     public function getPolicies();
+
+    /**
+     * Returns a list of possible actions on the guarded resource.
+     *
+     * @return Array of strings
+     */
+    public function getActions();
 }

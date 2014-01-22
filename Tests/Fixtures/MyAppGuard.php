@@ -4,7 +4,7 @@ namespace Fixtures;
 
 use AC\Kalinka\Guard\BaseGuard;
 
-class MyAppGuard extends BaseGuard
+abstract class MyAppGuard extends BaseGuard
 {
     protected function policyUsernameHasVowels($subject)
     {

@@ -13,4 +13,9 @@ class DocumentGuard extends MyAppGuard
     {
         return ($object->getOwner() == $subject->name);
     }
+
+    public function getActions()
+    {
+        return ["read", "write"];
+    }
 }

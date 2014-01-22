@@ -53,6 +53,11 @@ class AOGuard extends MyAppGuard
     {
         return ($object->user === $subject);
     }
+
+    public function getActions()
+    {
+      return ["read", "read_ratings"];
+    }
 }
 
 class Role
@@ -92,9 +97,6 @@ class MyAppAuthorizer extends RoleAuthorizer
 
         $this->registerGuards([
             "ao" => new AOGuard()
-        ]);
-        $this->registerActions([
-            "ao" => ["read", "read_ratings"]
         ]);
         $this->registerRolePolicies([
             "itemDev" => [

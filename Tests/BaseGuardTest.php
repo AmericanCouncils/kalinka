@@ -18,15 +18,28 @@ class BadGuard extends BaseGuard
     {
         return 3;
     }
+
+    public function getActions()
+    {
+        return ["foo", "bar"];
+    }
 }
 
-class GuardsTest extends KalinkaTestCase
+class SimpleGuard extends MyAppGuard
+{
+    public function getActions()
+    {
+        return ["foo", "bar"];
+    }
+}
+
+class BaseGuardsTest extends KalinkaTestCase
 {
     public function testBuiltinAllowPolicy()
     {
-        $c = new MyAppGuard();
+        $dg = new DocumentGuard();
         $u = new User("guest");
-        $this->assertEquals(true, $c->checkPolicy("allow", $u));
+        $this->assertEquals(true, $dg->checkPolicy("allow", $u));
     }
 
     public function testBaseGuardGetPolicies()
@@ -48,11 +61,11 @@ class GuardsTest extends KalinkaTestCase
     public function testGuardSubjectPolicies()
     {
         $guest = new User("jfk");
-        $guest_c = new MyAppGuard();
+        $guest_c = new SimpleGuard();
         $this->assertFalse($guest_c->checkPolicy("usernameHasVowels", $guest));
 
         $user = new User("dave");
-        $user_c = new MyAppGuard();
+        $user_c = new SimpleGuard();
         $this->assertTrue($user_c->checkPolicy("usernameHasVowels", $user));
     }
 
@@ -76,7 +89,7 @@ class GuardsTest extends KalinkaTestCase
     public function testPolicyLists()
     {
         $u = new User("guest");
-        $c = new MyAppGuard();
+        $c = new SimpleGuard();
         $this->assertTrue($c->checkPolicy("allow", $u));
         $this->assertFalse($c->checkPolicy("userIsOnFirst", $u));
 

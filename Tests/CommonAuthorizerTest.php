@@ -1,7 +1,7 @@
 <?php
 
-use AC\Kalinka\Guard\BaseGuard;
 use AC\Kalinka\Authorizer\CommonAuthorizer;
+use Fixtures\DocumentGuard;
 
 class MyAuthorizer extends CommonAuthorizer
 {
@@ -9,18 +9,12 @@ class MyAuthorizer extends CommonAuthorizer
     {
         parent::__construct($subject);
         $this->registerGuards([
-            "comment" => new BaseGuard,
-        ]);
-        $this->registerActions([
-            "comment" => ["read", "write"]
+            "comment" => new DocumentGuard,
         ]);
     }
 
     protected function getPermission($action, $guardType, $guard, $subject, $object)
     {
-        if (!($guard instanceof BaseGuard)) {
-            throw new RuntimeException;
-        }
         return true;
     }
 }
@@ -31,10 +25,7 @@ class BadValuesAuthorizer extends CommonAuthorizer
     {
         parent::__construct($subject);
         $this->registerGuards([
-            "something" => new BaseGuard,
-        ]);
-        $this->registerActions([
-            "something" => ["read", "write"]
+            "something" => new DocumentGuard,
         ]);
     }
 
@@ -55,9 +46,6 @@ class InvalidGuardAuthorizer extends CommonAuthorizer
         parent::__construct($subject);
         $this->registerGuards([
             "something" => "foo",
-        ]);
-        $this->registerActions([
-            "something" => ["read", "write"]
         ]);
     }
 
