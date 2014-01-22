@@ -29,6 +29,22 @@ class GuardsTest extends KalinkaTestCase
         $this->assertEquals(true, $c->checkPolicy("allow", $u));
     }
 
+    public function testBaseGuardGetPolicies()
+    {
+        $dg = new DocumentGuard();
+        $this->assertEquals(
+            [
+                "allow",
+                "owned",
+                "unclassified",
+                "userIsOnFirst",
+                "userIsOnSecond",
+                "usernameHasVowels"
+            ],
+            $dg->getPolicies()
+        );
+    }
+
     public function testGuardSubjectPolicies()
     {
         $guest = new User("jfk");

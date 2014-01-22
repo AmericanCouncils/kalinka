@@ -26,4 +26,11 @@ interface IGuard
      * @return Boolean
      */
     public function checkPolicyList($policies, $subject, $object = null);
+
+    /**
+     * Returns a list of the named policies supported by this Guard.
+     *
+     * @return Array of strings
+     */
+    public function getPolicies();
 }

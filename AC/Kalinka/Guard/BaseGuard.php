@@ -114,4 +114,23 @@ class BaseGuard implements IGuard
     {
         return true;
     }
+
+    /**
+     * Returns a list of the named policies supported by this Guard.
+     *
+     * This list is generated based on method names starting with 'policy'.
+     */
+    public function getPolicies()
+    {
+        $policies = [];
+        $cls = new \ReflectionClass($this);
+        foreach ($cls->getMethods() as $method) {
+            $matches = [];
+            if (preg_match('/^policy(.+)$/', $method->name, $matches)) {
+                $policies[] = lcfirst($matches[1]);
+            }
+        }
+        sort($policies);
+        return $policies;
+    }
 }
