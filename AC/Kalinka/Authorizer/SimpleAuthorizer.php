@@ -8,7 +8,7 @@ namespace AC\Kalinka\Authorizer;
  * See the <a href="index.html#getting-started">"Getting Started" section
  * in README.md</a> for examples.
  */
-class SimpleAuthorizer extends AuthorizerAbstract
+class SimpleAuthorizer extends CommonAuthorizer
 {
     private $policyMap = [];
     /**
@@ -33,7 +33,7 @@ class SimpleAuthorizer extends AuthorizerAbstract
     }
 
     /**
-     * Implementation of abstract method from AuthorizerAbstract.
+     * Implementation of abstract method from CommonAuthorizer.
      */
     protected function getPermission($action, $resType, $guard, $subject, $object)
     {

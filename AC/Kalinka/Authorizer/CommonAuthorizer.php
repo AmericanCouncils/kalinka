@@ -2,18 +2,18 @@
 
 namespace AC\Kalinka\Authorizer;
 
-use AC\Kalinka\Guard\BaseGuard;
+use AC\Kalinka\Guard\IGuard;
 
 /**
  * Base class for Authorizer classes, which grant or deny access to resources.
  *
- * Implementations of AuthorizerAbstract must provide the getPermission() method.
+ * Implementations of CommonAuthorizer must provide the getPermission() method.
  * They also must at some point call the registerGuards() and registerActions()
  * methods with the appropriate setup values, before any calls to can() are made.
  * The constructor is a convenient place to do this, just don't forget to call
  * the parent constructor as well.
  */
-abstract class AuthorizerAbstract
+abstract class CommonAuthorizer implements IAuthorizer
 {
     private $subject;
 
@@ -105,7 +105,7 @@ abstract class AuthorizerAbstract
         }
 
         $guard = $this->guards[$resType];
-        if (!is_a($guard, BaseGuard::class)) {
+        if (!is_a($guard, IGuard::class)) {
             throw new \LogicException("Invalid guard for $resType");
         }
 

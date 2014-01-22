@@ -1,9 +1,9 @@
 <?php
 
 use AC\Kalinka\Guard\BaseGuard;
-use AC\Kalinka\Authorizer\AuthorizerAbstract;
+use AC\Kalinka\Authorizer\CommonAuthorizer;
 
-class MyAuthorizer extends AuthorizerAbstract
+class MyAuthorizer extends CommonAuthorizer
 {
     public function __construct($subject = null)
     {
@@ -25,7 +25,7 @@ class MyAuthorizer extends AuthorizerAbstract
     }
 }
 
-class BadValuesAuthorizer extends AuthorizerAbstract
+class BadValuesAuthorizer extends CommonAuthorizer
 {
     public function __construct($subject = null)
     {
@@ -48,13 +48,33 @@ class BadValuesAuthorizer extends AuthorizerAbstract
     }
 }
 
-class AuthorizerTest extends KalinkaTestCase
+class InvalidGuardAuthorizer extends CommonAuthorizer
+{
+    public function __construct($subject = null)
+    {
+        parent::__construct($subject);
+        $this->registerGuards([
+            "something" => "foo",
+        ]);
+        $this->registerActions([
+            "something" => ["read", "write"]
+        ]);
+    }
+
+    protected function getPermission($action, $resType, $guard, $subject, $object)
+    {
+        return true;
+    }
+}
+
+class CommonAuthorizerTest extends KalinkaTestCase
 {
     private $auth;
     protected function setUp()
     {
         $this->auth = new MyAuthorizer();
         $this->badAuth = new BadValuesAuthorizer();
+        $this->invalidAuth = new InvalidGuardAuthorizer();
     }
 
     public function testExplicitAllow()
@@ -100,5 +120,13 @@ class AuthorizerTest extends KalinkaTestCase
             "LogicException", "invalid getPermission result"
         );
         $this->badAuth->can("write", "something");
+    }
+
+    public function testExceptionOnInvalidGuard()
+    {
+        $this->setExpectedException(
+            "LogicException", "Invalid guard"
+        );
+        $this->invalidAuth->can("write", "something");
     }
 }

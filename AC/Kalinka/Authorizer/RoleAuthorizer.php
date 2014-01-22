@@ -8,7 +8,7 @@ namespace AC\Kalinka\Authorizer;
  * See the <a href="index.html#roles">"Roles" section in README.md</a>
  * for examples.
  */
-class RoleAuthorizer extends AuthorizerAbstract
+class RoleAuthorizer extends CommonAuthorizer
 {
     private $rolesValidated = false;
 
@@ -112,7 +112,7 @@ class RoleAuthorizer extends AuthorizerAbstract
     }
 
     /**
-     * Implementation of abstract method from AuthorizerAbstract.
+     * Implementation of abstract method from CommonAuthorizer.
      */
     protected function getPermission($action, $resType, $guard, $subject, $object)
     {

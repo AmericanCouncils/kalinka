@@ -30,7 +30,7 @@ namespace AC\Kalinka\Guard;
  * Authorizer to check access to the button, as the third argument of `can()`
  * defaults to `null`.
  */
-class BaseGuard
+class BaseGuard implements IGuard
 {
     /**
      * Checks if the named policy permits access.
