@@ -76,6 +76,8 @@ For most basic use cases, you can derive from `SimpleAuthorizer`:
 
 ```php
 use AC\Kalinka\Authorizer\SimpleAuthorizer;
+use MyApp\Guards\MyAppBaseGuard;
+use MyApp\Guards\DocumentGuard;
 
 class MyAppAuthorizer extends SimpleAuthorizer
 {
@@ -84,8 +86,8 @@ class MyAppAuthorizer extends SimpleAuthorizer
         parent::__construct($subject);
 
         $this->registerGuards([
-            "document" => "MyApp\Guards\DocumentGuard",
-            "comment" => "MyApp\Guards\MyAppBaseGuard",
+            "document" => new DocumentGuard,
+            "comment" => new MyAppBaseGuard,
             // ... and so on for all your protected resources
         ]);
 
@@ -190,6 +192,8 @@ that replaces the functionality of `SimpleAuthorizer`'s `registerPolicies()` met
 
 ```php
 use AC\Kalinka\Authorizer\RoleAuthorizer;
+use MyApp\Guards\MyAppBaseGuard;
+use MyApp\Guards\DocumentGuard;
 
 class MyAppAuthorizer extends RoleAuthorizer
 {
@@ -202,8 +206,8 @@ class MyAppAuthorizer extends RoleAuthorizer
         parent::__construct($user, $roleNames);
 
         $this->registerGuards([
-            "document" => "MyApp\Guards\DocumentGuard",
-            "comment" => "MyApp\Guards\MyAppBaseGuard",
+            "document" => new DocumentGuard,
+            "comment" => new MyAppBaseGuard,
             // ... and so on for all your protected resources
         ]);
 

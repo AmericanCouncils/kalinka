@@ -91,7 +91,7 @@ class MyAppAuthorizer extends RoleAuthorizer
         parent::__construct($user, $roleNames);
 
         $this->registerGuards([
-            "ao" => "AOGuard"
+            "ao" => new AOGuard()
         ]);
         $this->registerActions([
             "ao" => ["read", "read_ratings"]

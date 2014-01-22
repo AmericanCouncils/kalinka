@@ -2,6 +2,8 @@
 
 namespace AC\Kalinka\Authorizer;
 
+use AC\Kalinka\Guard\BaseGuard;
+
 /**
  * Base class for Authorizer classes, which grant or deny access to resources.
  *
@@ -25,27 +27,22 @@ abstract class AuthorizerAbstract
         $this->subject = $subject;
     }
 
-    private $resourceGuardClasses = [];
+    private $guards = [];
     /**
-     * Associates resource types with Guard classes.
+     * Associates resource types with Guard instances.
      *
      * Resource types are strings passed as the 2nd argument to `can()`,
      * which identify what sort of resource the user is trying to access.
      * By convention these are camel cased, like `thisExampleHere`.
      *
-     * The class is passed in as a string with the fully-qualified class name,
-     * or alternately a callable which takes two arguments, the subject and
-     * object, and returns an instance of an appropriate Guard class.
-     *
      * May be called multiple times to register more guards.
      *
-     * @param $guardsMap An associative array mapping resource types to Guard
-     *                   classes, e.g. "document" => "MyApp\Guards\DocumentGuard"
+     * @param $guardsMap An associative array mapping resource types to Guards,
+     *                   e.g. ["document" => new MyApp\Guards\DocumentGuard]
      */
     public function registerGuards($guardsMap)
     {
-        $this->resourceGuardClasses =
-            array_merge($this->resourceGuardClasses, $guardsMap);
+        $this->guards = array_merge($this->guards, $guardsMap);
     }
 
     private $resourceActions = [];
@@ -77,10 +74,9 @@ abstract class AuthorizerAbstract
     /**
      * Decides if an action on a resource is permitted.
      *
-     * This method constructs the appropriate Guard instance with the
-     * subject passed to this Authorizer's constructor and the given
-     * (optional) object argument. It then passes this Guard instance to the
-     * getPermission() method, and returns its result.
+     * This method simply passes the appropriate Guard instance to the
+     * getPermission() method along with all the arguments describing the action
+     * to check, and returns that function's result.
      *
      * @param $action The action that we want to check, a string
      * @param $resType The resource type we're checking access to, a string
@@ -93,13 +89,11 @@ abstract class AuthorizerAbstract
      */
     public function can($action, $resType, $guardObject = null)
     {
-        if (!array_key_exists($resType, $this->resourceGuardClasses)) {
+        if (!array_key_exists($resType, $this->guards)) {
             throw new \InvalidArgumentException(
                 "Unknown resource type \"$resType\""
             );
         }
-
-        $guardClass = $this->resourceGuardClasses[$resType];
 
         if (
             !array_key_exists($resType, $this->resourceActions) ||
@@ -110,20 +104,17 @@ abstract class AuthorizerAbstract
             );
         }
 
-        if (is_callable($guardClass)) {
-            $guard = $guardClass();
-        } elseif (is_string($guardClass)) {
-            $guard = new $guardClass();
-        } else {
-            throw new \LogicException("Invalid guard class mapping for $resType");
+        $guard = $this->guards[$resType];
+        if (!is_a($guard, BaseGuard::class)) {
+            throw new \LogicException("Invalid guard for $resType");
         }
-        
+
         $result = $this->getPermission($action, $resType, $guard, $this->subject, $guardObject);
         if (is_bool($result)) {
             return $result;
         } else {
             throw new \LogicException(
-                "Got invalid getPermission result " . var_export($result, true)
+                "Got invalid getPermission result: " . var_export($result, true)
             );
         }
     }

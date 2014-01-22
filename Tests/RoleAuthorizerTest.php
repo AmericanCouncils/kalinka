@@ -1,6 +1,7 @@
 <?php
 
 use AC\Kalinka\Authorizer\RoleAuthorizer;
+use AC\Kalinka\Guard\BaseGuard;
 
 class OurRoleAuthorizer extends RoleAuthorizer
 {
@@ -13,11 +14,12 @@ class OurRoleAuthorizer extends RoleAuthorizer
         // We aren't using any guard objects, so we can just use
         // the BaseGuard class, which expects null for subject and
         // object, for all these things
+        $guard = new BaseGuard;
         $this->registerGuards([
-            "comment" => "AC\Kalinka\Guard\BaseGuard",
-            "post" => "AC\Kalinka\Guard\BaseGuard",
-            "system" => "AC\Kalinka\Guard\BaseGuard",
-            "image" => "AC\Kalinka\Guard\BaseGuard",
+            "comment" => $guard,
+            "post" => $guard,
+            "system" => $guard,
+            "image" => $guard
         ]);
         $this->registerActions([
             "comment" => ["read", "write", "disemvowel"],

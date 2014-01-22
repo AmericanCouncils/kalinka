@@ -3,6 +3,7 @@
 use AC\Kalinka\Authorizer\SimpleAuthorizer;
 
 use Fixtures\Document;
+use Fixtures\DocumentGuard;
 use Fixtures\User;
 
 class OurSimpleAuthorizer extends SimpleAuthorizer
@@ -12,7 +13,7 @@ class OurSimpleAuthorizer extends SimpleAuthorizer
         parent::__construct($subject);
 
         $this->registerGuards([
-            "document" => "Fixtures\DocumentGuard"
+            "document" => new DocumentGuard()
         ]);
         $this->registerActions([
             "document" => ["read", "write"]
