@@ -1,17 +1,10 @@
 <?php
 
-require_once __DIR__ . "/../vendor/autoload.php";
-
-set_include_path(
-    get_include_path() . PATH_SEPARATOR .
-    dirname(__DIR__) . PATH_SEPARATOR .
-    dirname(__DIR__) . "/Tests"
-);
-spl_autoload_register(function($c) {
-    $path = strtr($c, '\\_', '//').'.php';
-    if (file_exists("Tests/" . $path)) {
-        require_once 'Tests/'. $path;
-    } else {
-        require_once $path;
+call_user_func(function() {
+    if ( ! is_file($autoloadFile = __DIR__.'/../vendor/autoload.php')) {
+        throw new \RuntimeException('Did not find vendor/autoload.php. Did you run "composer install --dev"?');
     }
+
+    $loader = require $autoloadFile;
+    $loader->add('', __DIR__);
 });
