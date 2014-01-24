@@ -1,5 +1,7 @@
 # Kalinka
 
+[![Build Status](https://travis-ci.org/AmericanCouncils/kalinka.png?branch=master)](https://travis-ci.org/AmericanCouncils/kalinka)
+
 Kalinka helps you determine who's allowed to do what in your app.
 
 [API Documentation](http://americancouncils.github.com/kalinka/annotated.html)
