@@ -70,7 +70,7 @@ abstract class CommonAuthorizer implements IAuthorizer
         }
 
         $guard = $this->guards[$resType];
-        if (!is_a($guard, IGuard::class)) {
+        if (!($guard instanceof IGuard)) {
             throw new \LogicException("Invalid guard for $resType");
         }
 

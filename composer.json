@@ -6,9 +6,9 @@
     "type": "library",
     "license": "MIT",
     "require": {
+        "php": ">=5.4.0"
     },
     "autoload": {
-        "psr-0": { "Kalinka": "" }
-    },
-    "target-dir": "Kalinka"
+        "psr-4": { "AC\\Kalinka\\": "src/" }
+    }
 }
