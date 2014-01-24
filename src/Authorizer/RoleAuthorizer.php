@@ -34,6 +34,7 @@ class RoleAuthorizer extends CommonAuthorizer
     }
 
     private $rolePolicies = [];
+
     /**
      * Associates roles with policy settings.
      *
@@ -62,6 +63,7 @@ class RoleAuthorizer extends CommonAuthorizer
     }
 
     private $roleInclusions = [];
+
     /**
      * Specifies specific sub-parts of roles to use in access checks.
      *

@@ -30,7 +30,7 @@ namespace AC\Kalinka\Guard;
  * Authorizer to check access to the button, as the third argument of `can()`
  * defaults to `null`.
  */
-abstract class BaseGuard implements IGuard
+abstract class BaseGuard implements GuardInterface
 {
     /**
      * Checks if the named policy permits access.
@@ -131,6 +131,7 @@ abstract class BaseGuard implements IGuard
             }
         }
         sort($policies);
+
         return $policies;
     }
 
