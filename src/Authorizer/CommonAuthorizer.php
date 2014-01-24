@@ -51,7 +51,7 @@ abstract class CommonAuthorizer implements AuthorizerInterface
      * @param $guardsMap An associative array mapping resource types to Guards,
      *                   e.g. ["document" => new MyApp\Guards\DocumentGuard]
      */
-    public function registerGuards($guardsMap)
+    public function registerGuards(array $guardsMap)
     {
         foreach ($guardsMap as $name => $guard) {
             $this->registerGuard($name, $guard);
@@ -76,27 +76,22 @@ abstract class CommonAuthorizer implements AuthorizerInterface
      */
     public function can($action, $resType, $guardObject = null)
     {
-        if (!array_key_exists($resType, $this->guards)) {
+        if (!isset($this->guards[$resType])) {
             throw new \InvalidArgumentException("Unknown resource type \"$resType\"");
         }
 
         $guard = $this->guards[$resType];
 
-        if (
-            !in_array($action, $guard->getActions())
-        ) {
-            throw new \InvalidArgumentException(
-                "Unknown action \"$action\" for resource type \"$resType\""
-            );
+        if (!in_array($action, $guard->getActions())) {
+            throw new \InvalidArgumentException("Unknown action \"$action\" for resource type \"$resType\"");
         }
 
         $result = $this->getPermission($action, $resType, $guard, $this->subject, $guardObject);
+
         if (is_bool($result)) {
             return $result;
         } else {
-            throw new \LogicException(
-                "Got invalid getPermission result: " . var_export($result, true)
-            );
+            throw new \LogicException("Got invalid getPermission result: " . var_export($result, true));
         }
     }
 
