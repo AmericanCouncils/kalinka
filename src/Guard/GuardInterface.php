@@ -9,7 +9,7 @@ namespace AC\Kalinka\Guard;
  * case is determed by Authorizers; the Guard classes simply make
  * the policies available.
  */
-interface IGuard
+interface GuardInterface
 {
     /**
      * Checks if the named policy permits access.

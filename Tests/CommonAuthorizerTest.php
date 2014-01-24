@@ -39,22 +39,6 @@ class BadValuesAuthorizer extends CommonAuthorizer
     }
 }
 
-class InvalidGuardAuthorizer extends CommonAuthorizer
-{
-    public function __construct($subject = null)
-    {
-        parent::__construct($subject);
-        $this->registerGuards([
-            "something" => "foo",
-        ]);
-    }
-
-    protected function getPermission($action, $resType, $guard, $subject, $object)
-    {
-        return true;
-    }
-}
-
 class CommonAuthorizerTest extends KalinkaTestCase
 {
     private $auth;
@@ -62,7 +46,6 @@ class CommonAuthorizerTest extends KalinkaTestCase
     {
         $this->auth = new MyAuthorizer();
         $this->badAuth = new BadValuesAuthorizer();
-        $this->invalidAuth = new InvalidGuardAuthorizer();
     }
 
     public function testExplicitAllow()
@@ -108,13 +91,5 @@ class CommonAuthorizerTest extends KalinkaTestCase
             "LogicException", "invalid getPermission result"
         );
         $this->badAuth->can("write", "something");
-    }
-
-    public function testExceptionOnInvalidGuard()
-    {
-        $this->setExpectedException(
-            "LogicException", "Invalid guard"
-        );
-        $this->invalidAuth->can("write", "something");
     }
 }

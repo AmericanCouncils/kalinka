@@ -2,7 +2,7 @@
 
 namespace AC\Kalinka\Authorizer;
 
-use AC\Kalinka\Guard\IGuard;
+use AC\Kalinka\Guard\GuardInterface;
 
 /**
  * Base class for Authorizer classes, which grant or deny access to resources.
@@ -13,7 +13,7 @@ use AC\Kalinka\Guard\IGuard;
  * The constructor is a convenient place to do this, just don't forget to call
  * the parent constructor as well.
  */
-abstract class CommonAuthorizer implements IAuthorizer
+abstract class CommonAuthorizer implements AuthorizerInterface
 {
     private $subject;
 
@@ -28,6 +28,17 @@ abstract class CommonAuthorizer implements IAuthorizer
     }
 
     private $guards = [];
+
+    /**
+     * @see AC\Kalinka\Authorizer\AuthorizerInterface::registerGuard()
+     */
+    public function registerGuard($name, GuardInterface $guard)
+    {
+        $this->guards[$name] = $guard;
+
+        return $this;
+    }
+
     /**
      * Associates resource types with Guard instances.
      *
@@ -42,7 +53,9 @@ abstract class CommonAuthorizer implements IAuthorizer
      */
     public function registerGuards($guardsMap)
     {
-        $this->guards = array_merge($this->guards, $guardsMap);
+        foreach ($guardsMap as $name => $guard) {
+            $this->registerGuard($name, $guard);
+        }
     }
 
     /**
@@ -64,15 +77,10 @@ abstract class CommonAuthorizer implements IAuthorizer
     public function can($action, $resType, $guardObject = null)
     {
         if (!array_key_exists($resType, $this->guards)) {
-            throw new \InvalidArgumentException(
-                "Unknown resource type \"$resType\""
-            );
+            throw new \InvalidArgumentException("Unknown resource type \"$resType\"");
         }
 
         $guard = $this->guards[$resType];
-        if (!($guard instanceof IGuard)) {
-            throw new \LogicException("Invalid guard for $resType");
-        }
 
         if (
             !in_array($action, $guard->getActions())
