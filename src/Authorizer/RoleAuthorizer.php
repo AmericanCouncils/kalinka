@@ -51,10 +51,19 @@ class RoleAuthorizer extends CommonAuthorizer
     public function registerRolePolicies($rolePolicies)
     {
         foreach ($rolePolicies as $role => $resTypes) {
-            if (!array_key_exists($role, $this->rolePolicies)) {
+            if (!isset($this->rolePolicies[$role])) {
                 $this->rolePolicies[$role] = [];
             }
+
             foreach ($resTypes as $resType => $actions) {
+                if (!is_array($actions)) {
+                    continue;
+                }
+
+                if (!isset($this->rolePolicies[$role][$resType])) {
+                    $this->rolePolicies[$role][$resType] = [];
+                }
+
                 foreach ($actions as $action => $policyList) {
                     $this->rolePolicies[$role][$resType][$action] = $policyList;
                 }
