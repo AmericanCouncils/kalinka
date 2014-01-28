@@ -51,7 +51,7 @@ class RoleAuthorizer extends CommonAuthorizer
     public function registerRolePolicies($rolePolicies)
     {
         foreach ($rolePolicies as $role => $resTypes) {
-            if (!isset($role, $this->rolePolicies)) {
+            if (!isset($this->rolePolicies[$role])) {
                 $this->rolePolicies[$role] = [];
             }
 
