@@ -105,7 +105,6 @@ class RoleAuthorizer extends CommonAuthorizer
     {
         $this->assertValidRoles();
 
-        //NOTE: this is a default whitelist?
         foreach ($this->roles as $role) {
             if (
                 $this->getRolePermission($role, $action, $resType, $guard, $subject, $object)
