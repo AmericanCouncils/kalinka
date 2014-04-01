@@ -55,6 +55,10 @@ class RoleAuthorizer extends CommonAuthorizer
                 $this->rolePolicies[$role] = [];
             }
 
+            // Add Symfony-specific roles with no mappings
+            $this->rolePolicies['IS_AUTHENTICATED_ANONYMOUSLY'] = [];
+            $this->rolePolicies['IS_AUTHENTICATED_FULLY'] = [];
+
             foreach ($resTypes as $resType => $actions) {
                 if (!is_array($actions)) {
                     continue;
