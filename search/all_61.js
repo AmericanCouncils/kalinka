@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['authorizerabstract',['AuthorizerAbstract',['../class_authorizer_1_1_authorizer_abstract.html',1,'Authorizer']]]
+  ['authorizerinterface',['AuthorizerInterface',['../interface_authorizer_1_1_authorizer_interface.html',1,'Authorizer']]]
 ];

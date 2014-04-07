@@ -93,6 +93,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>Base class for Guard classes, which define security policies.  
  <a href="class_guard_1_1_base_guard.html#details">More...</a></p>
+<div class="dynheader">
+Inheritance diagram for Guard\BaseGuard:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="class_guard_1_1_base_guard.png" usemap="#Guard\BaseGuard_map" alt=""/>
+  <map id="Guard\BaseGuard_map" name="Guard\BaseGuard_map">
+<area href="interface_guard_1_1_guard_interface.html" title="Interface class for Guard classes, which define security policies." alt="Guard\GuardInterface" shape="rect" coords="0,0,136,24"/>
+</map>
+ </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -100,6 +109,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ae6cbced82cb05f3bfd65fd1b6ecd85e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the named policy permits access.  <a href="#ae6cbced82cb05f3bfd65fd1b6ecd85e0"></a><br/></td></tr>
 <tr class="memitem:a781db39e59281c6f32474110e27927be"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_guard_1_1_base_guard.html#a781db39e59281c6f32474110e27927be">checkPolicyList</a> ($policies, $subject, $object=null)</td></tr>
 <tr class="memdesc:a781db39e59281c6f32474110e27927be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if a policy list collectively permits access.  <a href="#a781db39e59281c6f32474110e27927be"></a><br/></td></tr>
+<tr class="memitem:aedc419ffc68323f3aa93a4fce298cb3e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_guard_1_1_base_guard.html#aedc419ffc68323f3aa93a4fce298cb3e">getPolicies</a> ()</td></tr>
+<tr class="memdesc:aedc419ffc68323f3aa93a4fce298cb3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a list of the named policies supported by this Guard.  <a href="#aedc419ffc68323f3aa93a4fce298cb3e"></a><br/></td></tr>
+<tr class="memitem:ab6031e143afa47b6173794fa3325d437"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_guard_1_1_base_guard.html#ab6031e143afa47b6173794fa3325d437">getActions</a> ()</td></tr>
+<tr class="memdesc:ab6031e143afa47b6173794fa3325d437"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a list of possible actions on the guarded resource.  <a href="#ab6031e143afa47b6173794fa3325d437"></a><br/></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -147,6 +160,8 @@ Protected Member Functions</h2></td></tr>
 <p>This method looks for a method named policyFoo, where "foo" is the value of <code>$name</code> (the first letter of the policy name is automatically capitalized). That method must return a boolean value; <code>null</code> is <em>not</em> automatically assumed to be false.</p>
 <dl class="section return"><dt>Returns</dt><dd>Boolean </dd></dl>
 
+<p>Implements <a class="el" href="interface_guard_1_1_guard_interface.html#a3d97128d00cf9d8f8d73008784d01c55">Guard\GuardInterface</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="a781db39e59281c6f32474110e27927be"></a>
@@ -185,6 +200,56 @@ Protected Member Functions</h2></td></tr>
 <p>For example, if you pass <code>["a", ["b", "c"]]</code> to checkPolicyList, it will return true only if <code>policyA</code> returns true <em>AND</em> at least one of <code>policyB</code> or <code>policyC</code> return true.</p>
 <dl class="section return"><dt>Returns</dt><dd>Boolean </dd></dl>
 
+<p>Implements <a class="el" href="interface_guard_1_1_guard_interface.html#a8375afcc5ae98fe7ae480ffa9ebac630">Guard\GuardInterface</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab6031e143afa47b6173794fa3325d437"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Guard\BaseGuard::getActions </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">abstract</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns a list of possible actions on the guarded resource. </p>
+<dl class="section return"><dt>Returns</dt><dd>Array of strings </dd></dl>
+
+<p>Implements <a class="el" href="interface_guard_1_1_guard_interface.html#ac9b3df1467ed43bef5b65c1bed64943e">Guard\GuardInterface</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aedc419ffc68323f3aa93a4fce298cb3e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Guard\BaseGuard::getPolicies </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a list of the named policies supported by this Guard. </p>
+<p>This list is generated based on method names starting with 'policy'. </p>
+
+<p>Implements <a class="el" href="interface_guard_1_1_guard_interface.html#a7508c34e4681f75b85c20ffd196c9487">Guard\GuardInterface</a>.</p>
+
 </div>
 </div>
 <a class="anchor" id="a8a733b3e7da6d144e42c64bd461026cb"></a>
@@ -214,12 +279,12 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>AC/Kalinka/Guard/BaseGuard.php</li>
+<li>src/Guard/BaseGuard.php</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Jul 8 2013 14:10:32 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 7 2014 16:58:54 for Kalinka by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
