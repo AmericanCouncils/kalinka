@@ -14,6 +14,8 @@ class RoleAuthorizer extends CommonAuthorizer
 
     private $roles = [];
 
+    const SUPERUSER_ROLE = 'superuser';
+
     /**
      * Constructs a RoleAuthorizer.
      *
@@ -141,12 +143,11 @@ class RoleAuthorizer extends CommonAuthorizer
 
     /**
      * Used by getPermission to determine access checks under a given role.
-     *
-     * If you want to implement roles with unusual semantics (e.g. a superadmin
-     * role which always has access to everything), override this method.
      */
     protected function getRolePermission($role, $action, $resType, $guard, $subject, $object)
     {
+        if ($role == self::SUPERUSER_ROLE) { return true; }
+
         if (
             array_key_exists($resType, $this->rolePolicies[$role]) &&
             array_key_exists($action, $this->rolePolicies[$role][$resType])
@@ -170,6 +171,7 @@ class RoleAuthorizer extends CommonAuthorizer
         }
 
         foreach ($this->roles as $role) {
+            if ($role == self::SUPERUSER_ROLE) { continue; }
             if (!array_key_exists($role, $this->rolePolicies)) {
                 throw new \RuntimeException("No such role $role registered");
             }
