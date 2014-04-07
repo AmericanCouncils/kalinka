@@ -259,6 +259,9 @@ This is a much more flexible solution than adding role-like policies
 to your Guards, as we did above with the `policyAdmin()` method of
 `MyAppBaseGuard`.
 
+The RoleAuthorizer also provides a special role named 'superuser', which
+automatically allows all actions.
+
 ## Partially Included Roles
 
 You may sometimes have special situations where the desired permissions don't

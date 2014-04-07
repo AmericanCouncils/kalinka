@@ -24,7 +24,6 @@ class OurRoleAuthorizer extends RoleAuthorizer
             "image" => new DummyGuard(["upload"])
         ]);
         $this->registerRolePolicies([
-            "admin" => [], // Handled specially in getRolePermission
             "_common" => [
                 "comment" => [
                     "read" => "allow"
@@ -80,15 +79,6 @@ class OurRoleAuthorizer extends RoleAuthorizer
                 ]
             ],
         ]);
-    }
-
-    protected function getRolePermission($role, $action, $resType, $guard, $subject, $object)
-    {
-        if ($role == "admin") {
-            return true;
-        } else {
-            return parent::getRolePermission($role, $action, $resType, $guard, $subject, $object);
-        }
     }
 }
 
@@ -149,20 +139,6 @@ class RoleAuthorizerTest extends KalinkaTestCase
         ]);
     }
 
-    public function testAdminPolicies() {
-        // Unrestricted access due to overriding getRolePermission
-        $auth = new OurRoleAuthorizer(["_common", "admin"]);
-        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
-            [true,  "read",   "comment"],
-            [true,  "read",   "post"],
-            [true,  "write",  "comment"],
-            [true,  "write",  "post"],
-            [true,  "disemvowel", "comment"],
-            [true,  "upload", "image"],
-            [true,  "reset",  "system"],
-        ]);
-    }
-
     public function testMultipleRoles() {
         $auth = new OurRoleAuthorizer(["_common", "image_supplier", "comment_supplier"]);
         $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
@@ -192,6 +168,19 @@ class RoleAuthorizerTest extends KalinkaTestCase
         ]);
     }
 
+    public function testSuperuserRole() {
+        $auth = new OurRoleAuthorizer(["superuser"]);
+        $this->assertCallsEqual([$auth, "can"], [self::X1, self::X2], [
+            [true,  "read",   "comment"],
+            [true,  "read",   "post"],
+            [true,  "write",  "comment"],
+            [true,  "write",  "post"],
+            [true,  "disemvowel", "comment"],
+            [true,  "upload", "image"],
+            [true,  "reset",  "system"],
+        ]);
+    }
+
     public function testExceptionOnInvalidRole() {
         $auth = new OurRoleAuthorizer(["_common", "foo"]);
         $this->setExpectedException("RuntimeException", "No such role");
@@ -199,11 +188,9 @@ class RoleAuthorizerTest extends KalinkaTestCase
     }
 
     public function testExceptionOnInvalidRoleInclusion() {
-        $auth = new OurRoleAuthorizer(["_common", "guest"],
-            [
+        $auth = new OurRoleAuthorizer(["_common", "guest"], [
             "image" => "foo",
-            ]
-        );
+        ]);
         $this->setExpectedException("RuntimeException", "No such role");
         $auth->can("upload", "image");
     }
